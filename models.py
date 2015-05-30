@@ -7,20 +7,38 @@ from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import json
 
 
+STATUS_CHOICES = (
+    ("SUCCEEDED", "succeeded"),
+    ("FAILED", "failed"),
+)
+
 class Charge(models.Model):
     livemode = models.BooleanField(default=True)
+    amount = models.IntegerField()
+    captured = models.BooleanField()
     created = models.DateTimeField()
-    account_balance = models.IntegerField()
-    currency = models.CharField(max_length=255)
-    default_source = models.CharField(max_length=255)
-    delinquent = models.BooleanField()
+    currency = models.CharField(max_length=255)  # todo ISO 3char fields
+    paid = models.BooleanField()
+    refunded = models.BooleanField()
+    refunds = models.ManyToManyField("Refund")
+    source = json.JSONField()
+    status = models.CharField(max_length=255, choices=STATUS_CHOICES)
+    amount_refunded = models.PositiveIntegerField()
+    balance_transaction = models.CharField(max_length=255)  # relation todo
+    customer = models.ForeignKey("Customer")
     description = models.CharField(max_length=255)
-    # discount = models.ForeignKey(Discount)
-    email = models.EmailField()
+    dispute = models.ForeignKey("Dispute", blank=True, null=True)
+    failure_code = models.CharField(max_length=255)
+    failure_message = models.CharField(max_length=255)
+    invoice = models.ForeignKey("Invoice")
     metadata = json.JSONField()
-    sources = json.JSONField()
-    # subscriptions = models.ManyToManyField(Subscription)
-
+    receipt_email = models.EmailField()
+    receipt_number = models.CharField(max_length=255)
+    application_fee = models.CharField(max_length=255)
+    destination = models.CharField(max_length=255)
+    fraud_details= json.JSONField()
+    shipping = json.JSONField()
+    transfer = models.CharField(max_length=255)
 
 class Refund(models.Model):
     amount = models.IntegerField()
