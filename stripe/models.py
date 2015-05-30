@@ -20,7 +20,7 @@ class Charge(models.Model):
     currency = models.CharField(max_length=255)  # todo ISO 3char fields
     paid = models.BooleanField()
     refunded = models.BooleanField()
-    refunds = models.ManyToManyField("Refund")
+    # refunds = models.ManyToManyField("Refund")
     source = json.JSONField()
     status = models.CharField(max_length=255, choices=STATUS_CHOICES)
     amount_refunded = models.PositiveIntegerField()
@@ -80,8 +80,9 @@ BRAND_CHOICES = (
 class Card(models.Model):
     brand = models.CharField(choices=BRAND_CHOICES, max_length=255)
 
+
 class Subscription(models.Model):
-    pass
+    cancel_at_period_end =models.BooleanField()
 
 class Plan(models.Model):
     pass
