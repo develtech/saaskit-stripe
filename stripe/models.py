@@ -40,8 +40,32 @@ class Customer(models.Model):
     currency = models.CharField(max_length=255)
     default_source = models.CharField(max_length=255)
     delinquent = models.CharField(max_length=255)
+    discount = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    discount = models.ForeignKey('Discount')
+    email = models.EmailField()
+    metadata = json.JSONField()
+    sources = json.JSONField()
+    subscriptions = models.ForeignKey("Subscription")
+
+
+BRAND_CHOICES = (
+    ("VISA", "Visa"),
+    ("AMERICAN_EXPRESS", "American Express"),
+    ("MASTERCARD", "MasterCard"),
+    ("DISCOVER", "Discover"),
+    ("JCB", "JCB"),
+    ("DINERS_CLUB", "Diners Club"),
+    ("UNKNOWN", "Unknown"),
+)
 
 class Card(models.Model):
+    brand = models.CharField(choices=BRAND_CHOICES, max_length=255)
+
+class Subscription(models.Model):
+    pass
+
+class Plan(models.Model):
     pass
 
 class Discount(models.Model):
