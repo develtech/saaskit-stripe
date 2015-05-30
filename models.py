@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+
 
 from django_extensions.db.fields import json
 
@@ -21,10 +23,23 @@ class Charge(models.Model):
 
 
 class Refund(models.Model):
-    pass
+    amount = models.IntegerField()
+    created = models.DateTimeField()
+    currency = models.IntegerField()
+    balance_transaction = models.CharField(max_length=255)
+    charge = models.CharField(max_length=255)
+    metadata = json.JSONField()
+    reason = models.CharField(max_length=255)
+    receipt_number = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
 
 class Customer(models.Model):
-    pass
+    livemode = models.BooleanField()
+    created = models.DateTimeField()
+    account_balance = models.DateTimeField()
+    currency = models.CharField(max_length=255)
+    default_source = models.CharField(max_length=255)
+    delinquent = models.CharField(max_length=255)
 
 class Card(models.Model):
     pass
