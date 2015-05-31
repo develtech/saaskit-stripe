@@ -294,9 +294,67 @@ BRAND_CHOICES = (
     ("UNKNOWN", "Unknown"),
 )
 
-class Card(models.Model):
-    brand = models.CharField(choices=BRAND_CHOICES, max_length=255)
+FUNDING_CHOICES = (
+    ("CREDIT", "credit"),
+    ("DEBIT", "debit"),
+    ("PREPAID", "prepaid"),
+    ("UNKNOWN", "unknown"),
+)
+CHECK_CHOICES=(
+    ("PASS", "pass"),
+    ("FAIL", "fail"),
+    ("UNAVAILABLE", "unavailable"),
+    ("UNCHECKED", "unchecked"),
+)
 
+class Card(models.Model):
+    id = models.AutoField(
+        primary_key=True,
+        help_text=_(
+            "ID of card (used in conjunction with a customer or recipient ID)"
+        )
+    )
+    brand = models.CharField(
+        choices=BRAND_CHOICES, max_length=255,
+        help_text=_(
+            "Card brand. Can be ``Visa``, ``American Express``, "
+            "``MasterCard``, ``Discover``, ``JCB``, ``Diners Club``, "
+            "or ``Unknown``."
+        )
+    )
+    exp_month = models.IntegerField()
+    exp_year = models.IntegerField()
+    funding = models.CharField(
+        max_length=255,
+        choices=FUNDING_CHOICES
+    )
+    last4 = models.PositiveIntegerField()
+    address_city = models.CharField(max_length=255)
+    address_country = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Billing address country, if provided when creating card"
+        )
+    )
+
+    address_line1 = models.CharField(max_length=255)
+    address_line1_check = models.CharField(
+        max_length=255,
+        help_text=_(
+            "If ``address_line1`` was provided, results of the check: "
+            "``pass``, ``fail``, ``unavailable``, or ``unchecked``."
+        )
+    )
+    address_line2 = models.CharField(max_length=255)
+    address_state = models.CharField(max_length=255)
+    address_zip = models.CharField(max_length=255)
+    address_zip_check = models.CharField(
+        max_length=255,
+        help_text=_(
+            "If ``address_zip`` was provided, results of the check: "
+            "``pass``, ``fail``, ``unavailable``, or ``unchecked``."
+        )
+    )
 
 class Subscription(models.Model):
     cancel_at_period_end =models.BooleanField()
