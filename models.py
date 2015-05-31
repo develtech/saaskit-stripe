@@ -14,31 +14,154 @@ STATUS_CHOICES = (
 
 class Charge(models.Model):
     livemode = models.BooleanField(default=True)
-    amount = models.IntegerField()
-    captured = models.BooleanField()
+    amount = models.IntegerField(
+        help_text=_("Amount charged in cents")
+    )
+    captured = models.BooleanField(
+        help_text=_(
+            "If the charge was created without capturing, this boolean "
+            "represents whether or not it is still uncaptured or has since "
+            "been captured."
+        )
+    )
     created = models.DateTimeField()
-    currency = models.CharField(max_length=255)  # todo ISO 3char fields
-    paid = models.BooleanField()
-    refunded = models.BooleanField()
+    currency = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Three-letter ISO currency code representing the currency in which "
+            "the charge was made."
+        )
+    )  # todo ISO 3char fields
+    paid = models.BooleanField(
+        help_text=_(
+            "true if the charge succeeded, or was successfully authorized for "
+            "later capture."
+        )
+    )
+    refunded = models.BooleanField(
+        help_text=_(
+            "Whether or not the charge has been fully refunded. If the charge is "
+            "only partially refunded, this attribute will still be false."
+        )
+    )
     # refunds = models.ManyToManyField("Refund")
-    source = json.JSONField()
-    status = models.CharField(max_length=255, choices=STATUS_CHOICES)
-    amount_refunded = models.PositiveIntegerField()
-    balance_transaction = models.CharField(max_length=255)  # relation todo
-    customer = models.ForeignKey("Customer")
+    # A list of refunds that have been applied to the charge.
+    source = json.JSONField(
+        help_text=_(
+            "For most Stripe users, the source of every charge is a credit or "
+            "debit card. This hash is then the card object describing that "
+            "card."
+        )
+    )
+    status = models.CharField(
+        max_length=255, choices=STATUS_CHOICES,
+        help_text=_(
+            "The status of the payment is either ``succeeded`` or ``failed``."
+        )
+    )
+    amount_refunded = models.PositiveIntegerField(
+        help_text=_(
+            "Amount in cents refunded (can be less than the amount attribute "
+            " on the charge if a partial refund was issued)."
+        )
+    )
+    balance_transaction = models.CharField(
+        max_length=255,
+        help_text=_(
+            "ID of the balance transaction that describes the impact of this "
+            "charge on your account balance (not including refunds or "
+            "disputes)."
+        )
+    )  # relation todo
+    customer = models.ForeignKey(
+        "Customer",
+        help_text=_(
+            "ID of the customer this charge is for if one exists."
+        )
+    )
     description = models.CharField(max_length=255)
-    dispute = models.ForeignKey("Dispute", blank=True, null=True)
-    failure_code = models.CharField(max_length=255)
-    failure_message = models.CharField(max_length=255)
-    invoice = models.ForeignKey("Invoice")
-    metadata = json.JSONField()
-    receipt_email = models.EmailField()
-    receipt_number = models.CharField(max_length=255)
-    application_fee = models.CharField(max_length=255)
-    destination = models.CharField(max_length=255)
-    fraud_details= json.JSONField()
-    shipping = json.JSONField()
-    transfer = models.CharField(max_length=255)
+    dispute = models.ForeignKey(
+        "Dispute", blank=True, null=True,
+        help_text=_(
+            "Details about the dispute if the charge has been disputed."
+        )
+    )
+    failure_code = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Error code explaining reason for charge failure if available (see "
+            "the errors section for a list of codes)."
+        )
+    )
+    failure_message = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Message to user further explaining reason for charge failure if "
+            "available."
+        )
+    )
+    invoice = models.ForeignKey(
+        "Invoice",
+        help_text=_(
+            "ID of the invoice this charge is for if one exists."
+        )
+    )
+    metadata = json.JSONField(
+        help_text=_(
+            "A set of key/value pairs that you can attach to a charge object. "
+            "It can be useful for storing additional information about the "
+            "charge in a structured format."
+        )
+    )
+    receipt_email = models.EmailField(
+        help_text=_(
+            "This is the email address that the receipt for this charge was "
+            "sent to."
+        )
+    )
+    receipt_number = models.CharField(
+        max_length=255,
+        help_text=_(
+            "This is the transaction number that appears on email receipts "
+            "sent for this charge."
+        )
+    )
+    application_fee = models.CharField(
+        max_length=255,
+        help_text=_(
+            "The application fee (if any) for the charge. See the Connect "
+            "documentation for details."
+        )
+    )
+    destination = models.CharField(
+        max_length=255,
+        help_text=_(
+            "The account (if any) the charge was made on behalf of. See the "
+            "Connect documentation for details."
+        )
+    )
+    fraud_details= json.JSONField(
+        help_text=_(
+            "Hash with information on fraud assessments for the charge. "
+            "Assessments reported by you have the key ``user_report`` and, if "
+            "set, possible values of ``safe`` and ``fraudulent``. Assessments "
+            "from Stripe have the key ``stripe_report`` and, if set, the value "
+            "fraudulent."
+        )
+    )
+    shipping = json.JSONField(
+        help_text=_(
+            "Shipping information for the charge."
+        )
+    )
+    transfer = models.CharField(
+        help_text=_(
+            "ID of the transfer to the ``destination`` account (only "
+            "applicable if the charge was created using the ``destination`` "
+            "parameter)."
+        ),
+        max_length=255
+    )
 
 class Refund(models.Model):
     amount = models.IntegerField()
