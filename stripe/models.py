@@ -163,31 +163,125 @@ class Charge(models.Model):
         max_length=255
     )
 
+
+REFUND_CHOICES = (
+    ("DUPLICATE", "duplicate"),
+    ("FRAUDULENT", "fraudulent"),
+    ("REQUESTED_BY_CUSTOMER", "requested_by_customer")
+)
+
 class Refund(models.Model):
-    amount = models.IntegerField()
+    amount = models.IntegerField(
+        help_text=_(
+            "Amount reversed, in cents."
+        )
+    )
     created = models.DateTimeField()
-    currency = models.IntegerField()
-    balance_transaction = models.CharField(max_length=255)
-    charge = models.CharField(max_length=255)
-    metadata = json.JSONField()
-    reason = models.CharField(max_length=255)
-    receipt_number = models.CharField(max_length=255)
+    currency = models.IntegerField(
+        help_text=_(
+            "Three-letter ISO code representing the currency of the reversal."
+        )
+    )
+    balance_transaction = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Balance transaction that describes the impact of this reversal on "
+            "your account balance."
+        )
+    )
+    charge = models.CharField(
+        max_length=255,
+        help_text=_(
+            "ID of the charge that was "
+        )
+    )
+    metadata = json.JSONField(
+        help_text=_(
+            "A set of key/value pairs that you can attach to a charge object. "
+            "It can be useful for storing additional information about the "
+            "charge in a structured format."
+        )
+    )
+    reason = models.CharField(
+        max_length=255,
+        choices=REFUND_CHOICES,
+        help_text=_(
+            "Reason for the refund. If set, possible values are duplicate, "
+            "fraudulent, and requested_by_customer."
+        )
+    )
+    receipt_number = models.CharField(
+        max_length=255,
+        help_text=_(
+            "This is the transaction number that appears on email receipts "
+            "sent for this refund."
+        )
+    )
     description = models.CharField(max_length=255)
 
 class Customer(models.Model):
     livemode = models.BooleanField()
     created = models.DateTimeField()
-    account_balance = models.DateTimeField()
-    currency = models.CharField(max_length=255)
-    default_source = models.CharField(max_length=255)
-    delinquent = models.CharField(max_length=255)
-    discount = models.CharField(max_length=255)
+    account_balance = models.DateTimeField(
+        help_text=_(
+            "Current balance, if any, being stored on the customer’s account. "
+            "If negative, the customer has credit to apply to the next "
+            "invoice. If positive, the customer has an amount owed that will "
+            "be added to the next invoice. The balance does not refer to any "
+            "unpaid invoices; it solely takes into account amounts that have "
+            "yet to be successfully applied to any invoice. This balance is "
+            "only taken into account for recurring charges."
+        )
+    )
+    currency = models.CharField(
+        max_length=255,
+        help_text=_(
+            "The currency the customer can be charged in for recurring "
+            "billing purposes (subscriptions, invoices, invoice items)."
+        )
+    )
+    default_source = models.CharField(
+        max_length=255,
+        help_text=_(
+            "ID of the default source attached to this customer."
+        )
+    )
+    delinquent = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Whether or not the latest charge for the customer’s latest "
+            "invoice has failed"
+        )
+    )
+    discount = models.ForeignKey(
+        "Discount",
+        max_length=255,
+        help_text=_(
+            "Describes the current discount active on the customer, if there "
+            "is one."
+        )
+    )
     description = models.CharField(max_length=255)
-    discount = models.ForeignKey('Discount')
     email = models.EmailField()
-    metadata = json.JSONField()
-    sources = json.JSONField()
-    subscriptions = models.ForeignKey("Subscription")
+    metadata = json.JSONField(
+        help_text=_(
+            "A set of key/value pairs that you can attach to a charge object. "
+            "It can be useful for storing additional information about the "
+            "charge in a structured format."
+        )
+    )
+
+    sources = json.JSONField(
+        help_text=_(
+            "The customer’s payment sources, if any"
+        )
+    )
+    subscriptions = models.ForeignKey(
+        "Subscription",
+        help_text=_(
+            "The customer’s current subscriptions, if any"
+        )
+    )
 
 
 BRAND_CHOICES = (
