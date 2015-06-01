@@ -109,7 +109,7 @@ class Charge(models.Model):
     metadata = json.JSONField(
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
-            "It can be useful for storing additional information about the "
+            "it can be useful for storing additional information about the "
             "charge in a structured format."
         )
     )
@@ -307,6 +307,13 @@ CHECK_CHOICES=(
     ("UNCHECKED", "unchecked"),
 )
 
+CVC_CHOICES = (
+    ("PASS", "pass"),
+    ("FAIL", "fail"),
+    ("UNAVAILABLE", "unavailable"),
+    ("UNCHECKED", "unchecked")
+)
+
 class Card(models.Model):
     id = models.AutoField(
         primary_key=True,
@@ -355,10 +362,112 @@ class Card(models.Model):
             "``pass``, ``fail``, ``unavailable``, or ``unchecked``."
         )
     )
+    country = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Two-letter ISO code representing the country of the card. You "
+            "could use this attribute to get a sense of the international "
+            "breakdown of cards you’ve collected."
+        )
+    )
+    customer = models.ForeignKey(
+        "Customer",
+        help_text=_(
+            "The customer that this card belongs to. This attribute will not "
+            "be in the card object if the card belongs to a recipient instead."
+        )
+    )
+    cvc_check = models.CharField(
+        max_length=255,
+        choices=CVC_CHOICES
+    )
+    dynamic_last4 = models.CharField(
+        max_length=4,
+        help_text=_(
+            "(For Apple Pay integrations only.) The last four digits of the "
+            "device account number."
+        )
+    )
+    metadata = json.JSONField(
+        help_text=_(
+            "A set of key/value pairs that you can attach to a charge object. "
+            "it can be useful for storing additional information about the "
+            "charge in a structured format."
+        )
+    )
+    name = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Cardholder name"
+        )
+    )
+    recipient = models.CharField(
+        max_length=255,
+        help_text=_(
+            "The recipient that this card belongs to. This attribute will not "
+            "be in the card object if the card belongs to a customer instead."
+        )
+    )
+    fingerprint = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Uniquely identifies this particular card number. You can use this "
+            "attribute to check whether two customers who’ve signed up with "
+            "you are using the same card number, for example."
+        )
+    )
 
+
+SUBSCRIPTION_STATUS_CHOICES = (
+    ("TRIALING", "trialing"),
+    ("ACTIVE", "active"),
+    ("PAST_DUE", "past_due"),
+    ("CANCELED", "canceled"),
+    ("UNPAID", "unpaid"),
+)
 class Subscription(models.Model):
-    cancel_at_period_end =models.BooleanField()
-
+    cancel_at_period_end = models.BooleanField(
+        help_text=_(
+            "If the subscription has been canceled with the ``at_period_end``"
+            "flag set to ``true``, ``cancel_at_period_end`` on the "
+            "subscription will be true. You can use this attribute to "
+            "determine whether a subscription that has a status of active is "
+            "scheduled to be canceled at the end of the current period."
+        )
+    )
+    customer = models.ForeignKey("Customer")
+    plan = models.ForeignKey(
+        "Plan",
+        help_text=_(
+            "Hash describing the plan the customer is subscribed to"
+        )
+    )
+    quantity = models.PositiveIntegerField()
+    start = models.DateTimeField(
+        help_text=_(
+            "Date the subscription started"
+        )
+    )
+    status = models.CharField(
+        max_length=255,
+        choices=SUBSCRIPTION_STATUS_CHOICES,
+        help_text=_(
+            "Possible values are ``trialing``, ``active``, ``past_due``, "
+            "``canceled``, or ``unpaid``. A subscription still in its trial "
+            "period is ``trialing`` and moves to ``active`` when the trial "
+            "period is over. When payment to renew the subscription fails, "
+            "the subscription becomes ``past_due``. After Stripe has "
+            "exhausted all payment retry attempts, the subscription ends up "
+            "with a status of either ``canceled`` or ``unpaid`` depending on "
+            "your retry settings. Note that when a subscription has a status "
+            "of ``unpaid``, no subsequent invoices will be attempted "
+            "(invoices will be created, but then immediately automatically "
+            "closed. Additionally, updating customer card details will not "
+            "lead to Stripe retrying the latest invoice.). After receiving "
+            "updated card details from a customer, you may choose to reopen "
+            "and pay their closed invoices."
+        )
+    )
 class Plan(models.Model):
     pass
 
