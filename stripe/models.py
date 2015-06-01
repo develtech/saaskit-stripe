@@ -253,14 +253,15 @@ class Customer(models.Model):
             "invoice has failed"
         )
     )
-    discount = models.ForeignKey(
-        "Discount",
-        max_length=255,
-        help_text=_(
-            "Describes the current discount active on the customer, if there "
-            "is one."
-        )
-    )
+    # Reverse
+    # discount = models.ForeignKey(
+    #     "Discount",
+    #     max_length=255,
+    #     help_text=_(
+    #         "Describes the current discount active on the customer, if there "
+    #         "is one."
+    #     )
+    # )
     description = models.CharField(max_length=255)
     email = models.EmailField()
     metadata = json.JSONField(
@@ -617,7 +618,6 @@ class Coupon(models.Model):
         )
     )
     amount_off = models.PositiveIntegerField(
-        max_length=255,
         help_text=_(
             "Amount (in the ``currency`` specified) that will be taken off the "
             "subtotal of any invoices for this customer."
@@ -694,13 +694,13 @@ class Discount(models.Model):
             "forever duration, this attribute will be null."
         )
     )
-    subscription = models.ForeignKey(
-        "Subscription",
-        help_text=_(
-            "The subscription that this coupon is applied to, if it is applied "
-            "to a particular subscription"
-        )
-    )
+    # subscription = models.ForeignKey(
+    #     "Subscription",
+    #     help_text=_(
+    #         "The subscription that this coupon is applied to, if it is applied "
+    #         "to a particular subscription"
+    #     )
+    # )
 
 
 class Invoice(models.Model):
@@ -808,12 +808,13 @@ class Invoice(models.Model):
             "invoice is paid."
         )
     )
-    charge = models.ForeignKey(
-        "Charge",
-        help_text=_(
-            "ID of the latest charge generated for this invoice, if any."
-        )
-    )
+    # Reverse
+    # charge = models.ForeignKey(
+    #     "Charge",
+    #     help_text=_(
+    #         "ID of the latest charge generated for this invoice, if any."
+    #     )
+    # )
     description = models.CharField(max_length=255)
     discount = models.ForeignKey("Discount")
     ending_balance = models.IntegerField(
