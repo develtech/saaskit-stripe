@@ -276,12 +276,13 @@ class Customer(models.Model):
             "The customer’s payment sources, if any"
         )
     )
-    subscriptions = models.ForeignKey(
-        "Subscription",
-        help_text=_(
-            "The customer’s current subscriptions, if any"
-        )
-    )
+    # reverse relation
+    # subscriptions = models.ForeignKey(
+    #     "Subscription",
+    #     help_text=_(
+    #         "The customer’s current subscriptions, if any"
+    #     )
+    # )
 
 
 BRAND_CHOICES = (
@@ -468,11 +469,85 @@ class Subscription(models.Model):
             "and pay their closed invoices."
         )
     )
+    application_fee_percent = models.CharField(
+        max_length=255,
+        help_text=_(
+            "A positive decimal that represents the fee percentage of the "
+            "subscription invoice amount that will be transferred to the "
+            "application owner’s Stripe account each billing period."
+        )
+    )
+    canceled_at = models.DateTimeField(
+        help_text=_(
+            "If the subscription has been canceled, the date of that "
+            "cancellation. If the subscription was canceled with "
+            "``cancel_at_period_end``, canceled_at will still reflect the "
+            "date of the initial cancellation request, not the end of the "
+            "subscription period when the subscription is automatically moved "
+            "to a canceled state."
+        )
+    )
+    current_period_start = models.DateTimeField(
+        help_text=_(
+            "End of the current period that the subscription has been "
+            "invoiced for. At the end of this period, a new invoice will be "
+            "created."
+        )
+    )
+    discount = models.ForeignKey(
+        "Discount",
+        help_text=_(
+            "Describes the current discount applied to this subscription, if "
+            "there is one. When billing, a discount applied to a subscription "
+            "overrides a discount applied on a customer-wide basis."
+        )
+    )
+    ended_at = models.DateTimeField(
+        help_text=_(
+            "If the subscription has ended (either because it was canceled or "
+            "because the customer was switched to a subscription to a new "
+            "plan), the date the subscription ended"
+        )
+    )
+    metadata = json.JSONField(
+        help_text=_(
+            "A set of key/value pairs that you can attach to a charge object. "
+            "it can be useful for storing additional information about the "
+            "charge in a structured format."
+        )
+    )
+    trial_end = models.DateTimeField(
+        help_text=_(
+            "If the subscription has a trial, the end of that trial."
+        )
+    )
+    trial_start = models.DateTimeField(
+        help_text=_(
+            "If the subscription has a trial, the beginning of that trial."
+        )
+    )
+    tax_percent = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        help_text=_(
+            "If provided, each invoice created by this subscription will apply "
+            "the tax rate, increasing the amount billed to the customer."
+        )
+    )
+
 class Plan(models.Model):
-    pass
+    amount = models.PositiveIntegerField(
+        help_text=_(
+            "The amount in cents to be charged on the interval specified"
+        )
+    )
 
 class Discount(models.Model):
-    pass
+    #coupon
+    #customer
+    start = models.DateTimeField(
+        help_text=_("Date that the coupon was applied")
+    )
 
 class Invoice(models.Model):
     pass
