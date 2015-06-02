@@ -891,10 +891,158 @@ class Invoice(models.Model):
 
 
 class InvoiceItem(models.Model):
-    pass
+    livemode = models.BooleanField()
+    amount = models.IntegerField()
+    currency = models.CharField(
+        max_length=255,
+        choices=CURRENCY_CHOICES
+    )
+    customer = models.ForeignKey("Customer")
+    date = models.DateTimeField()
+    discountable = models.BooleanField(
+        help_text=_(
+            "If true, discounts will apply to this invoice item. Always false "
+            "for prorations."
+        )
+    )
+    proration = models.BooleanField(
+        help_text=_(
+            "Whether or not the invoice item was created automatically as a "
+            "proration adjustment when the customer switched plans"
+        )
+    )
+    description = models.CharField(
+        max_length=255
+    )
+    invoice = models.CharField(max_length=255)
+    metadata = json.JSONField(
+        help_text=_(
+            "A set of key/value pairs that you can attach to a charge object. "
+            "it can be useful for storing additional information about the "
+            "charge in a structured format."
+        )
+    )
+    period = json.JSONField()
+    plan = models.ForeignKey(
+        "Plan",
+        help_text=_(
+            "If the invoice item is a proration, the plan of the subscription "
+            "that the proration was computed for."
+        )
+    )
+    quantity = models.IntegerField(
+        help_text=_(
+            "If the invoice item is a proration, the quantity of the "
+            "subscription that the proration was computed for."
+        )
+    )
+    subscription = models.ForeignKey(
+        "Subscription",
+        help_text=_(
+            "The subscription that this invoice item has been created for, if "
+            "any."
+        )
+    )
+
 
 class Dispute(models.Model):
-    pass
+    livemode = models.BooleanField()
+    amount = models.IntegerField(
+        help_text=_(
+            "Disputed amount. Usually the amount of the charge, but can differ "
+            "(usually because of currency fluctuation or because only part of "
+            "the order is disputed)."
+        )
+    )
+    # reverse
+    # charge = models.ForeignKey(
+    #     "Charge",
+    #     help_text=_("ID of the charge that was disputed")
+    # )
+    created = models.DateTimeField(
+        help_text=_("Date dispute was opened")
+    )
+    currency = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Three-letter ISO currency code representing the currency of the "
+            "amount that was disputed. "
+        )
+    )
+    reason = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Reason given by cardholder for dispute. Possible values are "
+            "``duplicate``, ``fraudulent``, ``subscription_canceled``, "
+            "``product_unacceptable``, ``product_not_received``, "
+            "``unrecognized``, ``credit_not_processed``, ``general``. Read "
+            "more about dispute reasons."
+        )
+    )
+    status = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Current status of dispute. Possible values are "
+            "``warning_needs_response``, ``warning_under_review``, "
+            "``warning_closed``, ``needs_response``, ``response_disabled``, "
+            "``under_review``, ``charge_refunded``, ``won``, ``lost``."
+        )
+    )
+    balance_transaction = models.ManyToManyField(
+        "BalanceTransaction",
+        help_text=_(
+            "List of zero, one, or two balance transactions that show funds "
+            "withdrawn and reinstated to your Stripe account as a result of "
+            "this dispute."
+        )
+    )
+    evidence = models.ForeignKey(
+        "DisputeEvidence",
+        help_text=_(
+            "Evidence provided to respond to a dispute. Updating any field in "
+            "the hash will submit all fields in the hash for review."
+        )
+    )
+    evidence_details = json.JSONField(
+        help_text=_(
+            "Information about the evidence submission."
+        )
+    )
+    is_charge_refundable = models.BooleanField(
+        "If true, it is still possible to refund the disputed payment. Once "
+        "the payment has been fully refunded, no further funds will be "
+        "withdrawn from your Stripe account as a result of this dispute."
+    )
+    metadata = json.JSONField(
+        help_text=_(
+            "A set of key/value pairs that you can attach to a charge object. "
+            "it can be useful for storing additional information about the "
+            "charge in a structured format."
+        )
+    )
+
+
+class DisputeEvidence(models.Model):
+    access_activity_log = models.TextField(
+        help_text=_(
+            "Any server or activity logs showing proof that the customer "
+            "accessed or downloaded the purchased digital product. This "
+            "information should include IP addresses, corresponding "
+            "timestamps, and any detailed recorded activity."
+        )
+    )
+    billing_address = models.TextField(
+        help_text=_(
+            "The billing addess provided by the customer."
+        )
+    )
+    cancelling_policy = models.ForeignKey(
+        "FileUpload",
+        help_text=_(
+            "(ID of a file upload) Your subscription cancellation policy, as "
+            "shown to the customer."
+        )
+    )
 
 class Transfer(models.Model):
     pass
@@ -917,6 +1065,9 @@ class Account(models.Model):
 class Balance(models.Model):
     pass
 
+class BalanceTransaction(models.Model):
+    pass
+
 class Event(models.Model):
     pass
 
@@ -924,4 +1075,7 @@ class Token(models.Model):
     pass
 
 class BitCoinReceiver(models.Model):
+    pass
+
+class FileUpload(models.Model):
     pass
