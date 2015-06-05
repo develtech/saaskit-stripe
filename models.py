@@ -6,6 +6,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
+CURRENCY_CHOICES = (
+    ("USD", "USD"),
+)
+
 
 CHARGE_STATUS_CHOICES = (
     ("succeeded", _("Charge succeeded")),
@@ -42,7 +46,8 @@ class Charge(models.Model):
         help_text=_(
             "Three-letter ISO currency code representing the currency in which "
             "the charge was made."
-        )
+        ),
+        choices=CURRENCY_CHOICES
     )  # todo ISO 3char fields
     paid = models.BooleanField(
         help_text=_(
@@ -575,9 +580,7 @@ class Subscription(models.Model):
     )
 
 
-CURRENCY_CHOICES = (
-    ("USD", "USD"),
-)
+
 PLAN_INTERVAL_CHOICES = (
     ("day", _("Day")),
     ("week", _("Week")),
@@ -1504,7 +1507,41 @@ class TransferReversal(models.Model):
     originally charged on the transfer will be refunded. You may not reverse
     automatic Stripe transfers.
     """
-    pass
+    amount = models.IntegerField(
+        help_text=_(
+            "Amount reversed, in cents."
+        )
+    )
+    created = models.DateTimeField()
+    currency = models.CharField(
+        max_length=255,
+        choices=CURRENCY_CHOICES,
+        help_text=_(
+            "Three-letter ISO code representing the currency of the reversal."
+        )
+    )
+    balance_transaction = models.ForeignKey(
+        "BalanceTransaction",
+        help_text=_(
+            "Balance transaction that describes the impact of this reversal on "
+            "your account balance."
+        ),
+        related_name="transfer_reversal_balance_transaction"
+    )
+    metadata = json.JSONField(
+        help_text=_(
+            "A set of key/value pairs that you can attach to a charge object. "
+            "it can be useful for storing additional information about the "
+            "charge in a structured format."
+        )
+    )
+    transfer = models.ForeignKey(
+        "Transfer",
+        help_text=_(
+            "ID of the transfer that was reversed."
+        )
+    )
+
 
 class Recipient(models.Model):
     """
