@@ -20,6 +20,11 @@ CHARGE_FAILURE_CHOICES = (
 )
 
 class Charge(models.Model):
+    """
+    To charge a credit or a debit card, you create a charge object. You can
+    retrieve and refund individual charges as well as list all charges. Charges
+    are identified by a unique random ID.
+    """
     livemode = models.BooleanField(default=True)
     amount = models.IntegerField(
         help_text=_("Amount charged in cents")
@@ -179,6 +184,12 @@ REFUND_CHOICES = (
 )
 
 class Refund(models.Model):
+    """
+    Refund objects allow you to refund a charge that has previously been created
+    but not yet refunded. Funds will be refunded to the credit or debit card
+    that was originally charged. The fees you were originally charged are also
+    refunded.
+    """
     amount = models.IntegerField(
         help_text=_(
             "Amount reversed, in cents."
@@ -228,6 +239,12 @@ class Refund(models.Model):
     description = models.CharField(max_length=255)
 
 class Customer(models.Model):
+    """
+    Customer objects allow you to perform recurring charges and track multiple
+    charges that are associated with the same customer. The API allows you to
+    create, delete, and update your customers. You can retrieve individual
+    customers as well as a list of all your customers.
+    """
     livemode = models.BooleanField()
     created = models.DateTimeField()
     account_balance = models.DateTimeField(
@@ -325,6 +342,11 @@ CARD_CVC_CHECK_CHOICES = (
 )
 
 class Card(models.Model):
+    """
+    You can store multiple cards on a customer in order to charge the customer
+    later. You can also store multiple debit cards on a recipient in order to
+    transfer to those cards later.
+    """
     id = models.AutoField(
         primary_key=True,
         help_text=_(
@@ -438,6 +460,12 @@ SUBSCRIPTION_STATUS_CHOICES = (
     ("unpaid", _("Unpaid")),
 )
 class Subscription(models.Model):
+    """
+    Subscriptions allow you to charge a customer's card on a recurring basis. A
+    subscription ties a customer to a particular plan `you've created`_.
+
+    .. _you've created: https://stripe.com/docs/api#create_plan
+    """
     cancel_at_period_end = models.BooleanField(
         help_text=_(
             "If the subscription has been canceled with the ``at_period_end``"
@@ -557,6 +585,11 @@ PLAN_INTERVAL_CHOICES = (
     ("year", _("Year")),
 )
 class Plan(models.Model):
+    """
+    A subscription plan contains the pricing information for different products
+    and feature levels on your site. For example, you might have a $10/month
+    plan for basic features and a different $20/month plan for premium features.
+    """
     livemode = models.BooleanField()
     amount = models.PositiveIntegerField(
         help_text=_(
@@ -617,6 +650,11 @@ COUPON_DURATION_CHOICES = (
     ("REPREATING", "repeating"),
 )
 class Coupon(models.Model):
+    """
+    A coupon contains information about a percent-off or amount-off discount you
+    might want to apply to a customer. Coupons only apply to invoices; they do
+    not apply to one-off charges.
+    """
     livemode = models.BooleanField()
     created = models.DateTimeField()
     duration = models.CharField(
@@ -687,6 +725,11 @@ class Coupon(models.Model):
     )
 
 class Discount(models.Model):
+    """
+    A discount represents the actual application of a coupon to a particular
+    customer. It contains information about when the discount began and when it
+    will end.
+    """
     coupon = models.ForeignKey(
         "Coupon",
         help_text=_(
@@ -714,6 +757,26 @@ class Discount(models.Model):
 
 
 class Invoice(models.Model):
+    """
+    Invoices are statements of what a customer owes for a particular billing
+    period, including subscriptions, invoice items, and any automatic proration
+    adjustments if necessary.
+
+    Once an invoice is created, payment is automatically attempted. Note that
+    the payment, while automatic, does not happen exactly at the time of invoice
+    creation. If you have configured webhooks, the invoice will wait until one
+    hour after the last webhook is successfully sent (or the last webhook times
+    out after failing).
+
+    Any customer credit on the account is applied before determining how much is
+    due for that invoice (the amount that will be actually charged). If the
+    amount due for the invoice is less than 50 cents (the minimum for a charge),
+    we add the amount to the customer's running account balance to be added to
+    the next invoice. If this amount is negative, it will act as a credit to
+    offset the next invoice. Note that the customer account balance does not
+    include unpaid invoices; it only includes balances that need to be taken
+    into account when calculating the amount due for the next invoice.
+    """
     livemode = models.BooleanField()
     amount_due = models.IntegerField(
         help_text=_(
@@ -901,6 +964,12 @@ class Invoice(models.Model):
 
 
 class InvoiceItem(models.Model):
+    """
+    Sometimes you want to add a charge or credit to a customer but only actually
+    charge the customer's card at the end of a regular billing cycle. This is
+    useful for combining several charges to minimize per-transaction fees or
+    having Stripe tabulate your usage-based billing totals.
+    """
     livemode = models.BooleanField()
     amount = models.IntegerField()
     currency = models.CharField(
@@ -956,6 +1025,13 @@ class InvoiceItem(models.Model):
 
 
 class Dispute(models.Model):
+    """
+    A dispute occurs when a customer questions your charge with their bank or
+    credit card company. When a customer disputes your charge, you're given the
+    opportunity to respond to the dispute with evidence that shows the charge is
+    legitimate. You can find more information about the dispute process in our
+    disputes FAQ.
+    """
     livemode = models.BooleanField()
     amount = models.IntegerField(
         help_text=_(
@@ -1290,6 +1366,15 @@ TRANSFER_FAILURE_CHOICES = (
 )
 
 class Transfer(models.Model):
+    """
+    When Stripe sends you money or you initiate a transfer to a bank account,
+    debit card, or connected Stripe account, a transfer object will be created.
+    You can retrieve individual transfers as well as list all transfers.
+
+    View the `documentation` on creating transfers via the API.
+
+    .. _documentation: https://stripe.com/docs/tutorials/sending-transfers
+    """
     livemode = models.BooleanField()
     amount = models.IntegerField(
         help_text=_(
@@ -1395,37 +1480,134 @@ class Transfer(models.Model):
             "transfer."
         )
     )
+    source_transaction = models.CharField(
+        max_length=255,
+        help_text=_(
+            "ID of the charge (or other transaction) that was used to fund the "
+            "transfer. If null, the transfer was funded from the available "
+            "balance."
+        )
+    )
+    statement_descriptor = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Extra information about a transfer to be displayed on the user’s "
+            "bank statement."
+        )
+    )
 
 
 class TransferReversal(models.Model):
+    """
+    A previously created transfer can be reversed if it has not yet been paid
+    out. Funds will be refunded to your available balance, and the fees you were
+    originally charged on the transfer will be refunded. You may not reverse
+    automatic Stripe transfers.
+    """
     pass
 
 class Recipient(models.Model):
+    """
+    With recipient objects, you can transfer money from your Stripe account to a
+    third party bank account or debit card. The API allows you to create,
+    delete, and update your recipients. You can retrieve individual recipients
+    as well as a list of all your recipients.
+
+    Recipient objects have been deprecated in favor of Connect, specifically the
+    much more powerful account objects. Please use them instead. If you are
+    already using recipients, please see our migration guide for more
+    information.
+    """
     pass
 
 class ApplicationFee(models.Model):
+    """
+    When you collect a transaction fee on top of a charge made for your user
+    (using Stripe Connect), an application fee object is created in your
+    account. You can list, retrieve, and refund application fees.
+
+    For more information on collecting transaction fees, see our documentation.
+    """
     pass
 
 class ApplicationFeeRefund(models.Model):
+    """
+    Application Fee Refund objects allow you to refund an application fee that
+    has previously been created but not yet refunded. Funds will be refunded to
+    the Stripe account that the fee was originally collected from.
+    """
     pass
 
 class Account(models.Model):
+    """
+    This is an object representing your Stripe account. You can retrieve it to
+    see properties on the account like its current e-mail address or if the
+    account is enabled yet to make live charges.
+
+    Some properties, marked as "managed accounts only", are only available to
+    platforms who want to create and manage Stripe accounts.
+    """
     pass
 
 class Balance(models.Model):
+    """
+    This is an object representing your Stripe balance. You can retrieve it to
+    see the balance currently on your Stripe account.
+
+    You can also retrieve a list of the balance history, which contains a full
+    list of transactions that have ever contributed to the balance (charges,
+    refunds, transfers, and so on).
+    """
     pass
 
 class BalanceTransaction(models.Model):
     pass
 
 class Event(models.Model):
+    """
+    Events are our way of letting you know about something interesting that has
+    just happened in your account. When an interesting event occurs, we create a
+    new event object. For example, when a charge succeeds we create a
+    ``charge.succeeded`` event; or, when an invoice can't be paid we create an
+    ``invoice.payment_failed`` event. Note that many API requests may cause
+    multiple events to be created. For example, if you create a new subscription
+    for a customer, you will receive both a ``customer.subscription.created``
+    event and a ``charge.succeeded`` event.
+
+    Like our other API resources, you can retrieve an individual event or a list
+    of events from the API. We also have a system for sending the events
+    directly to your server, called webhooks. Webhooks are managed in your
+    account settings, and our webhook guide will help you get them set up.
+
+    NOTE: Right now, we only guarantee access to events through the Retrieve
+    Event API for 30 days.
+    """
     pass
 
 class Token(models.Model):
+    """
+    Often you want to be able to charge credit cards or send payments to bank
+    accounts without having to hold sensitive card information on your own
+    servers. Stripe.js makes this easy in the browser, but you can use the same
+    technique in other environments with our token API.
+
+    Tokens can be created with your publishable API key, which can safely be
+    embedded in downloadable applications like iPhone and Android apps. You can
+    then use a token anywhere in our API that a card or bank account is
+    accepted. Note that tokens are not meant to be stored or used more than
+    once—to store these details for use later, you should create Customer or
+    Recipient objects.
+    """
     pass
 
 class BitCoinReceiver(models.Model):
-    pass
+    """
+    A Bitcoin receiver wraps a Bitcoin address so that a customer can push a
+    payment to you. This `guide`_ describes how to use receivers to create
+    Bitcoin payments.
+
+    .. _guide: https://stripe.com/docs/guides/bitcoin
+    """
 
 
 FILE_UPLOAD_PURPOSE_CHOICES = (
