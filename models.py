@@ -7,9 +7,16 @@ from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import json
 
 
-STATUS_CHOICES = (
-    ("SUCCEEDED", "succeeded"),
-    ("FAILED", "failed"),
+CHARGE_STATUS_CHOICES = (
+    ("succeeded", _("Charge succeeded")),
+    ("failed", _("Charge failed")),
+)
+
+CHARGE_FAILURE_CHOICES = (
+    (
+        "incorrect_number",
+        _("The card number is incorrect")
+    ),
 )
 
 class Charge(models.Model):
@@ -54,7 +61,7 @@ class Charge(models.Model):
         )
     )
     status = models.CharField(
-        max_length=255, choices=STATUS_CHOICES,
+        max_length=255, choices=CHARGE_STATUS_CHOICES,
         help_text=_(
             "The status of the payment is either ``succeeded`` or ``failed``."
         )
@@ -91,7 +98,8 @@ class Charge(models.Model):
         help_text=_(
             "Error code explaining reason for charge failure if available (see "
             "the errors section for a list of codes)."
-        )
+        ),
+        choices=CHARGE_FAILURE_CHOICES
     )
     failure_message = models.CharField(
         max_length=255,
@@ -165,9 +173,9 @@ class Charge(models.Model):
 
 
 REFUND_CHOICES = (
-    ("DUPLICATE", "duplicate"),
-    ("FRAUDULENT", "fraudulent"),
-    ("REQUESTED_BY_CUSTOMER", "requested_by_customer")
+    ("duplicate", _("Duplicate")),
+    ("fraudulent", _("Fraudulent")),
+    ("requested_by_customer", _("Requested by customer"))
 )
 
 class Refund(models.Model):
@@ -286,34 +294,34 @@ class Customer(models.Model):
     # )
 
 
-BRAND_CHOICES = (
-    ("VISA", "Visa"),
-    ("AMERICAN_EXPRESS", "American Express"),
-    ("MASTERCARD", "MasterCard"),
-    ("DISCOVER", "Discover"),
-    ("JCB", "JCB"),
-    ("DINERS_CLUB", "Diners Club"),
-    ("UNKNOWN", "Unknown"),
+CARD_BRAND_CHOICES = (
+    ("Visa", _("Visa")),
+    ("American Express", _("American Express")),
+    ("MasterCard", _("MasterCard")),
+    ("Discover", _("Discover")),
+    ("JCB", _("JCB")),
+    ("Diners Club", _("Diners Club")),
+    ("Unknown", _("Unknown")),
 )
 
-FUNDING_CHOICES = (
-    ("CREDIT", "credit"),
-    ("DEBIT", "debit"),
-    ("PREPAID", "prepaid"),
-    ("UNKNOWN", "unknown"),
+CARD_FUNDING_CHOICES = (
+    ("credit", _("Credit")),
+    ("debit", _("Debit")),
+    ("prepaid", _("Prepaid")),
+    ("unknown", _("Unknown")),
 )
-CHECK_CHOICES=(
-    ("PASS", "pass"),
-    ("FAIL", "fail"),
-    ("UNAVAILABLE", "unavailable"),
-    ("UNCHECKED", "unchecked"),
+CARD_ADDRESS_CHECK_CHOICES=(
+    ("pass", _("Pass")),
+    ("fail", _("Fail")),
+    ("unavailable", _("Unavailable")),
+    ("unchecked", _("Unchecked")),
 )
 
-CVC_CHOICES = (
-    ("PASS", "pass"),
-    ("FAIL", "fail"),
-    ("UNAVAILABLE", "unavailable"),
-    ("UNCHECKED", "unchecked")
+CARD_CVC_CHECK_CHOICES = (
+    ("pass", _("Pass")),
+    ("fail", _("Fail")),
+    ("unavailable", _("Unavailable")),
+    ("unchecked", _("Unchecked")),
 )
 
 class Card(models.Model):
@@ -324,7 +332,7 @@ class Card(models.Model):
         )
     )
     brand = models.CharField(
-        choices=BRAND_CHOICES, max_length=255,
+        choices=CARD_BRAND_CHOICES, max_length=255,
         help_text=_(
             "Card brand. Can be ``Visa``, ``American Express``, "
             "``MasterCard``, ``Discover``, ``JCB``, ``Diners Club``, "
@@ -335,7 +343,7 @@ class Card(models.Model):
     exp_year = models.IntegerField()
     funding = models.CharField(
         max_length=255,
-        choices=FUNDING_CHOICES
+        choices=CARD_FUNDING_CHOICES
     )
     last4 = models.PositiveIntegerField()
     address_city = models.CharField(max_length=255)
@@ -352,7 +360,8 @@ class Card(models.Model):
         help_text=_(
             "If ``address_line1`` was provided, results of the check: "
             "``pass``, ``fail``, ``unavailable``, or ``unchecked``."
-        )
+        ),
+        choices=CARD_ADDRESS_CHECK_CHOICES
     )
     address_line2 = models.CharField(max_length=255)
     address_state = models.CharField(max_length=255)
@@ -362,7 +371,8 @@ class Card(models.Model):
         help_text=_(
             "If ``address_zip`` was provided, results of the check: "
             "``pass``, ``fail``, ``unavailable``, or ``unchecked``."
-        )
+        ),
+        choices=CARD_ADDRESS_CHECK_CHOICES
     )
     country = models.CharField(
         max_length=255,
@@ -381,7 +391,7 @@ class Card(models.Model):
     )
     cvc_check = models.CharField(
         max_length=255,
-        choices=CVC_CHOICES
+        choices=CARD_CVC_CHECK_CHOICES
     )
     dynamic_last4 = models.CharField(
         max_length=4,
@@ -421,11 +431,11 @@ class Card(models.Model):
 
 
 SUBSCRIPTION_STATUS_CHOICES = (
-    ("TRIALING", "trialing"),
-    ("ACTIVE", "active"),
-    ("PAST_DUE", "past_due"),
-    ("CANCELED", "canceled"),
-    ("UNPAID", "unpaid"),
+    ("trialing", _("Trialing")),
+    ("active", _("Active")),
+    ("past_due", _("Past due")),
+    ("canceled", _("Canceled")),
+    ("unpaid", _("Unpaid")),
 )
 class Subscription(models.Model):
     cancel_at_period_end = models.BooleanField(
@@ -541,10 +551,10 @@ CURRENCY_CHOICES = (
     ("USD", "USD"),
 )
 PLAN_INTERVAL_CHOICES = (
-    ("DAY", "day"),
-    ("WEEK", "week"),
-    ("MONTH", "month"),
-    ("YEAR", "year"),
+    ("day", _("Day")),
+    ("week", _("Week")),
+    ("month", _("Month")),
+    ("year", _("Year")),
 )
 class Plan(models.Model):
     livemode = models.BooleanField()
@@ -1203,14 +1213,14 @@ class DisputeEvidence(models.Model):
 
 
 TRANSFER_STATUS_CHOICES = (
-    ("PAID", "paid"),
-    ("CANCELED", "canceled"),
-    ("FAILED", "failed"),
+    ("paid", _("Paid")),
+    ("canceled", _("Canceled")),
+    ("failed", _("Failed")),
 )
 TRANSFER_TYPE_CHOICES = (
-    ("CARD", "card"),
-    ("BANK_ACCOUNT", "bank_account"),
-    ("STRIPE_ACCOUNT", "stripe_account"),
+    ("card", _("Card")),
+    ("bank_account", _("Bank account")),
+    ("stripe_account", _("Stripe account")),
 )
 TRANSFER_FAILURE_CHOICES = (
     (
@@ -1388,6 +1398,11 @@ class Token(models.Model):
 class BitCoinReceiver(models.Model):
     pass
 
+
+FILE_UPLOAD_PURPOSE_CHOICES = (
+    ("identity document", _("Identity document")),
+    ("dispute_evidence", _("Dispute evidence")),
+)
 class FileUpload(models.Model):
     created = models.DateTimeField()
     purpose = models.CharField(
@@ -1395,7 +1410,8 @@ class FileUpload(models.Model):
         help_text=(
             "The purpose of the uploaded file. Possible values are "
             "``identity_document``, ``dispute_evidence``."
-        )
+        ),
+        choices=FILE_UPLOAD_PURPOSE_CHOICES
     )
     size = models.IntegerField(
         help_text=_(
