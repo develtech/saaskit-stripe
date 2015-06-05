@@ -1212,6 +1212,72 @@ TRANSFER_TYPE_CHOICES = (
     ("BANK_ACCOUNT", "bank_account"),
     ("STRIPE_ACCOUNT", "stripe_account"),
 )
+TRANSFER_FAILURE_CHOICES = (
+    (
+        "insufficient_funds", _(
+            "Your Stripe account has insufficient funds to cover the transfer."
+        )
+    ),
+    (
+        "account_closed",
+        _(
+            "The bank account has been closed."
+        )
+    ),
+    (
+        "no_account",
+        _(
+            "The bank account details on file are probably incorrect. No bank "
+            "account could be located with those details."
+        )
+    ),
+    (
+        "invalid_account_number",
+        _(
+            "The routing number seems correct, but the account number is "
+            "invalid."
+        )
+    ),
+    (
+        "debit_not_authorized",
+        _(
+            "Debit transactions are not approved on the bank account. Stripe "
+            "requires bank accounts to be set up for both credit and debit "
+            "transfers."
+        )
+    ),
+    (
+        "bank_ownership_changed",
+        _(
+            "The destination bank account is no longer valid because its "
+            "branch has changed ownership."
+        )
+    ),
+    (
+        "account_frozen",
+        _("The bank account has been frozen.")
+    ),
+    (
+        "could_not_process",
+        _("The bank could not process this transfer.")
+    ),
+    (
+        "bank_account_restricted",
+        _(
+            "The bank account has restrictions on either the type or number of "
+            "transfers allowed. This normally indicates that the bank account "
+            "is a savings or other non-checking account."
+        )
+    ),
+    (
+        "invalid_currency",
+        _(
+            "The bank was unable to process this transfer because of its "
+            "currency. This is probably because the bank account cannot accept "
+            "payments in that currency."
+        )
+    ),
+)
 
 class Transfer(models.Model):
     livemode = models.BooleanField()
@@ -1263,6 +1329,32 @@ class Transfer(models.Model):
             "``bank_account``, or ``stripe_account``."
         ),
         choices=TRANSFER_TYPE_CHOICES
+    )
+    amount_reversed = models.IntegerField(
+        help_text=_(
+            "Amount in cents reversed (can be less than the amount attribute "
+            "on the transfer if a partial reversal was issued)."
+        )
+    )
+    balance_transaction = models.ForeignKey(
+        "BalanceTransaction",
+        help_text=_(
+            "Balance transaction that describes the impact of this transfer on "
+            "your account balance."
+        )
+    )
+    description = models.TextField(
+        help_text=_(
+            "Internal-only description of the transfer"
+        )
+    )
+    failure_code = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Error code explaining reason for transfer failure if available. "
+            "See Types of transfer failures for a list of failure codes."
+        ),
+        choices=TRANSFER_FAILURE_CHOICES
     )
 
 
