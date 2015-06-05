@@ -1201,8 +1201,70 @@ class DisputeEvidence(models.Model):
         help_text=_("Any additional evidence or statements.")
     )
 
+
+TRANSFER_STATUS_CHOICES = (
+    ("PAID", "paid"),
+    ("CANCELED", "canceled"),
+    ("FAILED", "failed"),
+)
+TRANSFER_TYPE_CHOICES = (
+    ("CARD", "card"),
+    ("BANK_ACCOUNT", "bank_account"),
+    ("STRIPE_ACCOUNT", "stripe_account"),
+)
+
 class Transfer(models.Model):
-    pass
+    livemode = models.BooleanField()
+    amount = models.IntegerField(
+        help_text=_(
+            "Amount (in cents) to be transferred to your bank account"
+        )
+    )
+    created = models.DateTimeField(
+        help_text=_(
+            "Time that this record of the transfer was first created."
+        )
+    )
+    currency = models.IntegerField()
+    date = models.DateTimeField(
+        help_text=_(
+            "Date the transfer is scheduled to arrive in the bank. This "
+            "doesn’t factor in delays like weekends or bank holidays."
+        )
+    )
+    reversals = json.JSONField(
+        help_text=_(
+            "A list of reversals that have been applied to the transfer."
+        )
+    )
+    reversed = models.BooleanField(
+        help_text=_(
+            "Whether or not the transfer has been fully reversed. If the "
+            "transfer is only partially reversed, this attribute will still be "
+            "false."
+        )
+    )
+
+    status = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Current status of the transfer (``paid``, ``pending``, "
+            "``canceled`` or ``failed``). A transfer will be ``pending`` until "
+            "it is submitted, at which point it becomes ``paid``. If it does "
+            "not go through successfully, its status will change to ``failed`` "
+            "or ``canceled``."
+        ),
+        choices=TRANSFER_STATUS_CHOICES
+    )
+    type = models.CharField(
+        max_length=255,
+        help_text=_(
+            "The type of this type of this transfer. Can be ``card``, "
+            "``bank_account``, or ``stripe_account``."
+        ),
+        choices=TRANSFER_TYPE_CHOICES
+    )
+
 
 class TransferReversal(models.Model):
     pass
