@@ -1023,6 +1023,10 @@ class Dispute(models.Model):
 
 
 class DisputeEvidence(models.Model):
+    """
+    :class:`DisputeEvidence` revserse relations will be prefixed with
+    ``dispute_``.
+    """
     access_activity_log = models.TextField(
         help_text=_(
             "Any server or activity logs showing proof that the customer "
@@ -1041,7 +1045,8 @@ class DisputeEvidence(models.Model):
         help_text=_(
             "(ID of a file upload) Your subscription cancellation policy, as "
             "shown to the customer."
-        )
+        ),
+        related_name="dispute_cancelling_policy"
     )
     cancellation_policy_disclosure = models.TextField(
         help_text=_(
@@ -1062,7 +1067,8 @@ class DisputeEvidence(models.Model):
             "you feel is relevant to your case (for example emails proving "
             "that they received the product or service, or demonstrating their "
             "use of or satisfaction with the product or service)"
-        )
+        ),
+        related_name="dispute_customer_communication"
     )
     customer_email_address = models.EmailField()
     customer_name = models.CharField(max_length=255)
@@ -1072,9 +1078,10 @@ class DisputeEvidence(models.Model):
         help_text=_(
             "(ID of a file upload) A relevant document or contract showing the "
             "customer’s signature."
-        )
+        ),
+        related_name="dispute_customer_signature"
     )
-    duplicate_change_documentation = models.ForeignKey(
+    duplicate_charge_documentation = models.ForeignKey(
         "FileUpload",
         help_text=(
             "ID of a file upload) Documentation for the prior charge that can "
@@ -1082,7 +1089,8 @@ class DisputeEvidence(models.Model):
             "work order, etc. This document should be paired with a similar "
             "document from the disputed payment that proves the two payments "
             "are separate."
-        )
+        ),
+        related_name="dispute_charge_documentation"
     )
     duplicate_charge_explanation = models.TextField(
         help_text=_(
@@ -1095,7 +1103,8 @@ class DisputeEvidence(models.Model):
         help_text=_(
             "The Stripe ID for the prior charge which appears to be a "
             "duplicate of the disputed charge."
-        )
+        ),
+        related_name="dispute_charge"
     )
     product_description = models.TextField(
         help_text=_(
@@ -1107,14 +1116,16 @@ class DisputeEvidence(models.Model):
         help_text=_(
             "(ID of a file upload) Any receipt or message sent to the customer "
             "notifying them of the charge."
-        )
+        ),
+        related_name="dispute_receipt"
     )
     refund_policy = models.ForeignKey(
         "FileUpload",
         help_text=_(
             "(ID of a file upload) Your refund policy, as shown to the "
             "customer."
-        )
+        ),
+        related_name="dispute_refund_policy"
     )
     refund_policy_disclosure = models.TextField(
         help_text=_(
@@ -1139,7 +1150,8 @@ class DisputeEvidence(models.Model):
             "(ID of a file upload) Documentation showing proof that a service "
             "was provided to the customer. This could include a copy of a "
             "signed contract, work order, or other form of written agreement."
-        )
+        ),
+        related_name="dispute_service_documentation"
     )
     shipping_address = models.TextField(
         help_text=_(
@@ -1168,7 +1180,8 @@ class DisputeEvidence(models.Model):
             "provided to you. This could include a copy of the shipment "
             "receipt, shipping label, etc, and should show the full shipping "
             "address of the customer, if possible."
-        )
+        ),
+        related_name="dispute_shipping_documentation"
     )
     shipping_tracking_number = models.TextField(
         help_text=_(
@@ -1181,7 +1194,8 @@ class DisputeEvidence(models.Model):
         "FileUpload",
         help_text=_(
             "(ID of a file upload) Any additional evidence or statements."
-        )
+        ),
+        related_name="dispute_uncategorized_file"
     )
     uncategorized_text = models.TextField(
         help_text=_("Any additional evidence or statements.")
@@ -1221,4 +1235,32 @@ class BitCoinReceiver(models.Model):
     pass
 
 class FileUpload(models.Model):
-    pass
+    created = models.DateTimeField()
+    purpose = models.CharField(
+        max_length=255,
+        help_text=(
+            "The purpose of the uploaded file. Possible values are "
+            "``identity_document``, ``dispute_evidence``."
+        )
+    )
+    size = models.IntegerField(
+        help_text=_(
+            "The size in bytes of the file upload object."
+        )
+    )
+    type = models.CharField(
+        max_length=255,
+        help_text=_(
+            "The type of the file returned. Returns one of the following: "
+            "``pdf``, ``jpg``, ``png``."
+        )
+    )
+    url = models.URLField(
+        help_text=_(
+            "A read-only URL where the uploaded file can be accessed. Will be "
+            "nil unless the uploaded file has one of the following purposes: "
+            "``dispute_evidence``. Also nil if retrieved with the publishable "
+            "API key."
+        )
+    )
+
