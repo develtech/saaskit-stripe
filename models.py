@@ -1366,6 +1366,35 @@ class Transfer(models.Model):
         ),
         choices=TRANSFER_FAILURE_CHOICES
     )
+    failure_message = models.TextField(
+        help_text=_(
+            "Message to user further explaining reason for transfer failure if "
+            "available."
+        )
+    )
+    metadata = json.JSONField(
+        help_text=_(
+            "A set of key/value pairs that you can attach to a charge object. "
+            "it can be useful for storing additional information about the "
+            "charge in a structured format."
+        )
+    )
+    application_fee = models.CharField(max_length=255)
+    destination = models.CharField(
+        max_length=255,
+        help_text=_(
+            "ID of the bank account, card, or Stripe account the transfer was "
+            "sent to."
+        )
+    )
+    destination_payment = models.CharField(
+        max_length=255,
+        help_text=_(
+            "If the destination is a Stripe account, this will be the ID of "
+            "the payment that the destination account received for the "
+            "transfer."
+        )
+    )
 
 
 class TransferReversal(models.Model):
