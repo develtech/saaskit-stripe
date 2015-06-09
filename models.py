@@ -1569,7 +1569,22 @@ class Recipient(models.Model):
         ),
         choices=RECIPIENT_TYPE_CHOICES
     )
-    active_account = models.ForeignKey("Account")
+    active_account = json.JSONField(
+        help_text=_(
+            "Hash describing the current account on the recipient, if there is "
+            "one."
+        )
+    )
+    description = models.TextField()
+    email = models.EmailField()
+    metadata = json.JSONField(
+        help_text=_(
+            "A set of key/value pairs that you can attach to a charge object. "
+            "it can be useful for storing additional information about the "
+            "recipient in a structured format."
+        )
+    )
+
 
 class ApplicationFee(models.Model):
     """
