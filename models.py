@@ -1543,6 +1543,11 @@ class TransferReversal(models.Model):
     )
 
 
+RECIPIENT_TYPE_CHOICES = (
+    ("individual", _("Individual")),
+    ("corporoation", _("Corporation")),
+)
+
 class Recipient(models.Model):
     """
     With recipient objects, you can transfer money from your Stripe account to a
@@ -1555,7 +1560,16 @@ class Recipient(models.Model):
     already using recipients, please see our migration guide for more
     information.
     """
-    pass
+    livemode = models.BooleanField()
+    created = models.DateTimeField()
+    type = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Type of the recipient, one of ``individual`` or ``corporation``."
+        ),
+        choices=RECIPIENT_TYPE_CHOICES
+    )
+    active_account = models.ForeignKey("Account")
 
 class ApplicationFee(models.Model):
     """
