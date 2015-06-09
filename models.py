@@ -223,7 +223,7 @@ class Refund(models.Model):
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
             "It can be useful for storing additional information about the "
-            "charge in a structured format."
+            "refund in a structured format."
         )
     )
     reason = models.CharField(
@@ -298,7 +298,7 @@ class Customer(models.Model):
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
             "It can be useful for storing additional information about the "
-            "charge in a structured format."
+            "customer in a structured format."
         )
     )
 
@@ -557,7 +557,7 @@ class Subscription(models.Model):
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
             "it can be useful for storing additional information about the "
-            "charge in a structured format."
+            "subscription in a structured format."
         )
     )
     trial_end = models.DateTimeField(
@@ -630,7 +630,7 @@ class Plan(models.Model):
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
             "it can be useful for storing additional information about the "
-            "charge in a structured format."
+            "plan in a structured format."
         )
     )
     trial_period_days = models.PositiveIntegerField(
@@ -699,7 +699,7 @@ class Coupon(models.Model):
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
             "it can be useful for storing additional information about the "
-            "charge in a structured format."
+            "coupon in a structured format."
         )
     )
     percent_off = models.PositiveIntegerField(
@@ -937,7 +937,7 @@ class Invoice(models.Model):
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
             "it can be useful for storing additional information about the "
-            "charge in a structured format."
+            "invoice in a structured format."
         )
     )
     subscription_proration_date = models.IntegerField(
@@ -1001,7 +1001,7 @@ class InvoiceItem(models.Model):
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
             "it can be useful for storing additional information about the "
-            "charge in a structured format."
+            "invoice item in a structured format."
         )
     )
     period = json.JSONField()
@@ -1106,7 +1106,7 @@ class Dispute(models.Model):
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
             "it can be useful for storing additional information about the "
-            "charge in a structured format."
+            "dispute in a structured format."
         )
     )
 
@@ -1464,7 +1464,7 @@ class Transfer(models.Model):
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
             "it can be useful for storing additional information about the "
-            "charge in a structured format."
+            "transfer in a structured format."
         )
     )
     application_fee = models.CharField(max_length=255)
@@ -1532,7 +1532,7 @@ class TransferReversal(models.Model):
         help_text=_(
             "A set of key/value pairs that you can attach to a charge object. "
             "it can be useful for storing additional information about the "
-            "charge in a structured format."
+            "transfer reversal in a structured format."
         )
     )
     transfer = models.ForeignKey(
@@ -1584,6 +1584,14 @@ class Recipient(models.Model):
             "recipient in a structured format."
         )
     )
+    name = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Full, legal name of the recipient.Full, legal name of the "
+            "recipient."
+        )
+    )
+
 
 
 class ApplicationFee(models.Model):
