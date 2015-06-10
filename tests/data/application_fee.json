@@ -1,0 +1,24 @@
+{
+  "id": "fee_6OzvQPTPTnDqqg",
+  "object": "application_fee",
+  "created": 1433953160,
+  "livemode": false,
+  "amount": 100,
+  "currency": "usd",
+  "refunded": false,
+  "amount_refunded": 0,
+  "refunds": {
+    "object": "list",
+    "total_count": 0,
+    "has_more": false,
+    "url": "/v1/application_fees/fee_6OzvQPTPTnDqqg/refunds",
+    "data": [
+
+    ]
+  },
+  "balance_transaction": "txn_169oS22eZvKYlo2CSLNAbKOX",
+  "account": "acct_1032D82eZvKYlo2C",
+  "application": "ca_6OzvXZJsP4DY0WgyaOVmfnGX3YNgMhyT",
+  "charge": "ch_16CBtj2eZvKYlo2C8CC7KTxT",
+  "originating_transaction": null
+}

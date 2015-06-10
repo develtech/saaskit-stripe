@@ -1,0 +1,35 @@
+{
+  "id": "sub_6Ozv0x1N1T0DxH",
+  "plan": {
+    "interval": "year",
+    "name": "New plan name",
+    "created": 1432558607,
+    "amount": 2000,
+    "currency": "usd",
+    "id": "rhohub-gold-year",
+    "object": "plan",
+    "livemode": false,
+    "interval_count": 1,
+    "trial_period_days": null,
+    "metadata": {
+    },
+    "statement_descriptor": null
+  },
+  "object": "subscription",
+  "start": 1433953160,
+  "status": "active",
+  "customer": "cus_6Ozta4Bn1hmWEH",
+  "cancel_at_period_end": false,
+  "current_period_start": 1433953160,
+  "current_period_end": 1465575560,
+  "ended_at": null,
+  "trial_start": null,
+  "trial_end": null,
+  "canceled_at": null,
+  "quantity": 1,
+  "application_fee_percent": null,
+  "discount": null,
+  "tax_percent": null,
+  "metadata": {
+  }
+}
