@@ -1878,7 +1878,63 @@ class Balance(models.Model):
     )
 
 class BalanceTransaction(models.Model):
-    pass
+    amount = models.IntegerField(
+        help_text=_(
+            "Gross amount of the transaction, in cents"
+        )
+    )
+    available_on = models.DateTimeField(
+        help_text=_(
+            "The date the transaction’s net funds will become available in the "
+            "Stripe balance."
+        )
+    )
+    created = models.DateTimeField()
+    currency = models.CharField(
+        max_length=255,
+        choices=CURRENCY_CHOICES
+    )
+    fee = models.IntegerField(
+        help_text=_(
+            "Fees (in cents) paid for this transaction"
+        )
+    )
+    fee_details = json.JSONField(
+        help_text=_(
+            "Detailed breakdown of fees (in cents) paid for this transaction"
+        )
+    )
+    net = models.IntegerField(
+        help_text=_(
+            "Net amount of the transaction, in cents."
+        )
+    )
+    status = models.CharField(
+        max_length=255,
+        help_text=_(
+            "If the transaction’s net funds are available in the Stripe "
+            "balance yet. Either ``available`` or ``pending``."
+        )
+    )
+    type = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Type of the transaction, one of: ``charge``, ``refund``, "
+            "``adjustment``, ``application_fee``, ``application_fee_refund``, "
+            "``transfer``, ``transfer_cancel`` or ``transfer_failure``."
+        )
+    )
+    description = models.CharField(max_length=255)
+    source = json.JSONField(
+        help_text=_(
+            "The Stripe object this transaction is related to."
+        )
+    )
+    sourced_transfers = json.JSONField(
+        help_text=_(
+            "The transfers (if any) for which source is a source_transaction."
+        )
+    )
 
 class Event(models.Model):
     """
@@ -1899,7 +1955,43 @@ class Event(models.Model):
     NOTE: Right now, we only guarantee access to events through the Retrieve
     Event API for 30 days.
     """
-    pass
+    livemode = models.BooleanField()
+    created = models.DateTimeField()
+    data = json.JSONField(
+        help_text=_(
+            "Hash containing data associated with the event."
+        )
+    )
+    pending_webhooks = models.PositiveIntegerField(
+        help_text=_(
+            "Number of webhooks yet to be delivered successfully (return a 20x "
+            "response) to the URLs you’ve specified."
+        )
+    )
+    type = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Description of the event: e.g. invoice.created, charge.refunded, "
+            "etc."
+        )
+    )
+    api_version = models.CharField(
+        max_length=255,
+        help_text=_(
+            "The Stripe API version used to render data. Note: this property "
+            "is populated for events on or after October 31, 2014."
+        )
+    )
+    request = models.CharField(
+        max_length=255,
+        help_text=_(
+            "ID of the API request that caused the event. If null, the event "
+            "was automatic (e.g. Stripe’s automatic subscription handling). "
+            "Request logs are available in the dashboard but currently not in "
+            "the API. Note: this property is populated for events on or after "
+            "April 23, 2013."
+        )
+    )
 
 class Token(models.Model):
     """
