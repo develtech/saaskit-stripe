@@ -1,0 +1,11 @@
+{
+  "id": "fr_6Ozv3SIzoIYC8Y",
+  "amount": 100,
+  "currency": "usd",
+  "created": 1433953160,
+  "object": "fee_refund",
+  "balance_transaction": null,
+  "metadata": {
+  },
+  "fee": "fee_6OzvQPTPTnDqqg"
+}
