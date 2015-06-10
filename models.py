@@ -1390,7 +1390,13 @@ class Transfer(models.Model):
             "Time that this record of the transfer was first created."
         )
     )
-    currency = models.IntegerField()
+    currency = models.CharField(
+        max_length=255,
+        choices=CURRENCY_CHOICES,
+        help_text=_(
+            "Three-letter ISO code representing the currency of the transfer."
+        )
+    )
     date = models.DateTimeField(
         help_text=_(
             "Date the transfer is scheduled to arrive in the bank. This "
@@ -1643,8 +1649,8 @@ class ApplicationFee(models.Model):
     currency = models.CharField(
         max_length=255,
         help_text=_(
-            "Three-letter ISO currency code representing the currency in which "
-            "the charge was made."
+            "Three-letter ISO currency code representing the currency of the
+            "charge."
         ),
         choices=CURRENCY_CHOICES
     )
@@ -1663,7 +1669,18 @@ class ApplicationFeeRefund(models.Model):
     has previously been created but not yet refunded. Funds will be refunded to
     the Stripe account that the fee was originally collected from.
     """
-    pass
+    amount = models.IntegerField(
+        help_text=_("Amount reversed, in cents.")
+    )
+    created = models.DateTimeField()
+    currency = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Three-letter ISO currency code representing the currency of the "
+            "reverse."
+        ),
+        choices=CURRENCY_CHOICES
+    )
 
 class Account(models.Model):
     """
