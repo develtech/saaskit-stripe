@@ -1649,7 +1649,7 @@ class ApplicationFee(models.Model):
     currency = models.CharField(
         max_length=255,
         help_text=_(
-            "Three-letter ISO currency code representing the currency of the
+            "Three-letter ISO currency code representing the currency of the"
             "charge."
         ),
         choices=CURRENCY_CHOICES
