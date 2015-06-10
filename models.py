@@ -48,7 +48,7 @@ class Charge(models.Model):
             "the charge was made."
         ),
         choices=CURRENCY_CHOICES
-    )  # todo ISO 3char fields
+    )
     paid = models.BooleanField(
         help_text=_(
             "true if the charge succeeded, or was successfully authorized for "
@@ -440,13 +440,14 @@ class Card(models.Model):
             "Cardholder name"
         )
     )
-    recipient = models.CharField(
-        max_length=255,
-        help_text=_(
-            "The recipient that this card belongs to. This attribute will not "
-            "be in the card object if the card belongs to a customer instead."
-        )
-    )
+    # reverse from relation
+    # recipient = models.CharField(
+    #     max_length=255,
+    #     help_text=_(
+    #         "The recipient that this card belongs to. This attribute will not "
+    #         "be in the card object if the card belongs to a customer instead."
+    #     )
+    # )
     fingerprint = models.CharField(
         max_length=255,
         help_text=_(
@@ -1586,12 +1587,17 @@ class Recipient(models.Model):
     )
     name = models.CharField(
         max_length=255,
-        help_text=_(
-            "Full, legal name of the recipient.Full, legal name of the "
-            "recipient."
-        )
+        help_text=_("Full, legal name of the recipient.")
     )
-
+    cards = models.ManyToManyField("Card", related_name="recipients")
+    default_card = models.ForeignKey(
+        "Card",
+        help_text=_(
+            "The default card to use for creating transfers to this recipient."
+        ),
+        related_name="recipients_default"
+    )
+    migrated_to = models.CharField(max_length=255)
 
 
 class ApplicationFee(models.Model):
@@ -1602,7 +1608,54 @@ class ApplicationFee(models.Model):
 
     For more information on collecting transaction fees, see our documentation.
     """
-    pass
+    livemode = models.BooleanField()
+    account = models.ForeignKey(
+        "Account",
+        help_text=_(
+            "ID of the Stripe account this fee was taken from."
+        )
+    )
+    amount = models.IntegerField(
+        help_text=_(
+            "Amount earned, in cents."
+        )
+    )
+    application = models.CharField(
+        max_length=255,
+        help_text=_(
+            "ID of the Connect Application that earned the fee."
+        )
+    )
+    balance_transaction = models.ForeignKey(
+        "BalanceTransaction",
+        help_text=_(
+            "Balance transaction that describes the impact of this collected "
+            "application fee on your account balance (not including refunds)."
+        )
+    )
+    charge = models.ForeignKey(
+        "Charge",
+        help_text=_(
+            "ID of the charge that the application fee was taken from."
+        )
+    )
+    created = models.DateTimeField()
+    currency = models.CharField(
+        max_length=255,
+        help_text=_(
+            "Three-letter ISO currency code representing the currency in which "
+            "the charge was made."
+        ),
+        choices=CURRENCY_CHOICES
+    )
+    refunded = models.BooleanField(
+        help_text=_(
+            "Whether or not the fee has been fully refunded. If the fee is "
+            "only partially refunded, this attribute will still be false."
+        )
+    )
+    # refunds reverse relation from "Refund"
+    amount_refunded = models.PositiveIntegerField()
 
 class ApplicationFeeRefund(models.Model):
     """
