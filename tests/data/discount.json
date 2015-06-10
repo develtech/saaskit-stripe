@@ -1,0 +1,24 @@
+{
+  "coupon": {
+    "id": "$1OFF",
+    "created": 1433453599,
+    "percent_off": null,
+    "amount_off": 100,
+    "currency": "usd",
+    "object": "coupon",
+    "livemode": false,
+    "duration": "forever",
+    "redeem_by": null,
+    "max_redemptions": null,
+    "times_redeemed": 0,
+    "duration_in_months": null,
+    "valid": true,
+    "metadata": {
+    }
+  },
+  "start": 1408104978,
+  "object": "discount",
+  "customer": "cus_6Ozta4Bn1hmWEH",
+  "subscription": "sub_4avT2dbwKJA3EL",
+  "end": null
+}
