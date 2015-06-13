@@ -25,6 +25,7 @@ def json_to_djorm(data):
             "JSON data missing object"
         )
 
+
 def get_djorm_model_from_object_key(objkey):
     """Return django ORM model from object key.
 
