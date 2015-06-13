@@ -31,7 +31,15 @@ def get_djorm_model_from_object_key(objkey):
     :param objkey: "object" key from stripe JSON response
     :type objkey: string
     """
-    pass
+
+    if not isinstance(objkey, unicode):
+        raise TypeError(
+            "argument must be a string"
+        )
+
+    from django.apps import apps
+    app = apps.get_app_config('stripe')
+    return app.get_model(objkey)
 
 class TestJSONToObject(TestCase):
     def test_raises_object_missing(self):
@@ -45,6 +53,20 @@ class TestJSONToObject(TestCase):
             data = get_test_data('customer.json')
             data.pop("object", None)
             json_to_djorm(data)
+
+class TestGetDjormFromObjectKey(TestCase):
+    def test_raises_error_if_not_string(self):
+        with self.assertRaisesRegexp(TypeError, "must be a string"):
+            get_djorm_model_from_object_key(1)
+
+    def test_raises_error_model_not_exist(self):
+        with self.assertRaisesRegexp(LookupError, "App '\w*' doesn't have a '.*' model."):
+            get_djorm_model_from_object_key("Moo")
+
+    def test_imports_model_correctly(self):
+        from ..models import Customer
+        result = get_djorm_model_from_object_key("Customer")
+        self.assertEquals(Customer, result)
 
 class TestCustomer(TestCase):
 
