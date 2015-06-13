@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.test import TestCase
 
-from ..models import Charge
+from ..models import Customer
 from .helpers import get_test_data
 
 
-class TestCharge(TestCase):
+class TestCustomer(TestCase):
 
     def test_create(self):
-        data = get_test_data('charge.json')
+        data = get_test_data('customer.json')
         print(data)
-        c = Charge.objects.create(**data)
+        c = Customer.objects.create(**data)
