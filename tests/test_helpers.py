@@ -4,31 +4,34 @@ from __future__ import unicode_literals
 
 import json
 
+from django.test import TestCase
+
+import requests
 import responses
+import stripe
 
-from ..test import open_test_file
+from .helpers import open_test_file, json_file_to_dict
 
 
-@responses.activate
-def test_my_api(stripe):
-    """Tests to assure the Stripe library is using the Requests library as an
-    HTTP Client and responses is mocking the responses as intended."""
+class TestResponsesStripeSanity(TestCase):
+    """Tests to assure the Stripe library is using the Requests
+    library as an HTTP Client and responses is mocking the
+    responses as intended."""
 
-    body_json = open_test_file('customer/object.json').read()
+    @responses.activate
+    def test_my_api(self):
+        body = open_test_file("customer.json")
+        body_json = json_file_to_dict(body)
 
-    customer_id = json.loads(body_json)['id']
-    customer_url = stripe.api_base + '/v1/customers/%s' % customer_id
-    responses.add(
-        responses.GET,
-        customer_url,
-        body=body_json,
-        status=200,
-        content_type='application/json',
-    )
+        customer_id = "cus_6Ozta4Bn1hmWEH"
+        customer_url = "https://api.stripe.com/v1/customers/%s" % customer_id
+        responses.add(responses.GET, customer_url,
+                    body=json.dumps(body_json), status=200,
+                    content_type='application/json')
 
-    customer = stripe.Customer.retrieve(customer_id)
+        customer = stripe.Customer.retrieve(customer_id)
 
-    assert customer.id == customer_id
-    assert len(responses.calls) == 1
-    assert responses.calls[0].request.url == customer_url
-    assert responses.calls[0].response.text == body_json
+        self.assertEquals(customer.id, customer_id)
+        self.assertEquals(len(responses.calls), 1)
+        self.assertEquals(responses.calls[0].request.url, customer_url)
+        self.assertEquals(responses.calls[0].response.text, json.dumps(body_json))

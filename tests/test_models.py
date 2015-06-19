@@ -82,4 +82,3 @@ class TestCustomer(TestCase):
 
     def test_create(self):
         data = get_test_data('customer.json')
-        print(data)
