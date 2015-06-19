@@ -23,12 +23,12 @@ class TestResponsesStripeSanity(TestCase):
     @responses.activate
     def test_my_api(self):
         body = open_test_file("customer.json")
-        body_json = json_file_to_dict(body)
+        body_json = json.dumps(json_file_to_dict(body))
 
         customer_id = "cus_6Ozta4Bn1hmWEH"
         customer_url = "https://api.stripe.com/v1/customers/%s" % customer_id
         responses.add(responses.GET, customer_url,
-                    body=json.dumps(body_json), status=200,
+                    body=body_json, status=200,
                     content_type='application/json')
 
         customer = stripe.Customer.retrieve(customer_id)
@@ -36,4 +36,4 @@ class TestResponsesStripeSanity(TestCase):
         self.assertEquals(customer.id, customer_id)
         self.assertEquals(len(responses.calls), 1)
         self.assertEquals(responses.calls[0].request.url, customer_url)
-        self.assertEquals(responses.calls[0].response.text, json.dumps(body_json))
+        self.assertEquals(responses.calls[0].response.text, body_json)
