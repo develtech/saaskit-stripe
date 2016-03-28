@@ -4,13 +4,12 @@ from __future__ import unicode_literals
 
 from django.test import TestCase
 
-import requests
 import responses
 import stripe
 
-stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"
+from .helpers import open_test_file
 
-from .helpers import open_test_file, json_file_to_dict
+stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"
 
 
 class TestResponsesStripeSanity(TestCase):
@@ -24,9 +23,11 @@ class TestResponsesStripeSanity(TestCase):
 
         customer_id = "cus_6Ozta4Bn1hmWEH"
         customer_url = "https://api.stripe.com/v1/customers/%s" % customer_id
-        responses.add(responses.GET, customer_url,
-                    body=body_json, status=200,
-                    content_type='application/json')
+        responses.add(
+            responses.GET, customer_url,
+            body=body_json, status=200,
+            content_type='application/json'
+        )
 
         customer = stripe.Customer.retrieve(customer_id)
 
