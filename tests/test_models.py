@@ -29,6 +29,8 @@ def json_to_djorm(data):
 
     Model = get_djorm_model_from_object_key(resource_type)
 
+    return Model
+
 
 def get_djorm_model_from_object_key(objkey):
     """Return django ORM model from object key.
@@ -81,4 +83,4 @@ class TestGetDjormFromObjectKey(TestCase):
 class TestCustomer(TestCase):
 
     def test_create(self):
-        data = get_test_data('customer.json')
+        self.data = get_test_data('customer.json')

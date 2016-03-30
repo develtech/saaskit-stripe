@@ -162,12 +162,16 @@ CHARGE_FAILURE_CHOICES = (
     ),
 )
 
+
 class Charge(models.Model):
-    """
+
+    """Stripe Charge Object.
+
     To charge a credit or a debit card, you create a charge object. You can
     retrieve and refund individual charges as well as list all charges. Charges
     are identified by a unique random ID.
     """
+
     livemode = models.BooleanField(default=True)
     amount = models.IntegerField(
         help_text=_("Amount charged in cents")
@@ -183,8 +187,8 @@ class Charge(models.Model):
     currency = models.CharField(
         max_length=255,
         help_text=_(
-            "Three-letter ISO currency code representing the currency in which "
-            "the charge was made."
+            "Three-letter ISO currency code representing the currency in "
+            "which the charge was made."
         ),
         choices=CURRENCY_CHOICES
     )
@@ -196,8 +200,8 @@ class Charge(models.Model):
     )
     refunded = models.BooleanField(
         help_text=_(
-            "Whether or not the charge has been fully refunded. If the charge is "
-            "only partially refunded, this attribute will still be false."
+            "Whether or not the charge has been fully refunded. If the charge "
+            "is only partially refunded, this attribute will still be false."
         )
     )
     # refunds = models.ManyToManyField("Refund")
@@ -245,8 +249,8 @@ class Charge(models.Model):
     failure_code = models.CharField(
         max_length=255,
         help_text=_(
-            "Error code explaining reason for charge failure if available (see "
-            "the errors section for a list of codes)."
+            "Error code explaining reason for charge failure if available "
+            "(see the errors section for a list of codes)."
         ),
         choices=CHARGE_FAILURE_CHOICES
     )
@@ -297,13 +301,13 @@ class Charge(models.Model):
             "Connect documentation for details."
         )
     )
-    fraud_details= json.JSONField(
+    fraud_details = json.JSONField(
         help_text=_(
             "Hash with information on fraud assessments for the charge. "
             "Assessments reported by you have the key ``user_report`` and, if "
             "set, possible values of ``safe`` and ``fraudulent``. Assessments "
-            "from Stripe have the key ``stripe_report`` and, if set, the value "
-            "fraudulent."
+            "from Stripe have the key ``stripe_report`` and, if set, the "
+            "value fraudulent."
         )
     )
     shipping = json.JSONField(
@@ -327,13 +331,17 @@ REFUND_CHOICES = (
     ("requested_by_customer", _("Requested by customer"))
 )
 
+
 class Refund(models.Model):
+
+    """Stripe Refund objects.
+
+    Refund objects allow you to refund a charge that has previously been
+    created but not yet refunded. Funds will be refunded to the credit or debit
+    card that was originally charged. The fees you were originally charged are
+    also refunded.
     """
-    Refund objects allow you to refund a charge that has previously been created
-    but not yet refunded. Funds will be refunded to the credit or debit card
-    that was originally charged. The fees you were originally charged are also
-    refunded.
-    """
+
     amount = models.IntegerField(
         help_text=_(
             "Amount reversed, in cents."
@@ -348,8 +356,8 @@ class Refund(models.Model):
     balance_transaction = models.CharField(
         max_length=255,
         help_text=_(
-            "Balance transaction that describes the impact of this reversal on "
-            "your account balance."
+            "Balance transaction that describes the impact of this reversal "
+            "on your account balance."
         )
     )
     charge = models.CharField(
@@ -382,13 +390,17 @@ class Refund(models.Model):
     )
     description = models.CharField(max_length=255)
 
+
 class Customer(models.Model):
-    """
+
+    """Stripe Customer object.
+
     Customer objects allow you to perform recurring charges and track multiple
     charges that are associated with the same customer. The API allows you to
     create, delete, and update your customers. You can retrieve individual
     customers as well as a list of all your customers.
     """
+
     livemode = models.BooleanField()
     created = models.DateTimeField()
     account_balance = models.DateTimeField(
@@ -427,8 +439,8 @@ class Customer(models.Model):
     #     "Discount",
     #     max_length=255,
     #     help_text=_(
-    #         "Describes the current discount active on the customer, if there "
-    #         "is one."
+    #         "Describes the current discount active on the customer, if "
+    #         "there is one."
     #     )
     # )
     description = models.CharField(max_length=255)
@@ -471,7 +483,7 @@ CARD_FUNDING_CHOICES = (
     ("prepaid", _("Prepaid")),
     ("unknown", _("Unknown")),
 )
-CARD_ADDRESS_CHECK_CHOICES=(
+CARD_ADDRESS_CHECK_CHOICES = (
     ("pass", _("Pass")),
     ("fail", _("Fail")),
     ("unavailable", _("Unavailable")),
@@ -485,12 +497,16 @@ CARD_CVC_CHECK_CHOICES = (
     ("unchecked", _("Unchecked")),
 )
 
+
 class Card(models.Model):
-    """
+
+    """Stripe Card object.
+
     You can store multiple cards on a customer in order to charge the customer
     later. You can also store multiple debit cards on a recipient in order to
     transfer to those cards later.
     """
+
     id = models.AutoField(
         primary_key=True,
         help_text=_(
@@ -583,16 +599,17 @@ class Card(models.Model):
     # recipient = models.CharField(
     #     max_length=255,
     #     help_text=_(
-    #         "The recipient that this card belongs to. This attribute will not "
-    #         "be in the card object if the card belongs to a customer instead."
+    #         "The recipient that this card belongs to. This attribute will "
+    #         "not be in the card object if the card belongs to a customer "
+    #         "instead."
     #     )
     # )
     fingerprint = models.CharField(
         max_length=255,
         help_text=_(
-            "Uniquely identifies this particular card number. You can use this "
-            "attribute to check whether two customers who’ve signed up with "
-            "you are using the same card number, for example."
+            "Uniquely identifies this particular card number. You can use "
+            "this attribute to check whether two customers who’ve signed up "
+            "with you are using the same card number, for example."
         )
     )
 
@@ -604,13 +621,18 @@ SUBSCRIPTION_STATUS_CHOICES = (
     ("canceled", _("Canceled")),
     ("unpaid", _("Unpaid")),
 )
+
+
 class Subscription(models.Model):
-    """
+
+    """Stripe subscription object.
+
     Subscriptions allow you to charge a customer's card on a recurring basis. A
     subscription ties a customer to a particular plan `you've created`_.
 
     .. _you've created: https://stripe.com/docs/api#create_plan
     """
+
     cancel_at_period_end = models.BooleanField(
         help_text=_(
             "If the subscription has been canceled with the ``at_period_end``"
@@ -714,11 +736,10 @@ class Subscription(models.Model):
         max_digits=3,
         decimal_places=2,
         help_text=_(
-            "If provided, each invoice created by this subscription will apply "
-            "the tax rate, increasing the amount billed to the customer."
+            "If provided, each invoice created by this subscription will "
+            "apply the tax rate, increasing the amount billed to the customer."
         )
     )
-
 
 
 PLAN_INTERVAL_CHOICES = (
@@ -727,12 +748,18 @@ PLAN_INTERVAL_CHOICES = (
     ("month", _("Month")),
     ("year", _("Year")),
 )
+
+
 class Plan(models.Model):
-    """
+
+    """Stripe Plan object.
+
     A subscription plan contains the pricing information for different products
     and feature levels on your site. For example, you might have a $10/month
-    plan for basic features and a different $20/month plan for premium features.
+    plan for basic features and a different $20/month plan for premium
+    features.
     """
+
     livemode = models.BooleanField()
     amount = models.PositiveIntegerField(
         help_text=_(
@@ -792,12 +819,17 @@ COUPON_DURATION_CHOICES = (
     ("ONCE", "once"),
     ("REPREATING", "repeating"),
 )
+
+
 class Coupon(models.Model):
+
+    """Stipe Coupon object.
+
+    A coupon contains information about a percent-off or amount-off discount
+    you might want to apply to a customer. Coupons only apply to invoices; they
+    do not apply to one-off charges.
     """
-    A coupon contains information about a percent-off or amount-off discount you
-    might want to apply to a customer. Coupons only apply to invoices; they do
-    not apply to one-off charges.
-    """
+
     livemode = models.BooleanField()
     created = models.DateTimeField()
     duration = models.CharField(
@@ -810,8 +842,8 @@ class Coupon(models.Model):
     )
     amount_off = models.PositiveIntegerField(
         help_text=_(
-            "Amount (in the ``currency`` specified) that will be taken off the "
-            "subtotal of any invoices for this customer."
+            "Amount (in the ``currency`` specified) that will be taken off "
+            "the subtotal of any invoices for this customer."
         )
     )
     currency = models.CharField(
@@ -867,12 +899,16 @@ class Coupon(models.Model):
         )
     )
 
+
 class Discount(models.Model):
-    """
+
+    """Stripe Discount object.
+
     A discount represents the actual application of a coupon to a particular
     customer. It contains information about when the discount began and when it
     will end.
     """
+
     coupon = models.ForeignKey(
         "Coupon",
         help_text=_(
@@ -893,33 +929,36 @@ class Discount(models.Model):
     # subscription = models.ForeignKey(
     #     "Subscription",
     #     help_text=_(
-    #         "The subscription that this coupon is applied to, if it is applied "
-    #         "to a particular subscription"
+    #         "The subscription that this coupon is applied to, if it is "
+    #         "applied to a particular subscription"
     #     )
     # )
 
 
 class Invoice(models.Model):
-    """
+
+    """Stripe Invoice object.
+
     Invoices are statements of what a customer owes for a particular billing
     period, including subscriptions, invoice items, and any automatic proration
     adjustments if necessary.
 
     Once an invoice is created, payment is automatically attempted. Note that
-    the payment, while automatic, does not happen exactly at the time of invoice
-    creation. If you have configured webhooks, the invoice will wait until one
-    hour after the last webhook is successfully sent (or the last webhook times
-    out after failing).
+    the payment, while automatic, does not happen exactly at the time of
+    invoice creation. If you have configured webhooks, the invoice will wait
+    until one hour after the last webhook is successfully sent (or the last
+    webhook times out after failing).
 
-    Any customer credit on the account is applied before determining how much is
-    due for that invoice (the amount that will be actually charged). If the
-    amount due for the invoice is less than 50 cents (the minimum for a charge),
-    we add the amount to the customer's running account balance to be added to
-    the next invoice. If this amount is negative, it will act as a credit to
-    offset the next invoice. Note that the customer account balance does not
-    include unpaid invoices; it only includes balances that need to be taken
-    into account when calculating the amount due for the next invoice.
+    Any customer credit on the account is applied before determining how much
+    is due for that invoice (the amount that will be actually charged). If the
+    amount due for the invoice is less than 50 cents (the minimum for a
+    charge), We add the amount to the customer's running account balance to be
+    added to the next invoice. If this amount is negative, it will act as a
+    credit to offset the next invoice. Note that the customer account balance
+    does not include unpaid invoices; it only includes balances that need to be
+    taken into account when calculating the amount due for the next invoice.
     """
+
     livemode = models.BooleanField()
     amount_due = models.IntegerField(
         help_text=_(
@@ -953,8 +992,8 @@ class Invoice(models.Model):
     )
     closed = models.BooleanField(
         help_text=_(
-            "Whether or not the invoice is still trying to collect payment. An "
-            "invoice is closed if it’s either paid or it has been marked "
+            "Whether or not the invoice is still trying to collect payment. "
+            "An invoice is closed if it’s either paid or it has been marked "
             "closed. A closed invoice will no longer attempt to collect "
             "payment."
         )
@@ -1054,8 +1093,8 @@ class Invoice(models.Model):
     statement_descriptor = models.CharField(
         max_length=255,
         help_text=_(
-            "Extra information about an invoice for the customer’s credit card "
-            "statement."
+            "Extra information about an invoice for the customer’s credit "
+            "card statement."
         )
     )
     subscription = models.ForeignKey(
@@ -1107,12 +1146,16 @@ class Invoice(models.Model):
 
 
 class InvoiceItem(models.Model):
+
+    """Stripe Invoice Item object.
+
+    Sometimes you want to add a charge or credit to a customer but only
+    actually charge the customer's card at the end of a regular billing
+    cycle. This is useful for combining several charges to minimize
+    per-transaction fees or having Stripe tabulate your usage-based
+    billing totals.
     """
-    Sometimes you want to add a charge or credit to a customer but only actually
-    charge the customer's card at the end of a regular billing cycle. This is
-    useful for combining several charges to minimize per-transaction fees or
-    having Stripe tabulate your usage-based billing totals.
-    """
+
     livemode = models.BooleanField()
     amount = models.IntegerField()
     currency = models.CharField(
@@ -1168,19 +1211,22 @@ class InvoiceItem(models.Model):
 
 
 class Dispute(models.Model):
-    """
+
+    """Stripe Dispute object.
+
     A dispute occurs when a customer questions your charge with their bank or
     credit card company. When a customer disputes your charge, you're given the
-    opportunity to respond to the dispute with evidence that shows the charge is
-    legitimate. You can find more information about the dispute process in our
-    disputes FAQ.
+    opportunity to respond to the dispute with evidence that shows the charge
+    is legitimate. You can find more information about the dispute process in
+    our disputes FAQ.
     """
+
     livemode = models.BooleanField()
     amount = models.IntegerField(
         help_text=_(
-            "Disputed amount. Usually the amount of the charge, but can differ "
-            "(usually because of currency fluctuation or because only part of "
-            "the order is disputed)."
+            "Disputed amount. Usually the amount of the charge, but can "
+            "differ (usually because of currency fluctuation or because only "
+            "part of the order is disputed)."
         )
     )
     # reverse
@@ -1252,10 +1298,13 @@ class Dispute(models.Model):
 
 
 class DisputeEvidence(models.Model):
-    """
+
+    """Stripe Dispute Evidence object.
+
     :class:`DisputeEvidence` revserse relations will be prefixed with
     ``dispute_``.
     """
+
     access_activity_log = models.TextField(
         help_text=_(
             "Any server or activity logs showing proof that the customer "
@@ -1294,8 +1343,8 @@ class DisputeEvidence(models.Model):
         help_text=_(
             "(ID of a file upload) Any communication with the customer that "
             "you feel is relevant to your case (for example emails proving "
-            "that they received the product or service, or demonstrating their "
-            "use of or satisfaction with the product or service)"
+            "that they received the product or service, or demonstrating "
+            "their use of or satisfaction with the product or service)"
         ),
         related_name="dispute_customer_communication"
     )
@@ -1305,8 +1354,8 @@ class DisputeEvidence(models.Model):
     customer_signature = models.ForeignKey(
         "FileUpload",
         help_text=_(
-            "(ID of a file upload) A relevant document or contract showing the "
-            "customer’s signature."
+            "(ID of a file upload) A relevant document or contract showing "
+            "the customer’s signature."
         ),
         related_name="dispute_customer_signature"
     )
@@ -1343,8 +1392,8 @@ class DisputeEvidence(models.Model):
     receipt = models.ForeignKey(
         "FileUpload",
         help_text=_(
-            "(ID of a file upload) Any receipt or message sent to the customer "
-            "notifying them of the charge."
+            "(ID of a file upload) Any receipt or message sent to the "
+            "customer notifying them of the charge."
         ),
         related_name="dispute_receipt"
     )
@@ -1415,8 +1464,8 @@ class DisputeEvidence(models.Model):
     shipping_tracking_number = models.TextField(
         help_text=_(
             "The tracking number for a physical product, obtained from the "
-            "delivery service. If multiple tracking numbers were generated for "
-            "this purchase, please separate them with commas."
+            "delivery service. If multiple tracking numbers were generated "
+            "for this purchase, please separate them with commas."
         )
     )
     uncategorized_file = models.ForeignKey(
@@ -1493,23 +1542,26 @@ TRANSFER_FAILURE_CHOICES = (
     (
         "bank_account_restricted",
         _(
-            "The bank account has restrictions on either the type or number of "
-            "transfers allowed. This normally indicates that the bank account "
-            "is a savings or other non-checking account."
+            "The bank account has restrictions on either the type or number "
+            "of transfers allowed. This normally indicates that the bank "
+            "account is a savings or other non-checking account."
         )
     ),
     (
         "invalid_currency",
         _(
             "The bank was unable to process this transfer because of its "
-            "currency. This is probably because the bank account cannot accept "
-            "payments in that currency."
+            "currency. This is probably because the bank account cannot "
+            "accept payments in that currency."
         )
     ),
 )
 
+
 class Transfer(models.Model):
-    """
+
+    """Stripe Transfer object.
+
     When Stripe sends you money or you initiate a transfer to a bank account,
     debit card, or connected Stripe account, a transfer object will be created.
     You can retrieve individual transfers as well as list all transfers.
@@ -1518,6 +1570,7 @@ class Transfer(models.Model):
 
     .. _documentation: https://stripe.com/docs/tutorials/sending-transfers
     """
+
     livemode = models.BooleanField()
     amount = models.IntegerField(
         help_text=_(
@@ -1550,8 +1603,8 @@ class Transfer(models.Model):
     reversed = models.BooleanField(
         help_text=_(
             "Whether or not the transfer has been fully reversed. If the "
-            "transfer is only partially reversed, this attribute will still be "
-            "false."
+            "transfer is only partially reversed, this attribute will still "
+            "be false."
         )
     )
 
@@ -1559,10 +1612,10 @@ class Transfer(models.Model):
         max_length=255,
         help_text=_(
             "Current status of the transfer (``paid``, ``pending``, "
-            "``canceled`` or ``failed``). A transfer will be ``pending`` until "
-            "it is submitted, at which point it becomes ``paid``. If it does "
-            "not go through successfully, its status will change to ``failed`` "
-            "or ``canceled``."
+            "``canceled`` or ``failed``). A transfer will be ``pending`` "
+            "until it is submitted, at which point it becomes ``paid``. If it "
+            "does not go through successfully, its status will change to "
+            "``failed`` or ``canceled``."
         ),
         choices=TRANSFER_STATUS_CHOICES
     )
@@ -1583,8 +1636,8 @@ class Transfer(models.Model):
     balance_transaction = models.ForeignKey(
         "BalanceTransaction",
         help_text=_(
-            "Balance transaction that describes the impact of this transfer on "
-            "your account balance."
+            "Balance transaction that describes the impact of this transfer "
+            "on your account balance."
         )
     )
     description = models.TextField(
@@ -1602,8 +1655,8 @@ class Transfer(models.Model):
     )
     failure_message = models.TextField(
         help_text=_(
-            "Message to user further explaining reason for transfer failure if "
-            "available."
+            "Message to user further explaining reason for transfer failure "
+            "if available."
         )
     )
     metadata = json.JSONField(
@@ -1632,9 +1685,9 @@ class Transfer(models.Model):
     source_transaction = models.CharField(
         max_length=255,
         help_text=_(
-            "ID of the charge (or other transaction) that was used to fund the "
-            "transfer. If null, the transfer was funded from the available "
-            "balance."
+            "ID of the charge (or other transaction) that was used to fund "
+            "the transfer. If null, the transfer was funded from the "
+            "available balance."
         )
     )
     statement_descriptor = models.CharField(
@@ -1647,12 +1700,15 @@ class Transfer(models.Model):
 
 
 class TransferReversal(models.Model):
-    """
+
+    """Stripe Transfer Reversal object.
+
     A previously created transfer can be reversed if it has not yet been paid
-    out. Funds will be refunded to your available balance, and the fees you were
-    originally charged on the transfer will be refunded. You may not reverse
-    automatic Stripe transfers.
+    out. Funds will be refunded to your available balance, and the fees you
+    were originally charged on the transfer will be refunded. You may not
+    reverse automatic Stripe transfers.
     """
+
     amount = models.IntegerField(
         help_text=_(
             "Amount reversed, in cents."
@@ -1669,8 +1725,8 @@ class TransferReversal(models.Model):
     balance_transaction = models.ForeignKey(
         "BalanceTransaction",
         help_text=_(
-            "Balance transaction that describes the impact of this reversal on "
-            "your account balance."
+            "Balance transaction that describes the impact of this reversal "
+            "on your account balance."
         ),
         related_name="transfer_reversal_balance_transaction"
     )
@@ -1694,18 +1750,22 @@ RECIPIENT_TYPE_CHOICES = (
     ("corporoation", _("Corporation")),
 )
 
+
 class Recipient(models.Model):
-    """
-    With recipient objects, you can transfer money from your Stripe account to a
-    third party bank account or debit card. The API allows you to create,
+
+    """Stripe Recipient object.
+
+    With recipient objects, you can transfer money from your Stripe account to
+    a third party bank account or debit card. The API allows you to create,
     delete, and update your recipients. You can retrieve individual recipients
     as well as a list of all your recipients.
 
-    Recipient objects have been deprecated in favor of Connect, specifically the
-    much more powerful account objects. Please use them instead. If you are
+    Recipient objects have been deprecated in favor of Connect, specifically
+    the much more powerful account objects. Please use them instead. If you are
     already using recipients, please see our migration guide for more
     information.
     """
+
     livemode = models.BooleanField()
     created = models.DateTimeField()
     type = models.CharField(
@@ -1717,8 +1777,8 @@ class Recipient(models.Model):
     )
     active_account = json.JSONField(
         help_text=_(
-            "Hash describing the current account on the recipient, if there is "
-            "one."
+            "Hash describing the current account on the recipient, if there "
+            "is one."
         )
     )
     description = models.TextField()
@@ -1746,13 +1806,16 @@ class Recipient(models.Model):
 
 
 class ApplicationFee(models.Model):
-    """
+
+    """Stripe Application Fee object.
+
     When you collect a transaction fee on top of a charge made for your user
     (using Stripe Connect), an application fee object is created in your
     account. You can list, retrieve, and refund application fees.
 
     For more information on collecting transaction fees, see our documentation.
     """
+
     livemode = models.BooleanField()
     account = models.ForeignKey(
         "Account",
@@ -1802,12 +1865,16 @@ class ApplicationFee(models.Model):
     # refunds reverse relation from "Refund"
     amount_refunded = models.PositiveIntegerField()
 
+
 class ApplicationFeeRefund(models.Model):
-    """
+
+    """Stripe Application Fee Refund object.
+
     Application Fee Refund objects allow you to refund an application fee that
     has previously been created but not yet refunded. Funds will be refunded to
     the Stripe account that the fee was originally collected from.
     """
+
     amount = models.IntegerField(
         help_text=_("Amount reversed, in cents.")
     )
@@ -1823,8 +1890,8 @@ class ApplicationFeeRefund(models.Model):
     balance_transaction = models.ForeignKey(
         "BalanceTransaction",
         help_text=_(
-            "Balance transaction that describes the impact of this reversal on "
-            "your account balance."
+            "Balance transaction that describes the impact of this reversal "
+            "on your account balance."
         )
     )
     fee = models.ForeignKey(
@@ -1843,7 +1910,9 @@ class ApplicationFeeRefund(models.Model):
 
 
 class Account(models.Model):
-    """
+
+    """Stripe Account object.
+
     This is an object representing your Stripe account. You can retrieve it to
     see properties on the account like its current e-mail address or if the
     account is enabled yet to make live charges.
@@ -1851,6 +1920,7 @@ class Account(models.Model):
     Some properties, marked as "managed accounts only", are only available to
     platforms who want to create and manage Stripe accounts.
     """
+
     charges_enabled = models.BooleanField(
         help_text=_(
             "Whether or not the account can create live charges"
@@ -1881,8 +1951,8 @@ class Account(models.Model):
     transfers_enabled = models.BooleanField(
         help_text=_(
             "Whether or not Stripe will send automatic transfers for this "
-            "account. This is only false when Stripe is waiting for additional "
-            "information from the account holder."
+            "account. This is only false when Stripe is waiting for "
+            "additional information from the account holder."
         )
     )
     display_name = models.CharField(
@@ -1993,8 +2063,11 @@ class Account(models.Model):
         )
     )
 
+
 class Balance(models.Model):
-    """
+
+    """Stripe Balance object.
+
     This is an object representing your Stripe balance. You can retrieve it to
     see the balance currently on your Stripe account.
 
@@ -2002,6 +2075,7 @@ class Balance(models.Model):
     list of transactions that have ever contributed to the balance (charges,
     refunds, transfers, and so on).
     """
+
     livemode = models.BooleanField()
     available = json.JSONField(
         help_text=(
@@ -2011,10 +2085,11 @@ class Balance(models.Model):
     )
     pending = json.JSONField(
         help_text=_(
-            "Funds that are not available in the balance yet, due to the 7-day "
-            "rolling pay cycle."
+            "Funds that are not available in the balance yet, due to the "
+            "7-day rolling pay cycle."
         )
     )
+
 
 class BalanceTransaction(models.Model):
     amount = models.IntegerField(
@@ -2024,8 +2099,8 @@ class BalanceTransaction(models.Model):
     )
     available_on = models.DateTimeField(
         help_text=_(
-            "The date the transaction’s net funds will become available in the "
-            "Stripe balance."
+            "The date the transaction’s net funds will become available in "
+            "the Stripe balance."
         )
     )
     created = models.DateTimeField()
@@ -2075,25 +2150,29 @@ class BalanceTransaction(models.Model):
         )
     )
 
+
 class Event(models.Model):
-    """
+
+    """Stripe Event object.
+
     Events are our way of letting you know about something interesting that has
-    just happened in your account. When an interesting event occurs, we create a
-    new event object. For example, when a charge succeeds we create a
+    just happened in your account. When an interesting event occurs, we create
+    a new event object. For example, when a charge succeeds we create a
     ``charge.succeeded`` event; or, when an invoice can't be paid we create an
     ``invoice.payment_failed`` event. Note that many API requests may cause
-    multiple events to be created. For example, if you create a new subscription
-    for a customer, you will receive both a ``customer.subscription.created``
-    event and a ``charge.succeeded`` event.
+    multiple events to be created. For example, if you create a new
+    subscription for a customer, you will receive both a
+    ``customer.subscription.created`` event and a ``charge.succeeded`` event.
 
-    Like our other API resources, you can retrieve an individual event or a list
-    of events from the API. We also have a system for sending the events
+    Like our other API resources, you can retrieve an individual event or a
+    list of events from the API. We also have a system for sending the events
     directly to your server, called webhooks. Webhooks are managed in your
     account settings, and our webhook guide will help you get them set up.
 
     NOTE: Right now, we only guarantee access to events through the Retrieve
     Event API for 30 days.
     """
+
     livemode = models.BooleanField()
     created = models.DateTimeField()
     data = json.JSONField(
@@ -2103,8 +2182,8 @@ class Event(models.Model):
     )
     pending_webhooks = models.PositiveIntegerField(
         help_text=_(
-            "Number of webhooks yet to be delivered successfully (return a 20x "
-            "response) to the URLs you’ve specified."
+            "Number of webhooks yet to be delivered successfully (return a "
+            "20x response) to the URLs you’ve specified."
         )
     )
     type = models.CharField(
@@ -2137,8 +2216,11 @@ TOKEN_TYPE_CHOICES = (
     ("bank_account", _("Bank Account")),
 )
 
+
 class Token(models.Model):
-    """
+
+    """Stripe Token object.
+
     Often you want to be able to charge credit cards or send payments to bank
     accounts without having to hold sensitive card information on your own
     servers. Stripe.js makes this easy in the browser, but you can use the same
@@ -2151,6 +2233,7 @@ class Token(models.Model):
     once—to store these details for use later, you should create Customer or
     Recipient objects.
     """
+
     livemode = models.BooleanField()
     created = models.DateTimeField()
     type = models.CharField(
@@ -2179,19 +2262,23 @@ class Token(models.Model):
         )
     )
 
+
 class BitCoinReceiver(models.Model):
-    """
+
+    """Stripe Bitcoin Receiver object.
+
     A Bitcoin receiver wraps a Bitcoin address so that a customer can push a
     payment to you. This `guide`_ describes how to use receivers to create
     Bitcoin payments.
 
     .. _guide: https://stripe.com/docs/guides/bitcoin
     """
+
     livemode = models.BooleanField()
     active = models.BooleanField(
         help_text=_(
-            "True when this bitcoin receiver has received a non-zero amount of "
-            "bitcoin."
+            "True when this bitcoin receiver has received a non-zero amount "
+            "of bitcoin."
         )
     )
     amount = models.PositiveIntegerField(
@@ -2208,8 +2295,8 @@ class BitCoinReceiver(models.Model):
     bitcoin_amount = models.PositiveIntegerField(
         help_text=_(
             "The amount of bitcoin that the customer should send to fill the "
-            "receiver. The bitcoin_amount is denominated in Satoshi: there are "
-            "10^8 Satoshi in one bitcoin."
+            "receiver. The bitcoin_amount is denominated in Satoshi: there "
+            "are 10^8 Satoshi in one bitcoin."
         )
     )
     bitcoin_amount_received = models.PositiveIntegerField(
@@ -2220,8 +2307,8 @@ class BitCoinReceiver(models.Model):
     )
     bitcoin_uri = models.URLField(
         help_text=_(
-            "This URI can be displayed to the customer as a clickable link (to "
-            "activate their bitcoin client) or as a QR code (for mobile "
+            "This URI can be displayed to the customer as a clickable link "
+            "(to activate their bitcoin client) or as a QR code (for mobile "
             "wallets)."
         )
     )
@@ -2229,8 +2316,8 @@ class BitCoinReceiver(models.Model):
     currency = models.CharField(
         max_length=255,
         help_text=_(
-            "Three-letter ISO currency code representing the currency to which "
-            "the bitcoin will be converted."
+            "Three-letter ISO currency code representing the currency to "
+            "which the bitcoin will be converted."
         ),
         choices=CURRENCY_CHOICES
     )
@@ -2243,8 +2330,8 @@ class BitCoinReceiver(models.Model):
     inbound_address = models.CharField(
         max_length=255,
         help_text=_(
-            "A bitcoin address that is specific to this receiver. The customer "
-            "can send bitcoin to this address to fill the receiver."
+            "A bitcoin address that is specific to this receiver. The "
+            "customer can send bitcoin to this address to fill the receiver."
         )
     )
     transactions = json.JSONField(
@@ -2291,11 +2378,12 @@ class BitCoinReceiver(models.Model):
     customer = models.ForeignKey("Customer")
 
 
-
 FILE_UPLOAD_PURPOSE_CHOICES = (
     ("identity document", _("Identity document")),
     ("dispute_evidence", _("Dispute evidence")),
 )
+
+
 class FileUpload(models.Model):
     created = models.DateTimeField()
     purpose = models.CharField(
@@ -2326,4 +2414,3 @@ class FileUpload(models.Model):
             "API key."
         )
     )
-
