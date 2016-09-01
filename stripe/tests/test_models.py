@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.test import TestCase
+from django.utils.six import six
 
 from ..models import Customer
 from .helpers import get_test_data
@@ -41,7 +42,7 @@ def get_djorm_model_from_object_key(objkey):
     """
     from django.apps import apps
 
-    if not isinstance(objkey, unicode):
+    if not isinstance(objkey, six.text_type):
         raise TypeError(
             "argument must be a string"
         )
