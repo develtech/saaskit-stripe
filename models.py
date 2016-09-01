@@ -10,12 +10,12 @@ CURRENCY_CHOICES = (
     ("USD", "USD"),
 
     ("AED", "United Arab Emirates Dirham"),
-    ("AFN", "Afghan Afghani"), # *
+    ("AFN", "Afghan Afghani"),  # *
     ("ALL", "Albanian Lek"),
     ("AMD", "Armenian Dram"),
     ("ANG", "Netherlands Antillean Gulden"),
     ("AOA", "Angolan Kwanza"),
-    ("ARS", "Argentine Peso"), # *
+    ("ARS", "Argentine Peso"),  # *
     ("AUD", "Australian Dollar"),
     ("AWG", "Aruban Florin"),
     ("AZN", "Azerbaijani Manat"),
