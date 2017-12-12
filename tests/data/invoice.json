@@ -1,0 +1,74 @@
+{
+  "date": 1433948665,
+  "id": "in_16CAkf2eZvKYlo2Cyb57MvlZ",
+  "period_start": 1433861889,
+  "period_end": 1433948289,
+  "lines": {
+    "data": [
+      {
+        "id": "sub_6Ozv0x1N1T0DxH",
+        "object": "line_item",
+        "type": "subscription",
+        "livemode": true,
+        "amount": 2000,
+        "currency": "usd",
+        "proration": false,
+        "period": {
+          "start": 1465575560,
+          "end": 1497111560
+        },
+        "subscription": null,
+        "quantity": 1,
+        "plan": {
+          "interval": "year",
+          "name": "New plan name",
+          "created": 1432558607,
+          "amount": 2000,
+          "currency": "usd",
+          "id": "rhohub-gold-year",
+          "object": "plan",
+          "livemode": false,
+          "interval_count": 1,
+          "trial_period_days": null,
+          "metadata": {
+          },
+          "statement_descriptor": null
+        },
+        "description": null,
+        "discountable": true,
+        "metadata": {
+        }
+      }
+    ],
+    "total_count": 1,
+    "object": "list",
+    "url": "/v1/invoices/in_16CAkf2eZvKYlo2Cyb57MvlZ/lines"
+  },
+  "subtotal": 2000,
+  "total": 2000,
+  "customer": "cus_6Ozta4Bn1hmWEH",
+  "object": "invoice",
+  "attempted": true,
+  "closed": true,
+  "forgiven": false,
+  "paid": true,
+  "livemode": false,
+  "attempt_count": 1,
+  "amount_due": 2000,
+  "currency": "usd",
+  "starting_balance": 0,
+  "ending_balance": 0,
+  "next_payment_attempt": null,
+  "webhooks_delivered_at": 1433948671,
+  "charge": "ch_16CBpd2eZvKYlo2CW8r6ndq6",
+  "discount": null,
+  "application_fee": null,
+  "subscription": "sub_4Ryf0Qo0XKkQnY",
+  "tax_percent": null,
+  "tax": null,
+  "metadata": {
+  },
+  "statement_descriptor": null,
+  "description": null,
+  "receipt_number": null
+}

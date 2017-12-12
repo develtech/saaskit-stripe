@@ -1,0 +1,34 @@
+{
+  "id": "ii_16ASdS2eZvKYlo2CjzY94kl2",
+  "object": "line_item",
+  "type": "invoiceitem",
+  "livemode": false,
+  "amount": -100,
+  "currency": "usd",
+  "proration": true,
+  "period": {
+    "start": 1433540754,
+    "end": 1433540754
+  },
+  "subscription": "sub_6ND3uNAtEI5qjH",
+  "quantity": 1,
+  "plan": {
+    "interval": "week",
+    "name": "Foo",
+    "created": 1433540742,
+    "amount": 100,
+    "currency": "usd",
+    "id": "1383foo1433540738",
+    "object": "plan",
+    "livemode": false,
+    "interval_count": 1,
+    "trial_period_days": null,
+    "metadata": {
+    },
+    "statement_descriptor": null
+  },
+  "description": "Unused time on Foo after 05 Jun 2015",
+  "discountable": false,
+  "metadata": {
+  }
+}
