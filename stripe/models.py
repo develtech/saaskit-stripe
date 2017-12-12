@@ -236,15 +236,17 @@ class Charge(models.Model):
     customer = models.ForeignKey(
         "Customer",
         help_text=_(
-            "ID of the customer this charge is for if one exists."
-        )
+            'ID of the customer this charge is for if one exists.',
+        ),
+        on_delete=models.CASCADE
     )
     description = models.CharField(max_length=255)
     dispute = models.ForeignKey(
         "Dispute", blank=True, null=True,
         help_text=_(
-            "Details about the dispute if the charge has been disputed."
-        )
+            'Details about the dispute if the charge has been disputed.',
+        ),
+        on_delete=models.CASCADE
     )
     failure_code = models.CharField(
         max_length=255,
@@ -264,8 +266,9 @@ class Charge(models.Model):
     invoice = models.ForeignKey(
         "Invoice",
         help_text=_(
-            "ID of the invoice this charge is for if one exists."
-        )
+            'ID of the invoice this charge is for if one exists.',
+        ),
+        on_delete=models.CASCADE
     )
     metadata = json.JSONField(
         help_text=_(
@@ -567,9 +570,10 @@ class Card(models.Model):
     customer = models.ForeignKey(
         "Customer",
         help_text=_(
-            "The customer that this card belongs to. This attribute will not "
-            "be in the card object if the card belongs to a recipient instead."
-        )
+            'The customer that this card belongs to. This attribute will not '
+            'be in the card object if the card belongs to a recipient instead.'
+        ),
+        on_delete=models.CASCADE
     )
     cvc_check = models.CharField(
         max_length=255,
@@ -635,25 +639,26 @@ class Subscription(models.Model):
 
     cancel_at_period_end = models.BooleanField(
         help_text=_(
-            "If the subscription has been canceled with the ``at_period_end``"
-            "flag set to ``true``, ``cancel_at_period_end`` on the "
-            "subscription will be true. You can use this attribute to "
-            "determine whether a subscription that has a status of active is "
-            "scheduled to be canceled at the end of the current period."
-        )
+            'If the subscription has been canceled with the ``at_period_end``'
+            'flag set to ``true``, ``cancel_at_period_end`` on the '
+            'subscription will be true. You can use this attribute to '
+            'determine whether a subscription that has a status of active is '
+            'scheduled to be canceled at the end of the current period.',
+        ),
     )
-    customer = models.ForeignKey("Customer")
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE,)
     plan = models.ForeignKey(
         "Plan",
         help_text=_(
-            "Hash describing the plan the customer is subscribed to"
-        )
+            'Hash describing the plan the customer is subscribed to',
+        ),
+        on_delete=models.CASCADE,
     )
     quantity = models.PositiveIntegerField()
     start = models.DateTimeField(
         help_text=_(
-            "Date the subscription started"
-        )
+            'Date the subscription started',
+        ),
     )
     status = models.CharField(
         max_length=255,
@@ -703,10 +708,11 @@ class Subscription(models.Model):
     discount = models.ForeignKey(
         "Discount",
         help_text=_(
-            "Describes the current discount applied to this subscription, if "
-            "there is one. When billing, a discount applied to a subscription "
-            "overrides a discount applied on a customer-wide basis."
-        )
+            'Describes the current discount applied to this subscription, if '
+            'there is one. When billing, a discount applied to a subscription '
+            'overrides a discount applied on a customer-wide basis.',
+        ),
+        on_delete=models.CASCADE
     )
     ended_at = models.DateTimeField(
         help_text=_(
@@ -912,10 +918,11 @@ class Discount(models.Model):
     coupon = models.ForeignKey(
         "Coupon",
         help_text=_(
-            "Hash describing the coupon applied to create this discount"
-        )
+            'Hash describing the coupon applied to create this discount',
+        ),
+        on_delete=models.CASCADE,
     )
-    customer = models.ForeignKey("Customer")
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE)
     start = models.DateTimeField(
         help_text=_("Date that the coupon was applied")
     )
@@ -1002,7 +1009,7 @@ class Invoice(models.Model):
         max_length=255,
         choices=CURRENCY_CHOICES
     )
-    customer = models.ForeignKey("Customer")
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE,)
     date = models.DateTimeField()
     forgiven = models.BooleanField(
         help_text=_(
@@ -1071,7 +1078,7 @@ class Invoice(models.Model):
     #     )
     # )
     description = models.CharField(max_length=255)
-    discount = models.ForeignKey("Discount")
+    discount = models.ForeignKey('Discount', on_delete=models.CASCADE,)
     ending_balance = models.IntegerField(
         help_text=_(
             "Ending customer balance after attempting to pay invoice. If the "
@@ -1100,8 +1107,9 @@ class Invoice(models.Model):
     subscription = models.ForeignKey(
         "Subscription",
         help_text=_(
-            "The subscription that this invoice was prepared for, if any."
-        )
+            'The subscription that this invoice was prepared for, if any.',
+        ),
+        on_delete=models.CASCADE,
     )
     webhooks_delivered_at = models.DateTimeField(
         help_text=_(
@@ -1162,7 +1170,7 @@ class InvoiceItem(models.Model):
         max_length=255,
         choices=CURRENCY_CHOICES
     )
-    customer = models.ForeignKey("Customer")
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE,)
     date = models.DateTimeField()
     discountable = models.BooleanField(
         help_text=_(
@@ -1191,9 +1199,10 @@ class InvoiceItem(models.Model):
     plan = models.ForeignKey(
         "Plan",
         help_text=_(
-            "If the invoice item is a proration, the plan of the subscription "
-            "that the proration was computed for."
-        )
+            'If the invoice item is a proration, the plan of the subscription '
+            'that the proration was computed for.',
+        ),
+        on_delete=models.CASCADE,
     )
     quantity = models.IntegerField(
         help_text=_(
@@ -1204,9 +1213,10 @@ class InvoiceItem(models.Model):
     subscription = models.ForeignKey(
         "Subscription",
         help_text=_(
-            "The subscription that this invoice item has been created for, if "
-            "any."
-        )
+            'The subscription that this invoice item has been created for, if '
+            'any.',
+        ),
+        on_delete=models.CASCADE,
     )
 
 
@@ -1274,9 +1284,10 @@ class Dispute(models.Model):
     evidence = models.ForeignKey(
         "DisputeEvidence",
         help_text=_(
-            "Evidence provided to respond to a dispute. Updating any field in "
-            "the hash will submit all fields in the hash for review."
-        )
+            'Evidence provided to respond to a dispute. Updating any field in '
+            'the hash will submit all fields in the hash for review.',
+        ),
+        on_delete=models.CASCADE,
     )
     evidence_details = json.JSONField(
         help_text=_(
@@ -1324,7 +1335,8 @@ class DisputeEvidence(models.Model):
             "(ID of a file upload) Your subscription cancellation policy, as "
             "shown to the customer."
         ),
-        related_name="dispute_cancelling_policy"
+        related_name='dispute_cancelling_policy',
+        on_delete=models.CASCADE,
     )
     cancellation_policy_disclosure = models.TextField(
         help_text=_(
@@ -1346,7 +1358,8 @@ class DisputeEvidence(models.Model):
             "that they received the product or service, or demonstrating "
             "their use of or satisfaction with the product or service)"
         ),
-        related_name="dispute_customer_communication"
+        related_name='dispute_customer_communication',
+        on_delete=models.CASCADE,
     )
     customer_email_address = models.EmailField()
     customer_name = models.CharField(max_length=255)
@@ -1354,10 +1367,11 @@ class DisputeEvidence(models.Model):
     customer_signature = models.ForeignKey(
         "FileUpload",
         help_text=_(
-            "(ID of a file upload) A relevant document or contract showing "
-            "the customer’s signature."
+            '(ID of a file upload) A relevant document or contract showing '
+            'the customer’s signature.',
         ),
-        related_name="dispute_customer_signature"
+        related_name='dispute_customer_signature',
+        on_delete=models.CASCADE,
     )
     duplicate_charge_documentation = models.ForeignKey(
         "FileUpload",
@@ -1368,7 +1382,8 @@ class DisputeEvidence(models.Model):
             "document from the disputed payment that proves the two payments "
             "are separate."
         ),
-        related_name="dispute_charge_documentation"
+        related_name='dispute_charge_documentation',
+        on_delete=models.CASCADE,
     )
     duplicate_charge_explanation = models.TextField(
         help_text=_(
@@ -1379,10 +1394,11 @@ class DisputeEvidence(models.Model):
     duplicate_charge_id = models.ForeignKey(
         "Charge",
         help_text=_(
-            "The Stripe ID for the prior charge which appears to be a "
-            "duplicate of the disputed charge."
+            'The Stripe ID for the prior charge which appears to be a '
+            'duplicate of the disputed charge.',
         ),
-        related_name="dispute_charge"
+        related_name='dispute_charge',
+        on_delete=models.CASCADE,
     )
     product_description = models.TextField(
         help_text=_(
@@ -1395,7 +1411,8 @@ class DisputeEvidence(models.Model):
             "(ID of a file upload) Any receipt or message sent to the "
             "customer notifying them of the charge."
         ),
-        related_name="dispute_receipt"
+        related_name='dispute_receipt',
+        on_delete=models.CASCADE,
     )
     refund_policy = models.ForeignKey(
         "FileUpload",
@@ -1403,7 +1420,8 @@ class DisputeEvidence(models.Model):
             "(ID of a file upload) Your refund policy, as shown to the "
             "customer."
         ),
-        related_name="dispute_refund_policy"
+        related_name='dispute_refund_policy',
+        on_delete=models.CASCADE,
     )
     refund_policy_disclosure = models.TextField(
         help_text=_(
@@ -1429,7 +1447,8 @@ class DisputeEvidence(models.Model):
             "was provided to the customer. This could include a copy of a "
             "signed contract, work order, or other form of written agreement."
         ),
-        related_name="dispute_service_documentation"
+        related_name='dispute_service_documentation',
+        on_delete=models.CASCADE,
     )
     shipping_address = models.TextField(
         help_text=_(
@@ -1459,7 +1478,8 @@ class DisputeEvidence(models.Model):
             "receipt, shipping label, etc, and should show the full shipping "
             "address of the customer, if possible."
         ),
-        related_name="dispute_shipping_documentation"
+        related_name='dispute_shipping_documentation',
+        on_delete=models.CASCADE,
     )
     shipping_tracking_number = models.TextField(
         help_text=_(
@@ -1473,7 +1493,8 @@ class DisputeEvidence(models.Model):
         help_text=_(
             "(ID of a file upload) Any additional evidence or statements."
         ),
-        related_name="dispute_uncategorized_file"
+        related_name='dispute_uncategorized_file',
+        on_delete=models.CASCADE,
     )
     uncategorized_text = models.TextField(
         help_text=_("Any additional evidence or statements.")
@@ -1636,9 +1657,10 @@ class Transfer(models.Model):
     balance_transaction = models.ForeignKey(
         "BalanceTransaction",
         help_text=_(
-            "Balance transaction that describes the impact of this transfer "
-            "on your account balance."
-        )
+            'Balance transaction that describes the impact of this transfer '
+            'on your account balance.',
+        ),
+        on_delete=models.CASCADE,
     )
     description = models.TextField(
         help_text=_(
@@ -1728,7 +1750,8 @@ class TransferReversal(models.Model):
             "Balance transaction that describes the impact of this reversal "
             "on your account balance."
         ),
-        related_name="transfer_reversal_balance_transaction"
+        related_name='transfer_reversal_balance_transaction',
+        on_delete=models.CASCADE,
     )
     metadata = json.JSONField(
         help_text=_(
@@ -1740,8 +1763,9 @@ class TransferReversal(models.Model):
     transfer = models.ForeignKey(
         "Transfer",
         help_text=_(
-            "ID of the transfer that was reversed."
-        )
+            'ID of the transfer that was reversed.'
+        ),
+        on_delete=models.CASCADE,
     )
 
 
@@ -1800,7 +1824,8 @@ class Recipient(models.Model):
         help_text=_(
             "The default card to use for creating transfers to this recipient."
         ),
-        related_name="recipients_default"
+        related_name='recipients_default',
+        on_delete=models.CASCADE,
     )
     migrated_to = models.CharField(max_length=255)
 
@@ -1820,8 +1845,9 @@ class ApplicationFee(models.Model):
     account = models.ForeignKey(
         "Account",
         help_text=_(
-            "ID of the Stripe account this fee was taken from."
-        )
+            'ID of the Stripe account this fee was taken from.',
+        ),
+        on_delete=models.CASCADE,
     )
     amount = models.IntegerField(
         help_text=_(
@@ -1837,15 +1863,17 @@ class ApplicationFee(models.Model):
     balance_transaction = models.ForeignKey(
         "BalanceTransaction",
         help_text=_(
-            "Balance transaction that describes the impact of this collected "
-            "application fee on your account balance (not including refunds)."
-        )
+            'Balance transaction that describes the impact of this collected '
+            'application fee on your account balance (not including refunds).'
+        ),
+        on_delete=models.CASCADE,
     )
     charge = models.ForeignKey(
         "Charge",
         help_text=_(
-            "ID of the charge that the application fee was taken from."
-        )
+            'ID of the charge that the application fee was taken from.'
+        ),
+        on_delete=models.CASCADE,
     )
     created = models.DateTimeField()
     currency = models.CharField(
@@ -1890,15 +1918,17 @@ class ApplicationFeeRefund(models.Model):
     balance_transaction = models.ForeignKey(
         "BalanceTransaction",
         help_text=_(
-            "Balance transaction that describes the impact of this reversal "
-            "on your account balance."
-        )
+            'Balance transaction that describes the impact of this reversal '
+            'on your account balance.'
+        ),
+        on_delete=models.CASCADE,
     )
     fee = models.ForeignKey(
         "ApplicationFee",
         help_text=_(
-            "ID of the application fee that was refunded."
-        )
+            'ID of the application fee that was refunded.'
+        ),
+        on_delete=models.CASCADE,
     )
     metadata = json.JSONField(
         help_text=_(
@@ -2375,7 +2405,7 @@ class BitCoinReceiver(models.Model):
             "customer."
         )
     )
-    customer = models.ForeignKey("Customer")
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE,)
 
 
 FILE_UPLOAD_PURPOSE_CHOICES = (
