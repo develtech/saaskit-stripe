@@ -1,0 +1,45 @@
+{
+  "id": "tr_16ASdy2eZvKYlo2CnxOgXfQR",
+  "object": "transfer",
+  "created": 1433540786,
+  "date": 1433540786,
+  "livemode": false,
+  "amount": 1,
+  "currency": "usd",
+  "reversed": false,
+  "status": "paid",
+  "type": "bank_account",
+  "reversals": {
+    "object": "list",
+    "total_count": 0,
+    "has_more": false,
+    "url": "/v1/transfers/tr_16ASdy2eZvKYlo2CnxOgXfQR/reversals",
+    "data": [
+
+    ]
+  },
+  "balance_transaction": "txn_169oS22eZvKYlo2CSLNAbKOX",
+  "bank_account": {
+    "object": "bank_account",
+    "id": "ba_16ASdr2eZvKYlo2CFAdcyQgG",
+    "last4": "6789",
+    "country": "US",
+    "currency": "usd",
+    "status": "new",
+    "fingerprint": "1JWtPxqbdX5Gamtc",
+    "routing_number": "110000000",
+    "bank_name": "STRIPE TEST BANK"
+  },
+  "destination": "ba_16ASdr2eZvKYlo2CFAdcyQgG",
+  "description": null,
+  "failure_message": null,
+  "failure_code": null,
+  "amount_reversed": 0,
+  "metadata": {
+    "foo": "bar"
+  },
+  "statement_descriptor": null,
+  "recipient": "rp_16ASdx2eZvKYlo2CqsMWhJzW",
+  "source_transaction": null,
+  "application_fee": null
+}

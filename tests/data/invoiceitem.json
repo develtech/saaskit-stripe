@@ -1,0 +1,36 @@
+{
+  "object": "invoiceitem",
+  "id": "ii_16ASdS2eZvKYlo2CjzY94kl2",
+  "date": 1433540754,
+  "amount": 2000,
+  "livemode": false,
+  "proration": true,
+  "currency": "usd",
+  "customer": "cus_6Ozta4Bn1hmWEH",
+  "discountable": false,
+  "description": "Unused time on Foo after 05 Jun 2015",
+  "metadata": {
+  },
+  "invoice": "in_16ASdT2eZvKYlo2CFY19y4ua",
+  "subscription": "sub_6ND3uNAtEI5qjH",
+  "quantity": 1,
+  "plan": {
+    "interval": "week",
+    "name": "Foo",
+    "created": 1433540742,
+    "amount": 100,
+    "currency": "usd",
+    "id": "1383foo1433540738",
+    "object": "plan",
+    "livemode": false,
+    "interval_count": 1,
+    "trial_period_days": null,
+    "metadata": {
+    },
+    "statement_descriptor": null
+  },
+  "period": {
+    "start": 1433540754,
+    "end": 1434145549
+  }
+}

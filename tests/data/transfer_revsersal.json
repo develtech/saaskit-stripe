@@ -1,0 +1,11 @@
+{
+  "id": "trr_103B0z2eZvKYlo2CaV3bKTMx",
+  "amount": 1880,
+  "currency": "usd",
+  "created": 1387829133,
+  "object": "transfer_reversal",
+  "balance_transaction": "txn_103B0z2eZvKYlo2CPqgXjXDI",
+  "metadata": {
+  },
+  "transfer": "tr_103B0z2eZvKYlo2CI9WMGvlV"
+}

@@ -1,0 +1,15 @@
+{
+  "interval": "year",
+  "name": "New plan name",
+  "created": 1432558607,
+  "amount": 2000,
+  "currency": "usd",
+  "id": "rhohub-gold-year",
+  "object": "plan",
+  "livemode": false,
+  "interval_count": 1,
+  "trial_period_days": null,
+  "metadata": {
+  },
+  "statement_descriptor": null
+}

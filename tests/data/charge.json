@@ -1,0 +1,63 @@
+{
+  "id": "ch_16CBtj2eZvKYlo2C8CC7KTxT",
+  "object": "charge",
+  "created": 1433953071,
+  "livemode": false,
+  "paid": true,
+  "status": "succeeded",
+  "amount": 1500,
+  "currency": "usd",
+  "refunded": false,
+  "source": {
+    "id": "card_16CBth2eZvKYlo2CEXSFVwzo",
+    "object": "card",
+    "last4": "4242",
+    "brand": "Visa",
+    "funding": "credit",
+    "exp_month": 12,
+    "exp_year": 2018,
+    "country": "US",
+    "name": null,
+    "address_line1": null,
+    "address_line2": null,
+    "address_city": null,
+    "address_state": null,
+    "address_zip": null,
+    "address_country": null,
+    "cvc_check": "pass",
+    "address_line1_check": null,
+    "address_zip_check": null,
+    "dynamic_last4": null,
+    "metadata": {
+    },
+    "customer": "cus_6Ozta4Bn1hmWEH"
+  },
+  "captured": true,
+  "balance_transaction": "txn_169oS22eZvKYlo2CSLNAbKOX",
+  "failure_message": null,
+  "failure_code": null,
+  "amount_refunded": 0,
+  "customer": "cus_6Ozta4Bn1hmWEH",
+  "invoice": null,
+  "description": "Charge for RelyMD fax for Meridian Song",
+  "dispute": null,
+  "metadata": {
+  },
+  "statement_descriptor": null,
+  "fraud_details": {
+  },
+  "receipt_email": null,
+  "receipt_number": null,
+  "shipping": null,
+  "destination": null,
+  "application_fee": null,
+  "refunds": {
+    "object": "list",
+    "total_count": 0,
+    "has_more": false,
+    "url": "/v1/charges/ch_16CBtj2eZvKYlo2C8CC7KTxT/refunds",
+    "data": [
+
+    ]
+  }
+}

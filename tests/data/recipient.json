@@ -1,0 +1,35 @@
+{
+  "id": "rp_16AJ2u2eZvKYlo2CrACBsUlG",
+  "object": "recipient",
+  "created": 1433503892,
+  "livemode": false,
+  "type": "individual",
+  "description": null,
+  "email": null,
+  "name": "Tito Ortiz",
+  "verified": false,
+  "metadata": {
+  },
+  "active_account": {
+    "object": "bank_account",
+    "id": "ba_16AJ2t2eZvKYlo2COlvXMVVP",
+    "last4": "6789",
+    "country": "US",
+    "currency": "usd",
+    "status": "new",
+    "fingerprint": "1JWtPxqbdX5Gamtc",
+    "routing_number": "110000000",
+    "bank_name": "STRIPE TEST BANK"
+  },
+  "cards": {
+    "object": "list",
+    "total_count": 0,
+    "has_more": false,
+    "url": "/v1/recipients/rp_16AJ2u2eZvKYlo2CrACBsUlG/cards",
+    "data": [
+
+    ]
+  },
+  "default_card": null,
+  "migrated_to": null
+}
