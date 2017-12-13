@@ -6,7 +6,6 @@ from django_extensions.db.fields import json
 
 from .charge import CURRENCY_CHOICES
 
-
 COUPON_DURATION_CHOICES = (
     ('FOREVER', 'forever'),
     ('ONCE', 'once'),

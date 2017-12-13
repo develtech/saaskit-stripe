@@ -4,7 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
-
 TOKEN_TYPE_CHOICES = (
     ('card', _('Card')),
     ('bank_account', _('Bank Account')),

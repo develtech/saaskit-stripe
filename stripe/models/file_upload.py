@@ -4,7 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
-
 FILE_UPLOAD_PURPOSE_CHOICES = (
     ('identity document', _('Identity document')),
     ('dispute_evidence', _('Dispute evidence')),
