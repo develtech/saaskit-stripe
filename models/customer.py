@@ -25,29 +25,30 @@ class Customer(models.Model):
             'be added to the next invoice. The balance does not refer to any '
             'unpaid invoices; it solely takes into account amounts that have '
             'yet to be successfully applied to any invoice. This balance is '
-            'only taken into account for recurring charges.'
-        )
+            'only taken into account for recurring charges.',
+        ),
     )
     currency = models.CharField(
         max_length=255,
         help_text=_(
             'The currency the customer can be charged in for recurring '
-            'billing purposes (subscriptions, invoices, invoice items).'
-        )
+            'billing purposes (subscriptions, invoices, invoice items).',
+        ),
     )
     default_source = models.CharField(
         max_length=255,
         help_text=_(
-            'ID of the default source attached to this customer.'
-        )
+            'ID of the default source attached to this customer.',
+        ),
     )
     delinquent = models.CharField(
         max_length=255,
         help_text=_(
             'Whether or not the latest charge for the customer’s latest '
-            'invoice has failed'
-        )
+            'invoice has failed',
+        ),
     )
+
     # Reverse
     # discount = models.ForeignKey(
     #     'Discount',
@@ -57,21 +58,23 @@ class Customer(models.Model):
     #         'there is one.'
     #     )
     # )
+
     description = models.CharField(max_length=255)
     email = models.EmailField()
     metadata = json.JSONField(
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
             'It can be useful for storing additional information about the '
-            'customer in a structured format.'
-        )
+            'customer in a structured format.',
+        ),
     )
 
     sources = json.JSONField(
         help_text=_(
-            'The customer’s payment sources, if any'
-        )
+            'The customer’s payment sources, if any',
+        ),
     )
+
     # reverse relation
     # subscriptions = models.ForeignKey(
     #     'Subscription',
