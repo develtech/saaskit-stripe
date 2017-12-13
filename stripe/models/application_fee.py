@@ -24,30 +24,22 @@ class ApplicationFee(models.Model):
         ),
         on_delete=models.CASCADE,
     )
-    amount = models.IntegerField(
-        help_text=_(
-            'Amount earned, in cents.'
-        )
-    )
+    amount = models.IntegerField(help_text=_('Amount earned, in cents.'))
     application = models.CharField(
         max_length=255,
-        help_text=_(
-            'ID of the Connect Application that earned the fee.'
-        )
-    )
+        help_text=_('ID of the Connect Application that earned the fee.'))
     balance_transaction = models.ForeignKey(
         'BalanceTransaction',
         help_text=_(
             'Balance transaction that describes the impact of this collected '
-            'application fee on your account balance (not including refunds).'
+            'application fee on your account balance (not including refunds).',
         ),
         on_delete=models.CASCADE,
     )
     charge = models.ForeignKey(
         'Charge',
         help_text=_(
-            'ID of the charge that the application fee was taken from.'
-        ),
+            'ID of the charge that the application fee was taken from.'),
         on_delete=models.CASCADE,
     )
     created = models.DateTimeField()
@@ -55,15 +47,15 @@ class ApplicationFee(models.Model):
         max_length=255,
         help_text=_(
             'Three-letter ISO currency code representing the currency of the'
-            'charge.'
+            'charge.',
         ),
-        choices=CURRENCY_CHOICES
+        choices=CURRENCY_CHOICES,
     )
     refunded = models.BooleanField(
         help_text=_(
             'Whether or not the fee has been fully refunded. If the fee is '
-            'only partially refunded, this attribute will still be false.'
-        )
+            'only partially refunded, this attribute will still be false.',
+        ),
     )
     # refunds reverse relation from 'Refund'
     amount_refunded = models.PositiveIntegerField()
