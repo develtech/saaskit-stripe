@@ -4,7 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
-
 CARD_BRAND_CHOICES = (
     ('Visa', _('Visa')),
     ('American Express', _('American Express')),
