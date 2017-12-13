@@ -27,53 +27,54 @@ class Plan(models.Model):
     livemode = models.BooleanField()
     amount = models.PositiveIntegerField(
         help_text=_(
-            'The amount in cents to be charged on the interval specified'
-        )
+            'The amount in cents to be charged on the interval specified',
+        ),
     )
     created = models.DateTimeField()
     currency = models.CharField(
         max_length=255,
         choices=CURRENCY_CHOICES,
-        help_text=_('Currency in which the subscription will be charged')
+        help_text=_(
+            'Currency in which the subscription will be charged',
+        ),
     )
     interval = models.CharField(
         choices=PLAN_INTERVAL_CHOICES,
         max_length=255,
         help_text=_(
             'One of ``day``, ``week``, ``month`` or ``year``. The frequency '
-            'with which a subscription should be billed.'
-        )
+            'with which a subscription should be billed.',
+        ),
     )
     interval_count = models.PositiveIntegerField(
         help_text=_(
             'The number of intervals (specified in the ``interval`` property) '
             'between each subscription billing. For example, '
-            '``interval=month`` and interval_count=3 bills every 3 months.'
-        )
+            '``interval=month`` and interval_count=3 bills every 3 months.',
+        ),
     )
     name = models.CharField(
         max_length=255,
         help_text=_(
-            'Display name of the plan'
-        )
+            'Display name of the plan',
+        ),
     )
     metadata = json.JSONField(
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
             'it can be useful for storing additional information about the '
-            'plan in a structured format.'
-        )
+            'plan in a structured format.',
+        ),
     )
     trial_period_days = models.PositiveIntegerField(
         help_text=_(
             'Number of trial period days granted when subscribing a customer '
-            'to this plan. Null if the plan has no trial period.'
-        )
+            'to this plan. Null if the plan has no trial period.',
+        ),
     )
     statement_descriptor = models.CharField(
         max_length=255,
         help_text=(
             'Extra information about a charge for the customer’s credit card '
-            'statement.'
-        )
+            'statement.',),
     )

@@ -31,28 +31,28 @@ class Event(models.Model):
     created = models.DateTimeField()
     data = json.JSONField(
         help_text=_(
-            'Hash containing data associated with the event.'
-        )
+            'Hash containing data associated with the event.',
+        ),
     )
     pending_webhooks = models.PositiveIntegerField(
         help_text=_(
             'Number of webhooks yet to be delivered successfully (return a '
-            '20x response) to the URLs you’ve specified.'
-        )
+            '20x response) to the URLs you’ve specified.',
+        ),
     )
     type = models.CharField(
         max_length=255,
         help_text=_(
             'Description of the event: e.g. invoice.created, charge.refunded, '
-            'etc.'
-        )
+            'etc.',
+        ),
     )
     api_version = models.CharField(
         max_length=255,
         help_text=_(
             'The Stripe API version used to render data. Note: this property '
-            'is populated for events on or after October 31, 2014.'
-        )
+            'is populated for events on or after October 31, 2014.',
+        ),
     )
     request = models.CharField(
         max_length=255,
@@ -61,6 +61,6 @@ class Event(models.Model):
             'was automatic (e.g. Stripe’s automatic subscription handling). '
             'Request logs are available in the dashboard but currently not in '
             'the API. Note: this property is populated for events on or after '
-            'April 23, 2013.'
-        )
+            'April 23, 2013.',
+        ),
     )

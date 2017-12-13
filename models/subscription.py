@@ -32,7 +32,10 @@ class Subscription(models.Model):
             'scheduled to be canceled at the end of the current period.',
         ),
     )
-    customer = models.ForeignKey('Customer', on_delete=models.CASCADE,)
+    customer = models.ForeignKey(
+        'Customer',
+        on_delete=models.CASCADE,
+    )
     plan = models.ForeignKey(
         'Plan',
         help_text=_(
@@ -41,11 +44,7 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
     )
     quantity = models.PositiveIntegerField()
-    start = models.DateTimeField(
-        help_text=_(
-            'Date the subscription started',
-        ),
-    )
+    start = models.DateTimeField(help_text=_('Date the subscription started',),)
     status = models.CharField(
         max_length=255,
         choices=SUBSCRIPTION_STATUS_CHOICES,
@@ -63,16 +62,16 @@ class Subscription(models.Model):
             'closed. Additionally, updating customer card details will not '
             'lead to Stripe retrying the latest invoice.). After receiving '
             'updated card details from a customer, you may choose to reopen '
-            'and pay their closed invoices.'
-        )
+            'and pay their closed invoices.',
+        ),
     )
     application_fee_percent = models.CharField(
         max_length=255,
         help_text=_(
             'A positive decimal that represents the fee percentage of the '
             'subscription invoice amount that will be transferred to the '
-            'application owner’s Stripe account each billing period.'
-        )
+            'application owner’s Stripe account each billing period.',
+        ),
     )
     canceled_at = models.DateTimeField(
         help_text=_(
@@ -81,15 +80,15 @@ class Subscription(models.Model):
             '``cancel_at_period_end``, canceled_at will still reflect the '
             'date of the initial cancellation request, not the end of the '
             'subscription period when the subscription is automatically moved '
-            'to a canceled state.'
-        )
+            'to a canceled state.',
+        ),
     )
     current_period_start = models.DateTimeField(
         help_text=_(
             'End of the current period that the subscription has been '
             'invoiced for. At the end of this period, a new invoice will be '
-            'created.'
-        )
+            'created.',
+        ),
     )
     discount = models.ForeignKey(
         'Discount',
@@ -98,37 +97,37 @@ class Subscription(models.Model):
             'there is one. When billing, a discount applied to a subscription '
             'overrides a discount applied on a customer-wide basis.',
         ),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     ended_at = models.DateTimeField(
         help_text=_(
             'If the subscription has ended (either because it was canceled or '
             'because the customer was switched to a subscription to a new '
-            'plan), the date the subscription ended'
-        )
+            'plan), the date the subscription ended',
+        ),
     )
     metadata = json.JSONField(
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
             'it can be useful for storing additional information about the '
-            'subscription in a structured format.'
-        )
+            'subscription in a structured format.',
+        ),
     )
     trial_end = models.DateTimeField(
         help_text=_(
-            'If the subscription has a trial, the end of that trial.'
-        )
+            'If the subscription has a trial, the end of that trial.',
+        ),
     )
     trial_start = models.DateTimeField(
         help_text=_(
-            'If the subscription has a trial, the beginning of that trial.'
-        )
+            'If the subscription has a trial, the beginning of that trial.',
+        ),
     )
     tax_percent = models.DecimalField(
         max_digits=3,
         decimal_places=2,
         help_text=_(
             'If provided, each invoice created by this subscription will '
-            'apply the tax rate, increasing the amount billed to the customer.'
-        )
+            'apply the tax rate, increasing the amount billed to the customer.',
+        ),
     )
