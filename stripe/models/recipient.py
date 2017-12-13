@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# flake8: NOQA: F401
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -64,4 +63,3 @@ class Recipient(models.Model):
         on_delete=models.CASCADE,
     )
     migrated_to = models.CharField(max_length=255)
-
