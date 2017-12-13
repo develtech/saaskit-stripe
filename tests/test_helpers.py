@@ -9,7 +9,7 @@ import stripe
 
 from .helpers import open_test_file
 
-stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"
+stripe.api_key = 'sk_test_BQokikJOvBiI2HlWgH4olfQ2'
 
 
 class TestResponsesStripeSanity(TestCase):
@@ -19,10 +19,10 @@ class TestResponsesStripeSanity(TestCase):
 
     @responses.activate
     def test_my_api(self):
-        body_json = open_test_file("customer.json").read()
+        body_json = open_test_file('customer.json').read()
 
-        customer_id = "cus_6Ozta4Bn1hmWEH"
-        customer_url = "https://api.stripe.com/v1/customers/%s" % customer_id
+        customer_id = 'cus_6Ozta4Bn1hmWEH'
+        customer_url = 'https://api.stripe.com/v1/customers/%s' % customer_id
         responses.add(
             responses.GET, customer_url,
             body=body_json, status=200,
