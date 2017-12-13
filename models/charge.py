@@ -6,7 +6,6 @@ from django_extensions.db.fields import json
 
 CURRENCY_CHOICES = (
     ('USD', 'USD'),
-
     ('AED', 'United Arab Emirates Dirham'),
     ('AFN', 'Afghan Afghani'),
     ('ALL', 'Albanian Lek'),
@@ -145,20 +144,17 @@ CURRENCY_CHOICES = (
     ('YER', 'Yemeni Rial'),
     ('ZAR', 'South African Rand'),
     ('ZMW', 'Zambian Kwacha'),
-    )
-
+)
 
 CHARGE_STATUS_CHOICES = (
     ('succeeded', _('Charge succeeded')),
     ('failed', _('Charge failed')),
 )
 
-CHARGE_FAILURE_CHOICES = (
-    (
-        'incorrect_number',
-        _('The card number is incorrect')
-    ),
-)
+CHARGE_FAILURE_CHOICES = ((
+    'incorrect_number',
+    _('The card number is incorrect'),
+),)
 
 
 class Charge(models.Model):
@@ -171,9 +167,7 @@ class Charge(models.Model):
     """
 
     livemode = models.BooleanField(default=True)
-    amount = models.IntegerField(
-        help_text=_('Amount charged in cents'),
-    )
+    amount = models.IntegerField(help_text=_('Amount charged in cents'),)
     captured = models.BooleanField(
         help_text=_(
             'If the charge was created without capturing, this boolean '
@@ -199,7 +193,7 @@ class Charge(models.Model):
     refunded = models.BooleanField(
         help_text=_(
             'Whether or not the charge has been fully refunded. If the charge '
-            'is only partially refunded, this attribute will still be false.'
+            'is only partially refunded, this attribute will still be false.',
         ),
     )
     # refunds = models.ManyToManyField('Refund')
@@ -221,8 +215,8 @@ class Charge(models.Model):
     amount_refunded = models.PositiveIntegerField(
         help_text=_(
             'Amount in cents refunded (can be less than the amount attribute '
-            ' on the charge if a partial refund was issued).'
-        )
+            ' on the charge if a partial refund was issued).',
+        ),
     )
     balance_transaction = models.CharField(
         max_length=255,
@@ -237,15 +231,17 @@ class Charge(models.Model):
         help_text=_(
             'ID of the customer this charge is for if one exists.',
         ),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     description = models.CharField(max_length=255)
     dispute = models.ForeignKey(
-        'Dispute', blank=True, null=True,
+        'Dispute',
+        blank=True,
+        null=True,
         help_text=_(
             'Details about the dispute if the charge has been disputed.',
         ),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     failure_code = models.CharField(
         max_length=255,
@@ -267,7 +263,7 @@ class Charge(models.Model):
         help_text=_(
             'ID of the invoice this charge is for if one exists.',
         ),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     metadata = json.JSONField(
         help_text=_(

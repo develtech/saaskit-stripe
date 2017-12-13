@@ -21,23 +21,23 @@ class Dispute(models.Model):
         help_text=_(
             'Disputed amount. Usually the amount of the charge, but can '
             'differ (usually because of currency fluctuation or because only '
-            'part of the order is disputed).'
-        )
+            'part of the order is disputed).',
+        ),
     )
+
     # reverse
     # charge = models.ForeignKey(
     #     'Charge',
     #     help_text=_('ID of the charge that was disputed')
     # )
-    created = models.DateTimeField(
-        help_text=_('Date dispute was opened')
-    )
+
+    created = models.DateTimeField(help_text=_('Date dispute was opened'))
     currency = models.CharField(
         max_length=255,
         help_text=_(
             'Three-letter ISO currency code representing the currency of the '
-            'amount that was disputed. '
-        )
+            'amount that was disputed. ',
+        ),
     )
     reason = models.CharField(
         max_length=255,
@@ -46,8 +46,8 @@ class Dispute(models.Model):
             '``duplicate``, ``fraudulent``, ``subscription_canceled``, '
             '``product_unacceptable``, ``product_not_received``, '
             '``unrecognized``, ``credit_not_processed``, ``general``. Read '
-            'more about dispute reasons.'
-        )
+            'more about dispute reasons.',
+        ),
     )
     status = models.CharField(
         max_length=255,
@@ -55,16 +55,16 @@ class Dispute(models.Model):
             'Current status of dispute. Possible values are '
             '``warning_needs_response``, ``warning_under_review``, '
             '``warning_closed``, ``needs_response``, ``response_disabled``, '
-            '``under_review``, ``charge_refunded``, ``won``, ``lost``.'
-        )
+            '``under_review``, ``charge_refunded``, ``won``, ``lost``.',
+        ),
     )
     balance_transaction = models.ManyToManyField(
         'BalanceTransaction',
         help_text=_(
             'List of zero, one, or two balance transactions that show funds '
             'withdrawn and reinstated to your Stripe account as a result of '
-            'this dispute.'
-        )
+            'this dispute.',
+        ),
     )
     evidence = models.ForeignKey(
         'DisputeEvidence',
@@ -76,18 +76,20 @@ class Dispute(models.Model):
     )
     evidence_details = json.JSONField(
         help_text=_(
-            'Information about the evidence submission.'
-        )
+            'Information about the evidence submission.',
+        ),
     )
     is_charge_refundable = models.BooleanField(
-        'If true, it is still possible to refund the disputed payment. Once '
-        'the payment has been fully refunded, no further funds will be '
-        'withdrawn from your Stripe account as a result of this dispute.'
+        help_text=_(
+            'If true, it is still possible to refund the disputed payment. Once '
+            'the payment has been fully refunded, no further funds will be '
+            'withdrawn from your Stripe account as a result of this dispute.',
+        ),
     )
     metadata = json.JSONField(
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
             'it can be useful for storing additional information about the '
-            'dispute in a structured format.'
-        )
+            'dispute in a structured format.',
+        ),
     )
