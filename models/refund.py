@@ -4,7 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
-
 REFUND_CHOICES = (
     ('duplicate', _('Duplicate')),
     ('fraudulent', _('Fraudulent')),

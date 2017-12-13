@@ -2,9 +2,8 @@
 
 from __future__ import unicode_literals
 
-import os
 import json
-
+import os
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 

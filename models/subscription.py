@@ -4,7 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
-
 SUBSCRIPTION_STATUS_CHOICES = (
     ('trialing', _('Trialing')),
     ('active', _('Active')),
