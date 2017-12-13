@@ -30,7 +30,10 @@ class BalanceTransaction(models.Model):
         ),
     )
     net = models.IntegerField(
-        help_text=_('Net amount of the transaction, in cents.'))
+        help_text=_(
+            'Net amount of the transaction, in cents.',
+        ),
+    )
     status = models.CharField(
         max_length=255,
         help_text=_(

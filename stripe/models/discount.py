@@ -21,15 +21,18 @@ class Discount(models.Model):
     )
     customer = models.ForeignKey('Customer', on_delete=models.CASCADE)
     start = models.DateTimeField(
-        help_text=_('Date that the coupon was applied')
+        help_text=_(
+            'Date that the coupon was applied',
+        ),
     )
     end = models.DateTimeField(
         help_text=_(
             'If the coupon has a duration of ``once`` or ``repeating``, the '
             'date that this discount will end. If the coupon used has a '
-            'forever duration, this attribute will be null.'
-        )
+            'forever duration, this attribute will be null.',
+        ),
     )
+
     # subscription = models.ForeignKey(
     #     'Subscription',
     #     help_text=_(
