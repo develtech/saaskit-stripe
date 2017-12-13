@@ -13,6 +13,7 @@ stripe.api_key = 'sk_test_BQokikJOvBiI2HlWgH4olfQ2'
 
 
 class TestResponsesStripeSanity(TestCase):
+
     """Tests to assure the Stripe library is using the Requests
     library as an HTTP Client and responses is mocking the
     responses as intended."""
@@ -24,9 +25,11 @@ class TestResponsesStripeSanity(TestCase):
         customer_id = 'cus_6Ozta4Bn1hmWEH'
         customer_url = 'https://api.stripe.com/v1/customers/%s' % customer_id
         responses.add(
-            responses.GET, customer_url,
-            body=body_json, status=200,
-            content_type='application/json'
+            responses.GET,
+            customer_url,
+            body=body_json,
+            status=200,
+            content_type='application/json',
         )
 
         customer = stripe.Customer.retrieve(customer_id)

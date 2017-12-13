@@ -14,27 +14,26 @@ class FileUpload(models.Model):
         max_length=255,
         help_text=(
             'The purpose of the uploaded file. Possible values are '
-            '``identity_document``, ``dispute_evidence``.'
-        ),
-        choices=FILE_UPLOAD_PURPOSE_CHOICES
+            '``identity_document``, ``dispute_evidence``.',),
+        choices=FILE_UPLOAD_PURPOSE_CHOICES,
     )
     size = models.IntegerField(
         help_text=_(
-            'The size in bytes of the file upload object.'
-        )
+            'The size in bytes of the file upload object.',
+        ),
     )
     type = models.CharField(
         max_length=255,
         help_text=_(
             'The type of the file returned. Returns one of the following: '
-            '``pdf``, ``jpg``, ``png``.'
-        )
+            '``pdf``, ``jpg``, ``png``.',
+        ),
     )
     url = models.URLField(
         help_text=_(
             'A read-only URL where the uploaded file can be accessed. Will be '
             'nil unless the uploaded file has one of the following purposes: '
             '``dispute_evidence``. Also nil if retrieved with the publishable '
-            'API key.'
-        )
+            'API key.',
+        ),
     )

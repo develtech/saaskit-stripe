@@ -20,34 +20,32 @@ class InvoiceItem(models.Model):
 
     livemode = models.BooleanField()
     amount = models.IntegerField()
-    currency = models.CharField(
-        max_length=255,
-        choices=CURRENCY_CHOICES
+    currency = models.CharField(max_length=255, choices=CURRENCY_CHOICES)
+    customer = models.ForeignKey(
+        'Customer',
+        on_delete=models.CASCADE,
     )
-    customer = models.ForeignKey('Customer', on_delete=models.CASCADE,)
     date = models.DateTimeField()
     discountable = models.BooleanField(
         help_text=_(
             'If true, discounts will apply to this invoice item. Always false '
-            'for prorations.'
-        )
+            'for prorations.',
+        ),
     )
     proration = models.BooleanField(
         help_text=_(
             'Whether or not the invoice item was created automatically as a '
-            'proration adjustment when the customer switched plans'
-        )
+            'proration adjustment when the customer switched plans',
+        ),
     )
-    description = models.CharField(
-        max_length=255
-    )
+    description = models.CharField(max_length=255)
     invoice = models.CharField(max_length=255)
     metadata = json.JSONField(
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
             'it can be useful for storing additional information about the '
-            'invoice item in a structured format.'
-        )
+            'invoice item in a structured format.',
+        ),
     )
     period = json.JSONField()
     plan = models.ForeignKey(
@@ -61,8 +59,8 @@ class InvoiceItem(models.Model):
     quantity = models.IntegerField(
         help_text=_(
             'If the invoice item is a proration, the quantity of the '
-            'subscription that the proration was computed for.'
-        )
+            'subscription that the proration was computed for.',
+        ),
     )
     subscription = models.ForeignKey(
         'Subscription',

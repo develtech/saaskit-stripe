@@ -21,50 +21,46 @@ class Refund(models.Model):
     also refunded.
     """
 
-    amount = models.IntegerField(
-        help_text=_(
-            'Amount reversed, in cents.'
-        )
-    )
+    amount = models.IntegerField(help_text=_('Amount reversed, in cents.'))
     created = models.DateTimeField()
     currency = models.IntegerField(
         help_text=_(
-            'Three-letter ISO code representing the currency of the reversal.'
-        )
+            'Three-letter ISO code representing the currency of the reversal.',
+        ),
     )
     balance_transaction = models.CharField(
         max_length=255,
         help_text=_(
             'Balance transaction that describes the impact of this reversal '
-            'on your account balance.'
-        )
+            'on your account balance.',
+        ),
     )
     charge = models.CharField(
         max_length=255,
         help_text=_(
-            'ID of the charge that was '
-        )
+            'ID of the charge that was ',
+        ),
     )
     metadata = json.JSONField(
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
             'It can be useful for storing additional information about the '
-            'refund in a structured format.'
-        )
+            'refund in a structured format.',
+        ),
     )
     reason = models.CharField(
         max_length=255,
         choices=REFUND_CHOICES,
         help_text=_(
             'Reason for the refund. If set, possible values are duplicate, '
-            'fraudulent, and requested_by_customer.'
-        )
+            'fraudulent, and requested_by_customer.',
+        ),
     )
     receipt_number = models.CharField(
         max_length=255,
         help_text=_(
             'This is the transaction number that appears on email receipts '
-            'sent for this refund.'
-        )
+            'sent for this refund.',
+        ),
     )
     description = models.CharField(max_length=255)

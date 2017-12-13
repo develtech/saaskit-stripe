@@ -41,8 +41,8 @@ class Invoice(models.Model):
             '``starting_balance`` for the invoice (the customer owes money), '
             'the amount_due will also take that into account. The charge that '
             'gets generated for the invoice will be for the amount specified '
-            'in amount_due.'
-        )
+            'in amount_due.',
+        ),
     )
     attempt_count = models.PositiveIntegerField(
         help_text=_(
@@ -51,90 +51,87 @@ class Invoice(models.Model):
             'counts as the first attempt, and subsequently only automatic '
             'retries increment the attempt count. In other words, manual '
             'payment attempts after the first attempt do not affect the '
-            'retry schedule.'
-        )
+            'retry schedule.',
+        ),
     )
     attempted = models.BooleanField(
         help_text=_(
             'Whether or not an attempt has been made to pay the invoice. An '
             'invoice is not attempted until 1 hour after the '
             '``invoice.created`` webhook, for example, so you might not want '
-            'to display that invoice as unpaid to your users.'
-        )
+            'to display that invoice as unpaid to your users.',
+        ),
     )
     closed = models.BooleanField(
         help_text=_(
             'Whether or not the invoice is still trying to collect payment. '
             'An invoice is closed if it’s either paid or it has been marked '
             'closed. A closed invoice will no longer attempt to collect '
-            'payment.'
-        )
+            'payment.',
+        ),
     )
-    currency = models.CharField(
-        max_length=255,
-        choices=CURRENCY_CHOICES
+    currency = models.CharField(max_length=255, choices=CURRENCY_CHOICES)
+    customer = models.ForeignKey(
+        'Customer',
+        on_delete=models.CASCADE,
     )
-    customer = models.ForeignKey('Customer', on_delete=models.CASCADE,)
     date = models.DateTimeField()
     forgiven = models.BooleanField(
         help_text=_(
             'Whether or not the invoice has been forgiven. Forgiving an '
             'invoice instructs us to update the subscription status as if the '
             'invoice were succcessfully paid. Once an invoice has been '
-            'forgiven, it cannot be unforgiven or reopened'
-        )
+            'forgiven, it cannot be unforgiven or reopened',
+        ),
     )
     lines = json.JSONField(
         help_text=_(
             'The individual line items that make up the invoice. ``lines`` is '
             'sorted as follows: invoice items in reverse chronological order, '
-            'followed by the subscription, if any.'
-        )
+            'followed by the subscription, if any.',
+        ),
     )
     paid = models.BooleanField(
         help_text=_(
             'Whether or not payment was successfully collected for this '
             'invoice. An invoice can be paid (most commonly) with a charge or '
-            'with credit from the customer’s account balance.'
-        )
+            'with credit from the customer’s account balance.',
+        ),
     )
     period_end = models.DateTimeField(
         help_text=_(
             'End of the usage period during which invoice items were added to '
-            'this invoice'
-        )
+            'this invoice',
+        ),
     )
     period_start = models.DateTimeField(
         help_text=_(
             'Start of the usage period during which invoice items were added '
-            'to this invoice'
-        )
+            'to this invoice',
+        ),
     )
     starting_balance = models.IntegerField(
         help_text=_(
             'Starting customer balance before attempting to pay invoice. If '
             'the invoice has not been attempted yet, this will be the current '
-            'customer balance.'
-        )
+            'customer balance.',
+        ),
     )
     subtotal = models.IntegerField(
         help_text=_(
             'Total of all subscriptions, invoice items, and prorations on the '
-            'invoice before any discount is applied'
-        )
+            'invoice before any discount is applied',
+        ),
     )
-    total = models.IntegerField(
-        help_text=_(
-            'Total after discount'
-        )
-    )
+    total = models.IntegerField(help_text=_('Total after discount'))
     application_fee = models.IntegerField(
         help_text=_(
             'The fee in cents that will be applied to the invoice and '
             'transferred to the application owner’s Stripe account when the '
-            'invoice is paid.'
-        )
+            'invoice is paid.',
+        ),
     )
+
     # Reverse
     # charge = models.ForeignKey(
     #     'Charge',
@@ -142,32 +139,36 @@ class Invoice(models.Model):
     #         'ID of the latest charge generated for this invoice, if any.'
     #     )
     # )
+
     description = models.CharField(max_length=255)
-    discount = models.ForeignKey('Discount', on_delete=models.CASCADE,)
+    discount = models.ForeignKey(
+        'Discount',
+        on_delete=models.CASCADE,
+    )
     ending_balance = models.IntegerField(
         help_text=_(
             'Ending customer balance after attempting to pay invoice. If the '
-            'invoice has not been attempted yet, this will be null.'
-        )
+            'invoice has not been attempted yet, this will be null.',
+        ),
     )
     next_payment_attempt = models.DateTimeField(
         help_text=_(
-            'The time at which payment will next be attempted.'
-        )
+            'The time at which payment will next be attempted.',
+        ),
     )
     receipt_number = models.CharField(
         max_length=255,
         help_text=_(
             'This is the transaction number that appears on email receipts '
-            'sent for this invoice.'
-        )
+            'sent for this invoice.',
+        ),
     )
     statement_descriptor = models.CharField(
         max_length=255,
         help_text=_(
             'Extra information about an invoice for the customer’s credit '
-            'card statement.'
-        )
+            'card statement.',
+        ),
     )
     subscription = models.ForeignKey(
         'Subscription',
@@ -182,28 +183,26 @@ class Invoice(models.Model):
             'delivered (if the invoice had no webhooks to deliver, this will '
             'match ``date``). Invoice payment is delayed until webhooks are '
             'delivered, or until all webhook delivery attempts have been '
-            'exhausted.'
-        )
+            'exhausted.',
+        ),
     )
     metadata = json.JSONField(
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
             'it can be useful for storing additional information about the '
-            'invoice in a structured format.'
-        )
-    )
+            'invoice in a structured format.'))
     subscription_proration_date = models.IntegerField(
         help_text=_(
             'Only set for upcoming invoices that preview prorations. The time '
-            'used to calculate prorations.'
-        )
+            'used to calculate prorations.',
+        ),
     )
     tax = models.IntegerField(
         help_text=_(
             'The amount of tax included in the total, calculated from '
             '``tax_percent`` and the subtotal. If no ``tax_percent`` is '
-            'defined, this value will be null.'
-        )
+            'defined, this value will be null.',
+        ),
     )
     tax_percent = models.DecimalField(
         max_digits=3,
@@ -213,6 +212,6 @@ class Invoice(models.Model):
             'amount of the invoice, including invoice line items and '
             'discounts. This field is inherited from the subscription’s '
             '``tax_percent`` field, but can be changed before the invoice is '
-            'paid. This field defaults to null.'
-        )
+            'paid. This field defaults to null.',
+        ),
     )

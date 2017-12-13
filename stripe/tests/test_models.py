@@ -19,13 +19,9 @@ def json_to_djorm(data):
     :type data: :class:`dict`
     """
     if not isinstance(data, dict):
-        raise TypeError(
-            'data Attribute must be a dict'
-        )
+        raise TypeError('data Attribute must be a dict')
     if 'object' not in data:
-        raise TypeError(
-            'JSON data missing object'
-        )
+        raise TypeError('JSON data missing object')
 
     resource_type = data['object']
 
@@ -42,15 +38,14 @@ def get_djorm_model_from_object_key(objkey):
     :returns: Django model from app
     """
     if not isinstance(objkey, text_type):
-        raise TypeError(
-            'argument must be a string'
-        )
+        raise TypeError('argument must be a string')
 
     app = apps.get_app_config('stripe')
     return app.get_model(objkey)
 
 
 class TestJSONToObject(TestCase):
+
     def test_raises_object_missing(self):
         with self.assertRaisesRegexp(TypeError, 'must be a dict'):
             json_to_djorm('Hey')
@@ -65,13 +60,15 @@ class TestJSONToObject(TestCase):
 
 
 class TestGetDjormFromObjectKey(TestCase):
+
     def test_raises_error_if_not_string(self):
         with self.assertRaisesRegexp(TypeError, 'must be a string'):
             get_djorm_model_from_object_key(1)
 
     def test_raises_error_model_not_exist(self):
         with self.assertRaisesRegexp(
-            LookupError, "App '\w*' doesn't have a '.*' model."
+                LookupError,
+                "App '\w*' doesn't have a '.*' model.",
         ):
             get_djorm_model_from_object_key('Moo')
 
