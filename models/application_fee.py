@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-# flake8: NOQA: F401
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
-from django_extensions.db.fields import json
 
 from .charge import CURRENCY_CHOICES
 
