@@ -33,24 +33,24 @@ class Token(models.Model):
         max_length=255,
         choices=TOKEN_TYPE_CHOICES,
         help_text=_(
-            'Type of the token: ``card`` or ``bank_account``'
-        )
+            'Type of the token: ``card`` or ``bank_account``',
+        ),
     )
     used = models.BooleanField(
         help_text=_(
             'Whether or not this token has already been used (tokens can be '
-            'used only once)'
-        )
+            'used only once)',
+        ),
     )
     bank_account = json.JSONField(
-        help_text=_('Hash describing the bank account')
+        help_text=_(
+            'Hash describing the bank account',
+        ),
     )
-    card = json.JSONField(
-        help_text=_('Hash describing the bank account')
-    )
+    card = json.JSONField(help_text=_('Hash describing the bank account',),)
     client_ip = models.CharField(
         max_length=255,
         help_text=_(
-            'IP address of the client that generated the token'
-        )
+            'IP address of the client that generated the token',
+        ),
     )

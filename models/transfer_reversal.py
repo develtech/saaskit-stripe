@@ -17,24 +17,20 @@ class TransferReversal(models.Model):
     reverse automatic Stripe transfers.
     """
 
-    amount = models.IntegerField(
-        help_text=_(
-            'Amount reversed, in cents.'
-        )
-    )
+    amount = models.IntegerField(help_text=_('Amount reversed, in cents.'))
     created = models.DateTimeField()
     currency = models.CharField(
         max_length=255,
         choices=CURRENCY_CHOICES,
         help_text=_(
-            'Three-letter ISO code representing the currency of the reversal.'
-        )
+            'Three-letter ISO code representing the currency of the reversal.',
+        ),
     )
     balance_transaction = models.ForeignKey(
         'BalanceTransaction',
         help_text=_(
             'Balance transaction that describes the impact of this reversal '
-            'on your account balance.'
+            'on your account balance.',
         ),
         related_name='transfer_reversal_balance_transaction',
         on_delete=models.CASCADE,
@@ -43,13 +39,11 @@ class TransferReversal(models.Model):
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
             'it can be useful for storing additional information about the '
-            'transfer reversal in a structured format.'
-        )
+            'transfer reversal in a structured format.',
+        ),
     )
     transfer = models.ForeignKey(
         'Transfer',
-        help_text=_(
-            'ID of the transfer that was reversed.'
-        ),
+        help_text=_('ID of the transfer that was reversed.'),
         on_delete=models.CASCADE,
     )

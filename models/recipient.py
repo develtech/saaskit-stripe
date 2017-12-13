@@ -28,17 +28,14 @@ class Recipient(models.Model):
     livemode = models.BooleanField()
     created = models.DateTimeField()
     type = models.CharField(
-        max_length=255,
-        help_text=_(
-            'Type of the recipient, one of ``individual`` or ``corporation``.'
-        ),
-        choices=RECIPIENT_TYPE_CHOICES
-    )
+        max_length=255, help_text=_(
+            'Type of the recipient, one of ``individual`` or ``corporation``.',
+        ), choices=RECIPIENT_TYPE_CHOICES)
     active_account = json.JSONField(
         help_text=_(
             'Hash describing the current account on the recipient, if there '
-            'is one.'
-        )
+            'is one.',
+        ),
     )
     description = models.TextField()
     email = models.EmailField()
@@ -46,18 +43,20 @@ class Recipient(models.Model):
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
             'it can be useful for storing additional information about the '
-            'recipient in a structured format.'
-        )
+            'recipient in a structured format.',
+        ),
     )
     name = models.CharField(
         max_length=255,
-        help_text=_('Full, legal name of the recipient.')
+        help_text=_(
+            'Full, legal name of the recipient.',
+        ),
     )
     cards = models.ManyToManyField('Card', related_name='recipients')
     default_card = models.ForeignKey(
         'Card',
         help_text=_(
-            'The default card to use for creating transfers to this recipient.'
+            'The default card to use for creating transfers to this recipient.',
         ),
         related_name='recipients_default',
         on_delete=models.CASCADE,
