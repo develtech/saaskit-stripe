@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.apps import apps
 from django.test import TestCase
 from django.utils.six import text_type
 
@@ -23,7 +24,7 @@ def json_to_djorm(data):
         )
     if 'object' not in data:
         raise TypeError(
-            "JSON data missing object"
+            'JSON data missing object'
         )
 
     resource_type = data['object']
@@ -36,15 +37,13 @@ def json_to_djorm(data):
 def get_djorm_model_from_object_key(objkey):
     """Return django ORM model from object key.
 
-    :param objkey: "object" key from stripe JSON response
+    :param objkey: 'object' key from stripe JSON response
     :type objkey: string
     :returns: Django model from app
     """
-    from django.apps import apps
-
     if not isinstance(objkey, text_type):
         raise TypeError(
-            "argument must be a string"
+            'argument must be a string'
         )
 
     app = apps.get_app_config('stripe')
@@ -54,30 +53,30 @@ def get_djorm_model_from_object_key(objkey):
 class TestJSONToObject(TestCase):
     def test_raises_object_missing(self):
         with self.assertRaisesRegexp(TypeError, 'must be a dict'):
-            json_to_djorm("Hey")
+            json_to_djorm('Hey')
         with self.assertRaisesRegexp(TypeError, 'must be a dict'):
             json_to_djorm(1)
 
     def test_raises_non_dict(self):
         with self.assertRaisesRegexp(TypeError, 'JSON data missing object'):
             data = get_test_data('customer.json')
-            data.pop("object", None)
+            data.pop('object', None)
             json_to_djorm(data)
 
 
 class TestGetDjormFromObjectKey(TestCase):
     def test_raises_error_if_not_string(self):
-        with self.assertRaisesRegexp(TypeError, "must be a string"):
+        with self.assertRaisesRegexp(TypeError, 'must be a string'):
             get_djorm_model_from_object_key(1)
 
     def test_raises_error_model_not_exist(self):
         with self.assertRaisesRegexp(
             LookupError, "App '\w*' doesn't have a '.*' model."
         ):
-            get_djorm_model_from_object_key("Moo")
+            get_djorm_model_from_object_key('Moo')
 
     def test_imports_model_correctly(self):
-        result = get_djorm_model_from_object_key("Customer")
+        result = get_djorm_model_from_object_key('Customer')
         self.assertEquals(Customer, result)
 
 
