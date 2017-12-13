@@ -19,14 +19,14 @@ class Balance(models.Model):
 
     livemode = models.BooleanField()
     available = json.JSONField(
-        help_text=(
-            'Funds that are available to be paid out automatically by Stripe '
-            'or explicitly via the transfers API.'
-        )
+        help_text=_(
+            'Funds that are available to be paid out automatically by '
+            'Stripe or explicitly via the transfers API.',
+        ),
     )
     pending = json.JSONField(
         help_text=_(
             'Funds that are not available in the balance yet, due to the '
-            '7-day rolling pay cycle.'
-        )
+            '7-day rolling pay cycle.',
+        ),
     )
