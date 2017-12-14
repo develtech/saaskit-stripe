@@ -1,0 +1,84 @@
+{
+  "object": "list",
+  "url": "/v1/disputes",
+  "has_more": false,
+  "data": [
+    {
+      "id": "dp_1AfYgX2eZvKYlo2CXQAAqDv7",
+      "object": "dispute",
+      "amount": 1500,
+      "balance_transaction": "txn_19XJJ02eZvKYlo2ClwuJ1rbA",
+      "balance_transactions": [
+        {
+          "id": "txn_1AfYgX2eZvKYlo2CCnMk2amh",
+          "object": "balance_transaction",
+          "amount": -1500,
+          "available_on": 1500595200,
+          "created": 1500057521,
+          "currency": "usd",
+          "description": "Chargeback withdrawal for ch_1AfYgX2eZvKYlo2CCaTJvvuE",
+          "fee": 1500,
+          "fee_details": [
+            {
+              "amount": 1500,
+              "application": null,
+              "currency": "usd",
+              "description": "Dispute fee",
+              "type": "stripe_fee"
+            }
+          ],
+          "net": -3000,
+          "source": "dp_1AfYgX2eZvKYlo2CXQAAqDv7",
+          "status": "pending",
+          "type": "adjustment"
+        }
+      ],
+      "charge": "ch_1AfYgX2eZvKYlo2CCaTJvvuE",
+      "created": 1500057521,
+      "currency": "usd",
+      "evidence": {
+        "access_activity_log": null,
+        "billing_address": null,
+        "cancellation_policy": null,
+        "cancellation_policy_disclosure": null,
+        "cancellation_rebuttal": null,
+        "customer_communication": null,
+        "customer_email_address": null,
+        "customer_name": null,
+        "customer_purchase_ip": null,
+        "customer_signature": null,
+        "duplicate_charge_documentation": null,
+        "duplicate_charge_explanation": null,
+        "duplicate_charge_id": null,
+        "product_description": null,
+        "receipt": null,
+        "refund_policy": null,
+        "refund_policy_disclosure": null,
+        "refund_refusal_explanation": null,
+        "service_date": null,
+        "service_documentation": null,
+        "shipping_address": null,
+        "shipping_carrier": null,
+        "shipping_date": null,
+        "shipping_documentation": null,
+        "shipping_tracking_number": null,
+        "uncategorized_file": null,
+        "uncategorized_text": null
+      },
+      "evidence_details": {
+        "due_by": 1501459199,
+        "has_evidence": false,
+        "past_due": false,
+        "submission_count": 0
+      },
+      "is_charge_refundable": false,
+      "livemode": false,
+      "metadata": {
+      },
+      "reason": "fraudulent",
+      "status": "lost"
+    },
+    {...},
+    {...}
+  ]
+}

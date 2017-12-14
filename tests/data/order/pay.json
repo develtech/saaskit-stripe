@@ -1,0 +1,124 @@
+{
+  "id": "or_1BYqZA2eZvKYlo2CIdmiPWou",
+  "object": "order",
+  "amount": 1500,
+  "amount_returned": 1500,
+  "application": null,
+  "application_fee": null,
+  "charge": "ch_1BYvoY2eZvKYlo2CYCleLmpl",
+  "created": 1513234296,
+  "currency": "usd",
+  "customer": null,
+  "email": "anthony.anderson@example.com",
+  "items": [
+    {
+      "object": "order_item",
+      "amount": 1500,
+      "currency": "usd",
+      "description": "T-shirt",
+      "parent": "sku_Bwk3ImnnXF5G3D",
+      "quantity": 1,
+      "type": "sku"
+    },
+    {
+      "object": "order_item",
+      "amount": 0,
+      "currency": "usd",
+      "description": "Taxes (included)",
+      "parent": null,
+      "quantity": null,
+      "type": "tax"
+    },
+    {
+      "object": "order_item",
+      "amount": 0,
+      "currency": "usd",
+      "description": "Free shipping",
+      "parent": "ship_free-shipping",
+      "quantity": null,
+      "type": "shipping"
+    }
+  ],
+  "livemode": false,
+  "metadata": {
+  },
+  "returns": {
+    "object": "list",
+    "data": [
+      {
+        "id": "orret_1BYqZL2eZvKYlo2C7uvoc4hp",
+        "object": "order_return",
+        "amount": 1500,
+        "created": 1513234307,
+        "currency": "usd",
+        "items": [
+          {
+            "object": "order_item",
+            "amount": 1500,
+            "currency": "usd",
+            "description": "T-shirt",
+            "parent": "sku_Bwk3ImnnXF5G3D",
+            "quantity": 1,
+            "type": "sku"
+          },
+          {
+            "object": "order_item",
+            "amount": 0,
+            "currency": "usd",
+            "description": "Taxes (included)",
+            "parent": null,
+            "quantity": null,
+            "type": "tax"
+          },
+          {
+            "object": "order_item",
+            "amount": 0,
+            "currency": "usd",
+            "description": "Free shipping",
+            "parent": "ship_free-shipping",
+            "quantity": null,
+            "type": "shipping"
+          }
+        ],
+        "livemode": false,
+        "order": "or_1BYqZA2eZvKYlo2CIdmiPWou",
+        "refund": null
+      }
+    ],
+    "has_more": false,
+    "total_count": 1,
+    "url": "/v1/order_returns?order=or_1BYqZA2eZvKYlo2CIdmiPWou"
+  },
+  "selected_shipping_method": "ship_free-shipping",
+  "shipping": {
+    "address": {
+      "city": "San Francisco",
+      "country": "US",
+      "line1": "1234 Main Street",
+      "line2": null,
+      "postal_code": "94111",
+      "state": null
+    },
+    "carrier": null,
+    "name": "Jacob Taylor",
+    "phone": null,
+    "tracking_number": null
+  },
+  "shipping_methods": [
+    {
+      "id": "ship_free-shipping",
+      "amount": 0,
+      "currency": "usd",
+      "delivery_estimate": null,
+      "description": "Free shipping"
+    }
+  ],
+  "status": "paid",
+  "status_transitions": {
+    "canceled": 1513234307,
+    "fulfiled": null,
+    "paid": 1513234303,
+    "returned": null
+  },
+  "updated": 1513234307
+}

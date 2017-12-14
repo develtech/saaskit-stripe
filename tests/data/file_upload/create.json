@@ -1,0 +1,10 @@
+{
+  "id": "file_1BC7qO2eZvKYlo2CREONzM9U",
+  "object": "file_upload",
+  "created": 1507819168,
+  "filename": "file_1BC7qO2eZvKYlo2CREONzM9U.png",
+  "purpose": "business_logo",
+  "size": 72763,
+  "type": "png",
+  "url": "https://stripe-upload-api.s3.amazonaws.com/uploads/file_1BC7qO2eZvKYlo2CREONzM9U?AWSAccessKeyId=KEY_ID\u0026Expires=TIMESTAMP\u0026Signature=SIGNATURE"
+}

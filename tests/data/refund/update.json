@@ -2,11 +2,12 @@
   "id": "re_1BYvNQ2eZvKYlo2CZ3PXX1hd",
   "object": "refund",
   "amount": 1000,
-  "balance_transaction": "txn_1BYvNQ2eZvKYlo2C2roFDife",
+  "balance_transaction": "txn_19XJJ02eZvKYlo2ClwuJ1rbA",
   "charge": "ch_1BYvNP2eZvKYlo2CZSZy58La",
   "created": 1513252788,
   "currency": "usd",
   "metadata": {
+    "key": "value"
   },
   "reason": null,
   "receipt_number": null,

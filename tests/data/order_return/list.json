@@ -1,0 +1,33 @@
+{
+  "object": "list",
+  "url": "/v1/order_returns",
+  "has_more": false,
+  "data": [
+    {
+      "id": "orret_1BYqZL2eZvKYlo2C7uvoc4hp",
+      "object": "sku",
+      "active": true,
+      "attributes": {
+        "size": "Medium",
+        "gender": "Unisex"
+      },
+      "created": 1513234289,
+      "currency": "usd",
+      "image": null,
+      "inventory": {
+        "quantity": 499,
+        "type": "finite",
+        "value": null
+      },
+      "livemode": false,
+      "metadata": {
+      },
+      "package_dimensions": null,
+      "price": 1500,
+      "product": "prod_BosWT9EsdzgjPn",
+      "updated": 1513234302
+    },
+    {...},
+    {...}
+  ]
+}
