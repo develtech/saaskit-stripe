@@ -2,8 +2,9 @@
 import json
 import os
 
-import stripe
+from django.conf import settings
 
+import stripe
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'tests', 'data')
 
@@ -15,7 +16,7 @@ def get_mock_stripe_client():
 
 
 def get_test_stripe_client():
-    stripe.api_key = 'sk_test_BQokikJOvBiI2HlWgH4olfQ2'
+    stripe.api_key = settings.STRIPE_TEST_KEY
     return stripe
 
 
