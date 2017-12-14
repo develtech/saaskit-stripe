@@ -5,7 +5,7 @@ from ..models import Customer
 from ..test import (
     get_test_data,
     mock_stripe_response,
-    skip_if_stripe_mock_server_offline
+    skip_if_stripe_mock_server_offline,
 )
 
 
