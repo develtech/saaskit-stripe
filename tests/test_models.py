@@ -8,10 +8,10 @@ from django.test import TestCase
 from django.utils.six import text_type
 
 from ..models import Customer
-from .helpers import get_test_data
+from ..test import get_test_data
 
 
-def json_to_djorm(data):
+def json_to_orm(data):
     """Return Stripe ORM object from json.
 
     Wrapper to take a JSON object returned from stripe
@@ -27,12 +27,12 @@ def json_to_djorm(data):
 
     resource_type = data['object']
 
-    Model = get_djorm_model_from_object_key(resource_type)
+    Model = get_orm_model_from_object_key(resource_type)
 
     return Model
 
 
-def get_djorm_model_from_object_key(objkey):
+def get_orm_model_from_object_key(objkey):
     """Return django ORM model from object key.
 
     :param objkey: 'object' key from stripe JSON response
@@ -50,32 +50,32 @@ class TestJSONToObject(TestCase):
 
     def test_raises_object_missing(self):
         with pytest.raises(TypeError, match=r'must be a dict'):
-            json_to_djorm('Hey')
+            json_to_orm('Hey')
         with pytest.raises(TypeError, match=r'must be a dict'):
-            json_to_djorm(1)
+            json_to_orm(1)
 
     def test_raises_non_dict(self):
         with pytest.raises(TypeError, match=r'JSON data missing object'):
             data = get_test_data('customer/object.json')
             data.pop('object', None)
-            json_to_djorm(data)
+            json_to_orm(data)
 
 
-class TestGetDjormFromObjectKey(TestCase):
+class TestGetormFromObjectKey(TestCase):
 
     def test_raises_error_if_not_string(self):
         with pytest.raises(TypeError, match=r'must be a string'):
-            get_djorm_model_from_object_key(1)
+            get_orm_model_from_object_key(1)
 
     def test_raises_error_model_not_exist(self):
         with pytest.raises(
                 LookupError,
                 match=r"App '\w*' doesn't have a '.*' model.",
         ):
-            get_djorm_model_from_object_key('Moo')
+            get_orm_model_from_object_key('Moo')
 
     def test_imports_model_correctly(self):
-        result = get_djorm_model_from_object_key('Customer')
+        result = get_orm_model_from_object_key('Customer')
         assert Customer == result
 
 

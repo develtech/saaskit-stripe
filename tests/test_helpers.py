@@ -5,15 +5,12 @@ from __future__ import unicode_literals
 import json
 
 import responses
-import stripe
 
-from .helpers import open_test_file
-
-stripe.api_key = 'sk_test_BQokikJOvBiI2HlWgH4olfQ2'
+from ..test import open_test_file
 
 
 @responses.activate
-def test_my_api():
+def test_my_api(stripe):
     """Tests to assure the Stripe library is using the Requests library as an
     HTTP Client and responses is mocking the responses as intended."""
 
