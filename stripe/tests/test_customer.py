@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from stripe.resource import convert_to_stripe_object, Customer as StripeCustomer
+from stripe.resource import Customer as StripeCustomer
 
-from ..test import get_test_data
+from ..test import get_test_data, mock_stripe_response
 
 
 def test_customer(stripe, monkeypatch):
     data = get_test_data('customer/object.json')
 
-    def create_customer(*args, **kwargs):
-        return convert_to_stripe_object(data)
-
-    monkeypatch.setattr(StripeCustomer, 'create', create_customer)
+    monkeypatch.setattr(StripeCustomer, 'create', mock_stripe_response(data))
 
     customer = StripeCustomer.create()
     assert customer['id'] == data['id']
