@@ -20,8 +20,8 @@ def test_customer_model(stripe, monkeypatch):
 
     monkeypatch.setattr(StripeCustomer, 'create', mock_stripe_response(data))
 
-    customer = StripeCustomer.create()
-    cdict = customer.to_dict()
-    cdict.pop('object')
-    cdict.pop('subscriptions')
-    c = Customer(**cdict)
+    customer_object = StripeCustomer.create()
+
+    c = Customer.from_stripe_object(customer_object)
+    assert isinstance(c, Customer)
+    assert c.id == data['id']
