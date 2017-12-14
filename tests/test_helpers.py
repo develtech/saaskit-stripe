@@ -17,7 +17,7 @@ def test_my_api(stripe):
     body_json = open_test_file('customer/object.json').read()
 
     customer_id = json.loads(body_json)['id']
-    customer_url = 'https://api.stripe.com/v1/customers/%s' % customer_id
+    customer_url = stripe.api_base + '/v1/customers/%s' % customer_id
     responses.add(
         responses.GET,
         customer_url,
