@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import pytest
+
 from django.apps import apps
 from django.test import TestCase
 from django.utils.six import text_type
@@ -47,13 +49,13 @@ def get_djorm_model_from_object_key(objkey):
 class TestJSONToObject(TestCase):
 
     def test_raises_object_missing(self):
-        with self.assertRaisesRegexp(TypeError, 'must be a dict'):
+        with pytest.raises(TypeError, match=r'must be a dict'):
             json_to_djorm('Hey')
-        with self.assertRaisesRegexp(TypeError, 'must be a dict'):
+        with pytest.raises(TypeError, match=r'must be a dict'):
             json_to_djorm(1)
 
     def test_raises_non_dict(self):
-        with self.assertRaisesRegexp(TypeError, 'JSON data missing object'):
+        with pytest.raises(TypeError, match=r'JSON data missing object'):
             data = get_test_data('customer/object.json')
             data.pop('object', None)
             json_to_djorm(data)
@@ -62,19 +64,19 @@ class TestJSONToObject(TestCase):
 class TestGetDjormFromObjectKey(TestCase):
 
     def test_raises_error_if_not_string(self):
-        with self.assertRaisesRegexp(TypeError, 'must be a string'):
+        with pytest.raises(TypeError, match=r'must be a string'):
             get_djorm_model_from_object_key(1)
 
     def test_raises_error_model_not_exist(self):
-        with self.assertRaisesRegexp(
+        with pytest.raises(
                 LookupError,
-                "App '\w*' doesn't have a '.*' model.",
+                match=r"App '\w*' doesn't have a '.*' model.",
         ):
             get_djorm_model_from_object_key('Moo')
 
     def test_imports_model_correctly(self):
         result = get_djorm_model_from_object_key('Customer')
-        self.assertEquals(Customer, result)
+        assert Customer == result
 
 
 class TestCustomer(TestCase):
