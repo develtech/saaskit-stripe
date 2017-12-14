@@ -1,0 +1,49 @@
+{
+  "object": "list",
+  "url": "/v1/products",
+  "has_more": false,
+  "data": [
+    {
+      "id": "prod_BosWT9EsdzgjPn",
+      "object": "product",
+      "active": false,
+      "attributes": [
+        "size",
+        "gender"
+      ],
+      "caption": "test",
+      "created": 1511420673,
+      "deactivate_on": [
+    
+      ],
+      "description": "Comfortable cotton t-shirt",
+      "images": [
+    
+      ],
+      "livemode": false,
+      "metadata": {
+      },
+      "name": "T-shirt",
+      "package_dimensions": {
+        "height": 1.25,
+        "length": 2.44,
+        "weight": 3.0,
+        "width": 4.0
+      },
+      "shippable": false,
+      "skus": {
+        "object": "list",
+        "data": [
+    
+        ],
+        "has_more": false,
+        "total_count": 0,
+        "url": "/v1/skus?product=prod_BosWT9EsdzgjPn\u0026active=true"
+      },
+      "updated": 1511422435,
+      "url": "https://api.stripe.com/"
+    },
+    {...},
+    {...}
+  ]
+}

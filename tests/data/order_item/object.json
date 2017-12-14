@@ -1,0 +1,9 @@
+{
+  "object": "order_item",
+  "amount": -100,
+  "currency": "usd",
+  "description": "Discount for being awesome",
+  "parent": null,
+  "quantity": null,
+  "type": "discount"
+}

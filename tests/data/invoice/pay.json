@@ -6,7 +6,7 @@
   "attempt_count": 0,
   "attempted": true,
   "billing": "charge_automatically",
-  "charge": null,
+  "charge": "ch_1BYvoY2eZvKYlo2CYCleLmpl",
   "closed": true,
   "currency": "usd",
   "customer": "cus_BwpT7W6UL1t839",
@@ -19,7 +19,7 @@
   "lines": {
     "data": [
       {
-        "id": "sub_BwpU1x9rfJwXSD",
+        "id": "sub_BwpUMhAV8OM8Zc",
         "object": "line_item",
         "amount": 999,
         "currency": "usd",
@@ -50,7 +50,7 @@
         "proration": false,
         "quantity": 1,
         "subscription": null,
-        "subscription_item": "si_BwpUdly2eE3yNB",
+        "subscription_item": "si_BwpUR5LUUO2uYF",
         "type": "subscription"
       }
     ],
@@ -74,5 +74,6 @@
   "tax": null,
   "tax_percent": null,
   "total": 0,
-  "webhooks_delivered_at": 1386790772
+  "webhooks_delivered_at": 1386790772,
+  "last_payment_attempt": null
 }

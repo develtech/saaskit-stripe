@@ -2,10 +2,11 @@
   "id": "trr_1BYqYR2eZvKYlo2CPMctLBjx",
   "object": "transfer_reversal",
   "amount": 400,
-  "balance_transaction": "txn_1BYqYR2eZvKYlo2CuBhJJ7mH",
+  "balance_transaction": "txn_19XJJ02eZvKYlo2ClwuJ1rbA",
   "created": 1513234251,
   "currency": "usd",
   "metadata": {
+    "key": "value"
   },
   "transfer": "tr_1BYqYD2eZvKYlo2CjYE9Mv0B"
 }

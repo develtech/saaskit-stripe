@@ -19,39 +19,24 @@
   "lines": {
     "data": [
       {
-        "id": "sub_BwpU1x9rfJwXSD",
+        "id": "ii_1BYqZp2eZvKYlo2CXczzzwtb",
         "object": "line_item",
-        "amount": 999,
+        "amount": 0,
         "currency": "usd",
-        "description": null,
+        "description": "One-time setup fee",
         "discountable": true,
-        "livemode": true,
+        "livemode": false,
         "metadata": {
         },
         "period": {
-          "start": 1515932915,
-          "end": 1518611315
+          "start": 1513234337,
+          "end": 1513234337
         },
-        "plan": {
-          "id": "silver-express-898",
-          "object": "plan",
-          "amount": 999,
-          "created": 1506381458,
-          "currency": "usd",
-          "interval": "month",
-          "interval_count": 1,
-          "livemode": false,
-          "metadata": {
-          },
-          "name": "Silver Express",
-          "statement_descriptor": null,
-          "trial_period_days": null
-        },
+        "plan": null,
         "proration": false,
-        "quantity": 1,
+        "quantity": null,
         "subscription": null,
-        "subscription_item": "si_BwpUdly2eE3yNB",
-        "type": "subscription"
+        "type": "invoiceitem"
       }
     ],
     "has_more": false,

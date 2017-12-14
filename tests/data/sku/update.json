@@ -1,0 +1,25 @@
+{
+  "id": "sku_Bwk3ImnnXF5G3D",
+  "object": "sku",
+  "active": true,
+  "attributes": {
+    "size": "Medium",
+    "gender": "Unisex"
+  },
+  "created": 1513234289,
+  "currency": "usd",
+  "image": null,
+  "inventory": {
+    "quantity": 499,
+    "type": "finite",
+    "value": null
+  },
+  "livemode": false,
+  "metadata": {
+    "order_id": "6735"
+  },
+  "package_dimensions": null,
+  "price": 1500,
+  "product": "prod_BosWT9EsdzgjPn",
+  "updated": 1513234302
+}
