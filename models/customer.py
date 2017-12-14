@@ -89,3 +89,11 @@ class Customer(models.Model):
     #         'The customer’s current subscriptions, if any'
     #     )
     # )
+
+    @staticmethod
+    def from_stripe_object(stripe_object):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+        _dict.pop('subscriptions')
+
+        return Customer(**_dict)
