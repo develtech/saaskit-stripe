@@ -5,6 +5,7 @@ import os
 from django.conf import settings
 
 import stripe
+from stripe.resource import convert_to_stripe_object
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'tests', 'data')
 
@@ -57,3 +58,24 @@ def get_test_data(_filename, path=DATA_DIR):
     """
     _file = open_test_file(_filename, path)
     return json_file_to_dict(_file)
+
+
+def mock_stripe_response(_dict):
+    """Mock the response of a stripe API call.
+
+    :param _dict: data of response
+    :type _dict: dict
+    :rtype: StripeObject
+    :returns: Stripe object for the data entered
+
+    Example usage:
+
+        data = get_test_data('customer/object.json')
+        monkeypatch.setattr(StripeCustomer, 'create', mock_stripe_response(data))
+
+        customer = StripeCustomer.create()
+        assert customer['id'] == data['id']
+    """
+    def callback(*args, **kwargs):
+        return convert_to_stripe_object(_dict)
+    return callback
