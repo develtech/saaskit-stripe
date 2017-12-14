@@ -58,18 +58,6 @@ def open_test_file(_filename, path=DATA_DIR):
     return open(os.path.join(path, _filename))
 
 
-def json_file_to_dict(_file):
-    """Return dict from json file.
-
-    :param _file: json file
-    :type _file: file object
-    :returns: dictionary
-    :rtype: :class:`dict`
-
-    """
-    return json.load(_file)
-
-
 def get_test_data(_filename, path=DATA_DIR):
     """Return dict of test data.
 
@@ -81,7 +69,7 @@ def get_test_data(_filename, path=DATA_DIR):
     :rtype: :class:`dict`
     """
     _file = open_test_file(_filename, path)
-    return json_file_to_dict(_file)
+    return json.load(_file)
 
 
 def mock_stripe_response(_dict):
