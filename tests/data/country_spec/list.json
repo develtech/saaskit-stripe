@@ -1,0 +1,77 @@
+{
+  "object": "list",
+  "url": "/v1/country_specs",
+  "has_more": false,
+  "data": [
+    {
+      "id": "US",
+      "object": "country_spec",
+      "default_currency": "usd",
+      "supported_bank_account_currencies": {
+        "usd": [
+          "US"
+        ]
+      },
+      "supported_payment_currencies": [
+        "usd",
+        "aed",
+        "afn",
+        "..."
+      ],
+      "supported_payment_methods": [
+        "card",
+        "stripe"
+      ],
+      "verification_fields": {
+        "individual": {
+          "minimum": [
+            "external_account",
+            "legal_entity.address.city",
+            "legal_entity.address.line1",
+            "legal_entity.address.postal_code",
+            "legal_entity.address.state",
+            "legal_entity.dob.day",
+            "legal_entity.dob.month",
+            "legal_entity.dob.year",
+            "legal_entity.first_name",
+            "legal_entity.last_name",
+            "legal_entity.ssn_last_4",
+            "legal_entity.type",
+            "tos_acceptance.date",
+            "tos_acceptance.ip"
+          ],
+          "additional": [
+            "legal_entity.personal_id_number",
+            "legal_entity.verification.document"
+          ]
+        },
+        "company": {
+          "minimum": [
+            "external_account",
+            "legal_entity.address.city",
+            "legal_entity.address.line1",
+            "legal_entity.address.postal_code",
+            "legal_entity.address.state",
+            "legal_entity.business_name",
+            "legal_entity.business_tax_id",
+            "legal_entity.dob.day",
+            "legal_entity.dob.month",
+            "legal_entity.dob.year",
+            "legal_entity.first_name",
+            "legal_entity.last_name",
+            "legal_entity.ssn_last_4",
+            "legal_entity.type",
+            "tos_acceptance.date",
+            "tos_acceptance.ip"
+          ],
+          "additional": [
+            "legal_entity.personal_id_number",
+            "legal_entity.verification.document"
+          ]
+        }
+      }
+    },
+    {...},
+    {...}
+  ]
+}
