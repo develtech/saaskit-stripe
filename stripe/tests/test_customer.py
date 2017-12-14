@@ -20,6 +20,7 @@ def test_customer_mock(stripe, monkeypatch):
     assert customer['id'] == data['id']
 
 
+@pytest.mark.django_db(transaction=True)
 def test_customer_model(stripe, monkeypatch):
     data = get_test_data('customer/object.json')
 
@@ -37,7 +38,5 @@ def test_customer_model(stripe, monkeypatch):
 def test_customer_model_mock(mock_stripe):
     assert len(mock_stripe.Customer.list().data)
     for customer_object in mock_stripe.Customer.list().auto_paging_iter():
-
         c = Customer.from_stripe_object(customer_object)
         assert isinstance(c, Customer)
-    assert False

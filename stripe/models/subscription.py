@@ -110,6 +110,7 @@ class Subscription(models.Model):
             'overrides a discount applied on a customer-wide basis.',
         ),
         on_delete=models.CASCADE,
+        null=True,
     )
     ended_at = models.DateTimeField(
         help_text=_(
@@ -143,6 +144,7 @@ class Subscription(models.Model):
             'If provided, each invoice created by this subscription will '
             'apply the tax rate, increasing the amount billed to the customer.',
         ),
+        null=True
     )
 
     @staticmethod
@@ -154,7 +156,7 @@ class Subscription(models.Model):
         _dict.pop('customer')
 
         _dict['customer'] = customer
-        _dict['plan'] = Plan(_dict.pop('plan'))
+        _dict['plan'] = Plan.from_stripe_object(_dict.pop('plan'))
 
         for field in Subscription._meta.get_fields():
             if isinstance(field, models.DateTimeField):
@@ -163,3 +165,4 @@ class Subscription(models.Model):
 
         s = Subscription(**_dict)
         s.save()
+        return s

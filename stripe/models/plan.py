@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+import pytz
 from django_extensions.db.fields import json
 
 from .charge import CURRENCY_CHOICES
@@ -23,7 +26,7 @@ class Plan(models.Model):
     plan for basic features and a different $20/month plan for premium
     features.
     """
-
+    id = models.CharField(max_length=255, primary_key=True)
     livemode = models.BooleanField()
     amount = models.PositiveIntegerField(
         help_text=_(
@@ -71,10 +74,27 @@ class Plan(models.Model):
             'Number of trial period days granted when subscribing a customer '
             'to this plan. Null if the plan has no trial period.',
         ),
+        null=True,
     )
     statement_descriptor = models.CharField(
         max_length=255,
-        help_text=(
+        help_text=_(
             'Extra information about a charge for the customer’s credit card '
-            'statement.',),
+            'statement.',
+        ),
+        null=True,
     )
+
+    @staticmethod
+    def from_stripe_object(stripe_object):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+
+        for field in Plan._meta.get_fields():
+            if isinstance(field, models.DateTimeField):
+                _dict[field.name] = datetime.datetime.fromtimestamp(
+                    int(_dict[field.name])).replace(tzinfo=pytz.utc)
+
+        s = Plan(**_dict)
+        s.save()
+        return s
