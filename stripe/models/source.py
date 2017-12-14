@@ -9,7 +9,6 @@ from django_extensions.db.fields import json
 
 from .charge import CURRENCY_CHOICES
 
-
 FLOW_CHOICES = (
     ('redirect', _('redirect')),
     ('receiver', _('receiver')),
@@ -60,9 +59,7 @@ class Source(models.Model):
     owner = json.JSONField()
     receiver = json.JSONField()
     redirect = json.JSONField()
-    statement_descriptor = models.CharField(
-        max_length=255,
-    )
+    statement_descriptor = models.CharField(max_length=255,)
     status = models.CharField(
         max_length=255,
         choices=SOURCE_STATUS_CHOICES,
