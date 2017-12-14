@@ -23,7 +23,6 @@ from .file_upload import FileUpload
 from .invoice import Invoice
 from .invoice_item import InvoiceItem
 from .plan import Plan
-from .recipient import Recipient
 from .refund import Refund
 from .subscription import Subscription
 from .token import Token
