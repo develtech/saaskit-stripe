@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
 import os
-
+from contextlib import contextmanager
+import pytest
 from django.conf import settings
 
 import stripe
@@ -10,10 +11,33 @@ from stripe.resource import convert_to_stripe_object
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'tests', 'data')
 
 
-def get_mock_stripe_client():
+@contextmanager
+def mock_stripe_client():
+    old_base = stripe.api_base
     stripe.api_base = 'http://localhost:12111'
     stripe.api_key = 'sk_test_...'
-    return stripe
+
+    yield stripe
+
+    stripe.api_base = old_base
+
+
+def mock_stripe_server_running():
+    server_running = True
+
+    with mock_stripe_client() as s:
+        try:
+            s.Customer.list()
+        except stripe.error.APIConnectionError:
+            server_running = False
+
+    return server_running
+
+
+skip_if_stripe_mock_server_offline = pytest.mark.skipif(
+    not mock_stripe_server_running(),
+    reason='stripe mock server not running'
+)
 
 
 def get_test_stripe_client():
