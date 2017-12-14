@@ -2,7 +2,9 @@
 import json
 import os
 from contextlib import contextmanager
+
 import pytest
+
 from django.conf import settings
 
 import stripe
@@ -35,9 +37,7 @@ def mock_stripe_server_running():
 
 
 skip_if_stripe_mock_server_offline = pytest.mark.skipif(
-    not mock_stripe_server_running(),
-    reason='stripe mock server not running'
-)
+    not mock_stripe_server_running(), reason='stripe mock server not running')
 
 
 def get_test_stripe_client():
@@ -88,6 +88,8 @@ def mock_stripe_response(_dict):
         customer = StripeCustomer.create()
         assert customer['id'] == data['id']
     """
+
     def callback(*args, **kwargs):
         return convert_to_stripe_object(_dict)
+
     return callback
