@@ -1,32 +1,23 @@
 {
-  "id": "txn_169oS22eZvKYlo2CSLNAbKOX",
+  "id": "txn_19XJJ02eZvKYlo2ClwuJ1rbA",
   "object": "balance_transaction",
   "amount": 999,
+  "available_on": 1483920000,
+  "created": 1483315442,
   "currency": "usd",
-  "net": 940,
-  "type": "charge",
-  "created": 1433386285,
-  "available_on": 1433980800,
-  "status": "pending",
+  "description": null,
   "fee": 59,
   "fee_details": [
     {
       "amount": 59,
+      "application": null,
       "currency": "usd",
-      "type": "stripe_fee",
       "description": "Stripe processing fees",
-      "application": null
+      "type": "stripe_fee"
     }
   ],
-  "source": "ch_169oS12eZvKYlo2CpU29hrOm",
-  "description": "Premium",
-  "sourced_transfers": {
-    "object": "list",
-    "total_count": 0,
-    "has_more": false,
-    "url": "/v1/transfers?source_transaction=ch_169oS12eZvKYlo2CpU29hrOm",
-    "data": [
-
-    ]
-  }
+  "net": 940,
+  "source": "ch_19XJJ02eZvKYlo2CHfSUsSpl",
+  "status": "pending",
+  "type": "charge"
 }

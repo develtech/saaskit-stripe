@@ -1,0 +1,22 @@
+{
+  "id": "btok_1BYvpG2eZvKYlo2CDViaXSTO",
+  "object": "token",
+  "bank_account": {
+    "id": "ba_1BYvpG2eZvKYlo2Cbk8jUIRB",
+    "object": "bank_account",
+    "account_holder_name": "Jane Austen",
+    "account_holder_type": "individual",
+    "bank_name": "STRIPE TEST BANK",
+    "country": "US",
+    "currency": "usd",
+    "fingerprint": "1JWtPxqbdX5Gamtc",
+    "last4": "6789",
+    "routing_number": "110000000",
+    "status": "new"
+  },
+  "client_ip": null,
+  "created": 1513254514,
+  "livemode": false,
+  "type": "bank_account",
+  "used": false
+}

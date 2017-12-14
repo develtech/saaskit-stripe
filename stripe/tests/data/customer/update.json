@@ -6,7 +6,7 @@
   "currency": "usd",
   "default_source": null,
   "delinquent": false,
-  "description": null,
+  "description": "Customer for natalie.davis@example.com",
   "discount": null,
   "email": null,
   "livemode": false,
