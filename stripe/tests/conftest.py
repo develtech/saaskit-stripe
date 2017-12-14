@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from ..test import get_mock_stripe_client
+from ..test import get_test_stripe_client
 
 
 @pytest.fixture
 def stripe():
-    return get_mock_stripe_client()
+    return get_test_stripe_client()
