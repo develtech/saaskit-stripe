@@ -1,7 +1,7 @@
 {
-  "id": "silver-express-898",
+  "id": "bronze-enterprise",
   "object": "plan",
-  "amount": 999,
+  "amount": 5000,
   "created": 1506381458,
   "currency": "usd",
   "interval": "month",
@@ -9,7 +9,7 @@
   "livemode": false,
   "metadata": {
   },
-  "name": "Silver Express",
+  "name": "Titanium plus",
   "statement_descriptor": null,
   "trial_period_days": null
 }

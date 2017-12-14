@@ -1,0 +1,23 @@
+{
+  "id": "si_BwpUHditWvQJ8w",
+  "object": "subscription_item",
+  "created": 1513254516,
+  "metadata": {
+  },
+  "plan": {
+    "id": "silver-express-898",
+    "object": "plan",
+    "amount": 999,
+    "created": 1506381458,
+    "currency": "usd",
+    "interval": "month",
+    "interval_count": 1,
+    "livemode": false,
+    "metadata": {
+    },
+    "name": "Silver Express",
+    "statement_descriptor": null,
+    "trial_period_days": null
+  },
+  "quantity": 1
+}
