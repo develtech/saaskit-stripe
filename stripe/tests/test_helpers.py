@@ -20,7 +20,7 @@ class TestResponsesStripeSanity(TestCase):
 
     @responses.activate
     def test_my_api(self):
-        body_json = open_test_file('customer.json').read()
+        body_json = open_test_file('customer/object.json').read()
 
         customer_id = 'cus_6Ozta4Bn1hmWEH'
         customer_url = 'https://api.stripe.com/v1/customers/%s' % customer_id

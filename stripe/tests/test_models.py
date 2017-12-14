@@ -54,7 +54,7 @@ class TestJSONToObject(TestCase):
 
     def test_raises_non_dict(self):
         with self.assertRaisesRegexp(TypeError, 'JSON data missing object'):
-            data = get_test_data('customer.json')
+            data = get_test_data('customer/object.json')
             data.pop('object', None)
             json_to_djorm(data)
 
@@ -80,4 +80,4 @@ class TestGetDjormFromObjectKey(TestCase):
 class TestCustomer(TestCase):
 
     def test_create(self):
-        self.data = get_test_data('customer.json')
+        self.data = get_test_data('customer/object.json')
