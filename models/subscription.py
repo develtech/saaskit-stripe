@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+import pytz
 from django_extensions.db.fields import json
 
 SUBSCRIPTION_STATUS_CHOICES = (
@@ -22,7 +25,8 @@ class Subscription(models.Model):
 
     .. _you've created: https://stripe.com/docs/api#create_plan
     """
-
+    id = models.CharField(max_length=255, primary_key=True)
+    created = models.DateTimeField()
     cancel_at_period_end = models.BooleanField(
         help_text=_(
             'If the subscription has been canceled with the ``at_period_end``'
@@ -90,6 +94,14 @@ class Subscription(models.Model):
             'created.',
         ),
     )
+    current_period_end = models.DateTimeField(
+        help_text=_(
+            'End of the current period that the subscription has been '
+            'invoiced for. At the end of this period, a new invoice will be '
+            'created.'
+        ),
+    )
+
     discount = models.ForeignKey(
         'Discount',
         help_text=_(
@@ -106,6 +118,7 @@ class Subscription(models.Model):
             'plan), the date the subscription ended',
         ),
     )
+    livemode = models.BooleanField()
     metadata = json.JSONField(
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
@@ -133,9 +146,20 @@ class Subscription(models.Model):
     )
 
     @staticmethod
-    def from_stripe_object(stripe_object):
+    def from_stripe_object(stripe_object, customer):
+        Plan = Subscription.plan.field.related_model
         _dict = stripe_object.to_dict()
         _dict.pop('object')
+        _dict.pop('items')  # string, value is list
         _dict.pop('customer')
 
-        return Subscription(**_dict)
+        _dict['customer'] = customer
+        _dict['plan'] = Plan(_dict.pop('plan'))
+
+        for field in Subscription._meta.get_fields():
+            if isinstance(field, models.DateTimeField):
+                _dict[field.name] = datetime.datetime.fromtimestamp(
+                    int(_dict[field.name])).replace(tzinfo=pytz.utc)
+
+        s = Subscription(**_dict)
+        s.save()
