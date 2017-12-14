@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
+
 from django.test import TestCase
 
 import responses
@@ -22,7 +24,7 @@ class TestResponsesStripeSanity(TestCase):
     def test_my_api(self):
         body_json = open_test_file('customer/object.json').read()
 
-        customer_id = 'cus_6Ozta4Bn1hmWEH'
+        customer_id = json.loads(body_json)['id']
         customer_url = 'https://api.stripe.com/v1/customers/%s' % customer_id
         responses.add(
             responses.GET,
