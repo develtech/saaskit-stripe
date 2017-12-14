@@ -63,8 +63,8 @@ class Customer(models.Model):
     #     )
     # )
 
-    description = models.CharField(max_length=255)
-    email = models.EmailField()
+    description = models.CharField(max_length=255, null=True)
+    email = models.EmailField(null=True)
     metadata = json.JSONField(
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
@@ -93,6 +93,15 @@ class Customer(models.Model):
     #         'The customer’s current subscriptions, if any'
     #     )
     # )
+
+    default_source = models.ForeignKey(
+        'Source',
+        help_text=_(
+            'ID of the source to make the customer’s new default.'
+        ),
+        on_delete=models.CASCADE,
+        null=True,
+    )
 
     @staticmethod
     def from_stripe_object(stripe_object):
