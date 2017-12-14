@@ -75,6 +75,13 @@ class Customer(models.Model):
         ),
     )
 
+    shipping = json.JSONField(
+        help_text=_(
+            'Mailing and shipping address for the customer. Appears on '
+            'invoices emailed to this customer.'
+        ),
+    )
+
     # reverse relation
     # subscriptions = models.ForeignKey(
     #     'Subscription',
