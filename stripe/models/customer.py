@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+import pytz
 from django_extensions.db.fields import json
 
 
@@ -15,9 +18,10 @@ class Customer(models.Model):
     customers as well as a list of all your customers.
     """
 
+    id = models.CharField(max_length=255, primary_key=True)
     livemode = models.BooleanField()
     created = models.DateTimeField()
-    account_balance = models.DateTimeField(
+    account_balance = models.IntegerField(
         help_text=_(
             'Current balance, if any, being stored on the customer’s account. '
             'If negative, the customer has credit to apply to the next '
@@ -92,12 +96,22 @@ class Customer(models.Model):
 
     @staticmethod
     def from_stripe_object(stripe_object):
-
-        for subscription in stripe_object.subscriptions.auto_paging_iter():
-            print(subscription)
+        Subscription = Customer.subscription_set.rel.related_model
 
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('subscriptions')
 
-        return Customer(**_dict)
+        for field in Customer._meta.get_fields():
+            if isinstance(field, models.DateTimeField):
+                _dict[field.name] = datetime.datetime.fromtimestamp(
+                    int(_dict[field.name])).replace(tzinfo=pytz.utc)
+
+        c = Customer(**_dict)
+        c.save()
+        for subscription in stripe_object.subscriptions.auto_paging_iter():
+            c.subscription_set.add(
+                Subscription.from_stripe_object(subscription)
+            )
+
+        return c

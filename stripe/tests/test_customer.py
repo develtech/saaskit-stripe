@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import pytest
+
 from stripe.resource import Customer as StripeCustomer
 
 from ..models import Customer
@@ -31,9 +33,11 @@ def test_customer_model(stripe, monkeypatch):
 
 
 @skip_if_stripe_mock_server_offline
+@pytest.mark.django_db(transaction=True)
 def test_customer_model_mock(mock_stripe):
     assert len(mock_stripe.Customer.list().data)
     for customer_object in mock_stripe.Customer.list().auto_paging_iter():
 
         c = Customer.from_stripe_object(customer_object)
         assert isinstance(c, Customer)
+    assert False
