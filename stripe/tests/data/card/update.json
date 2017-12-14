@@ -11,7 +11,6 @@
   "address_zip_check": null,
   "brand": "Visa",
   "country": "US",
-  "customer": null,
   "cvc_check": null,
   "dynamic_last4": null,
   "exp_month": 8,
@@ -21,6 +20,7 @@
   "last4": "4242",
   "metadata": {
   },
-  "name": null,
-  "tokenization_method": null
+  "name": "Aiden Harris",
+  "tokenization_method": null,
+  "account": "acct_1032D82eZvKYlo2C"
 }

@@ -1,24 +1,24 @@
 {
-  "id": "fee_6OzvQPTPTnDqqg",
+  "id": "fee_1BW0TXH84RNONfSZoogcISX1",
   "object": "application_fee",
-  "created": 1433953160,
-  "livemode": false,
-  "amount": 100,
-  "currency": "usd",
-  "refunded": false,
+  "account": "acct_1BVhIzH84RNONfSZ",
+  "amount": 123,
   "amount_refunded": 0,
+  "application": "ca_32D88BD1qLklliziD7gYQvctJIhWBSQ7",
+  "balance_transaction": "txn_19XJJ02eZvKYlo2ClwuJ1rbA",
+  "charge": "ch_1BW0TXH84RNONfSZTJ9scfBi",
+  "created": 1512557403,
+  "currency": "usd",
+  "livemode": false,
+  "originating_transaction": null,
+  "refunded": false,
   "refunds": {
     "object": "list",
-    "total_count": 0,
-    "has_more": false,
-    "url": "/v1/application_fees/fee_6OzvQPTPTnDqqg/refunds",
     "data": [
 
-    ]
-  },
-  "balance_transaction": "txn_169oS22eZvKYlo2CSLNAbKOX",
-  "account": "acct_1032D82eZvKYlo2C",
-  "application": "ca_6OzvXZJsP4DY0WgyaOVmfnGX3YNgMhyT",
-  "charge": "ch_16CBtj2eZvKYlo2C8CC7KTxT",
-  "originating_transaction": null
+    ],
+    "has_more": false,
+    "total_count": 0,
+    "url": "/v1/application_fees/fee_1BW0TXH84RNONfSZoogcISX1/refunds"
+  }
 }
