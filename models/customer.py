@@ -111,7 +111,7 @@ class Customer(models.Model):
         c.save()
         for subscription in stripe_object.subscriptions.auto_paging_iter():
             c.subscription_set.add(
-                Subscription.from_stripe_object(subscription)
+                Subscription.from_stripe_object(subscription, customer=c)
             )
 
         return c
