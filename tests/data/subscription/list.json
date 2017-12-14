@@ -1,0 +1,79 @@
+{
+  "object": "list",
+  "url": "/v1/subscriptions",
+  "has_more": false,
+  "data": [
+    {
+      "id": "sub_BwpUukosyvAHoQ",
+      "object": "subscription",
+      "application_fee_percent": null,
+      "billing": "charge_automatically",
+      "cancel_at_period_end": false,
+      "canceled_at": null,
+      "created": 1513254516,
+      "current_period_end": 1515932916,
+      "current_period_start": 1513254516,
+      "customer": "cus_BwpT7W6UL1t839",
+      "days_until_due": null,
+      "discount": null,
+      "ended_at": null,
+      "items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "si_BwpUg9Zcf8vvZf",
+            "object": "subscription_item",
+            "created": 1513254516,
+            "metadata": {
+            },
+            "plan": {
+              "id": "silver-express-898",
+              "object": "plan",
+              "amount": 999,
+              "created": 1506381458,
+              "currency": "usd",
+              "interval": "month",
+              "interval_count": 1,
+              "livemode": false,
+              "metadata": {
+              },
+              "name": "Silver Express",
+              "statement_descriptor": null,
+              "trial_period_days": null
+            },
+            "quantity": 1
+          }
+        ],
+        "has_more": false,
+        "total_count": 1,
+        "url": "/v1/subscription_items?subscription=sub_BwpUukosyvAHoQ"
+      },
+      "livemode": false,
+      "metadata": {
+      },
+      "plan": {
+        "id": "silver-express-898",
+        "object": "plan",
+        "amount": 999,
+        "created": 1506381458,
+        "currency": "usd",
+        "interval": "month",
+        "interval_count": 1,
+        "livemode": false,
+        "metadata": {
+        },
+        "name": "Silver Express",
+        "statement_descriptor": null,
+        "trial_period_days": null
+      },
+      "quantity": 1,
+      "start": 1513254516,
+      "status": "active",
+      "tax_percent": null,
+      "trial_end": null,
+      "trial_start": null
+    },
+    {...},
+    {...}
+  ]
+}
