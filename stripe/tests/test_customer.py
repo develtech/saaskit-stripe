@@ -32,8 +32,8 @@ def test_customer_model(stripe, monkeypatch):
 
 @skip_if_stripe_mock_server_offline
 def test_customer_model_mock(mock_stripe):
-    assert len(mock_stripe.list()['list'])
-    for customer_object in mock_stripe.list().auto_paging_iter():
+    assert len(mock_stripe.Customer.list().data)
+    for customer_object in mock_stripe.Customer.list().auto_paging_iter():
 
         c = Customer.from_stripe_object(customer_object)
         assert isinstance(c, Customer)

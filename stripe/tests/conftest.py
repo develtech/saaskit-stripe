@@ -10,7 +10,7 @@ def stripe():
 
 
 @pytest.fixture
-def mock_stripe(request):
+def mock_stripe(stripe, request):
     """Set up a mock stripe client"""
     old_base = stripe.api_base
     stripe.api_base = 'http://localhost:12111'
@@ -19,3 +19,5 @@ def mock_stripe(request):
         stripe.api_base = old_base
 
     request.addfinalizer(resource_a_teardown)
+
+    return stripe
