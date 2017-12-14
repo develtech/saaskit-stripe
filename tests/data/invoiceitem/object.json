@@ -1,0 +1,22 @@
+{
+  "id": "ii_1BYqZp2eZvKYlo2CXczzzwtb",
+  "object": "invoiceitem",
+  "amount": 2500,
+  "currency": "usd",
+  "customer": "cus_BwpT7W6UL1t839",
+  "date": 1513234337,
+  "description": "One-time setup fee",
+  "discountable": true,
+  "invoice": "in_1BYqZt2eZvKYlo2Cjby1rQYg",
+  "livemode": false,
+  "metadata": {
+  },
+  "period": {
+    "start": 1513234337,
+    "end": 1513234337
+  },
+  "plan": null,
+  "proration": false,
+  "quantity": null,
+  "subscription": null
+}
