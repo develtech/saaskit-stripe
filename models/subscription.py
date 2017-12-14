@@ -98,8 +98,7 @@ class Subscription(models.Model):
         help_text=_(
             'End of the current period that the subscription has been '
             'invoiced for. At the end of this period, a new invoice will be '
-            'created.'
-        ),
+            'created.'),
     )
 
     discount = models.ForeignKey(
@@ -138,14 +137,10 @@ class Subscription(models.Model):
         ),
     )
     tax_percent = models.DecimalField(
-        max_digits=3,
-        decimal_places=2,
-        help_text=_(
+        max_digits=3, decimal_places=2, help_text=_(
             'If provided, each invoice created by this subscription will '
             'apply the tax rate, increasing the amount billed to the customer.',
-        ),
-        null=True
-    )
+        ), null=True)
 
     @staticmethod
     def from_stripe_object(stripe_object, customer):

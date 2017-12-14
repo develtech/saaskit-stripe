@@ -96,9 +96,7 @@ class Customer(models.Model):
 
     default_source = models.ForeignKey(
         'Source',
-        help_text=_(
-            'ID of the source to make the customer’s new default.'
-        ),
+        help_text=_('ID of the source to make the customer’s new default.'),
         on_delete=models.CASCADE,
         null=True,
     )
@@ -120,7 +118,6 @@ class Customer(models.Model):
         c.save()
         for subscription in stripe_object.subscriptions.auto_paging_iter():
             c.subscription_set.add(
-                Subscription.from_stripe_object(subscription, customer=c)
-            )
+                Subscription.from_stripe_object(subscription, customer=c))
 
         return c
