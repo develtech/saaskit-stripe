@@ -131,3 +131,11 @@ class Subscription(models.Model):
             'apply the tax rate, increasing the amount billed to the customer.',
         ),
     )
+
+    @staticmethod
+    def from_stripe_object(stripe_object):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+        _dict.pop('customer')
+
+        return Subscription(**_dict)
