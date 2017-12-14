@@ -92,6 +92,10 @@ class Customer(models.Model):
 
     @staticmethod
     def from_stripe_object(stripe_object):
+
+        for subscription in stripe_object.subscriptions.auto_paging_iter():
+            print(subscription)
+
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('subscriptions')

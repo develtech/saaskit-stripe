@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-
 from stripe.resource import Customer as StripeCustomer
 
 from ..models import Customer
-from ..test import get_test_data, mock_stripe_response
+from ..test import (
+    get_test_data,
+    mock_stripe_response,
+    skip_if_stripe_mock_server_offline
+)
 
 
 def test_customer_mock(stripe, monkeypatch):
@@ -25,3 +28,12 @@ def test_customer_model(stripe, monkeypatch):
     c = Customer.from_stripe_object(customer_object)
     assert isinstance(c, Customer)
     assert c.id == data['id']
+
+
+@skip_if_stripe_mock_server_offline
+def test_customer_model_mock(mock_stripe):
+    assert len(mock_stripe.list()['list'])
+    for customer_object in mock_stripe.list().auto_paging_iter():
+
+        c = Customer.from_stripe_object(customer_object)
+        assert isinstance(c, Customer)
