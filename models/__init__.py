@@ -24,6 +24,7 @@ from .invoice import Invoice
 from .invoice_item import InvoiceItem
 from .plan import Plan
 from .refund import Refund
+from .source import Source
 from .subscription import Subscription
 from .token import Token
 from .transfer import Transfer
