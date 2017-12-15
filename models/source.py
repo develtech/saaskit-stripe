@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-import datetime
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-import pytz
 from django_extensions.db.fields import json
 
+from ..utils import UnixDateTimeField
 from .charge import CURRENCY_CHOICES
 
 FLOW_CHOICES = (
@@ -40,9 +38,9 @@ SOURCE_USAGE_CHOICES = (
 class Source(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     amount = models.PositiveIntegerField()
-    client_string = models.CharField(max_length=255)
+    client_secret = models.CharField(max_length=255)
     code_verification = json.JSONField()
-    created = models.DateTimeField()
+    created = UnixDateTimeField()
     currency = models.CharField(
         max_length=255,
         choices=CURRENCY_CHOICES,
@@ -72,3 +70,13 @@ class Source(models.Model):
         max_length=255,
         choices=SOURCE_USAGE_CHOICES,
     )
+    bitcoin = json.JSONField()
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+
+        s = Source(**_dict)
+        s.save()
+        return s
