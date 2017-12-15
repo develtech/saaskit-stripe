@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+import json
+
 import pytest
 
-from ..models import Source
-from ..test import skip_if_stripe_mock_server_offline
 import responses
-import json
+
+from ..models import Customer, Source
+from ..test import skip_if_stripe_mock_server_offline
 
 
 @skip_if_stripe_mock_server_offline
@@ -16,6 +18,7 @@ def test_source_model_mock(mock_stripe):
 
 
 @responses.activate
+@pytest.mark.django_db(transaction=True)
 def test_bank_and_card_sources(stripe):
     bank_account = {
         'account': 'acct_1032D82eZvKYlo2C',
@@ -101,9 +104,9 @@ def test_bank_and_card_sources(stripe):
         content_type='application/json',
     )
 
-    customer = stripe.Customer.retrieve(customer_id)
+    customer_object = stripe.Customer.retrieve(customer_id)
 
-    assert customer.id == customer_id
+    assert customer_object.id == customer_id
     assert len(responses.calls) == 1
     assert responses.calls[0].request.url == customer_url
     assert responses.calls[0].response.text == customer_json
@@ -128,4 +131,10 @@ def test_bank_and_card_sources(stripe):
         content_type='application/json',
     )
 
-    card = customer.sources.retrieve('card_1BYxtEEzushJqDoiJUQkSyER')
+    card_object = customer_object.sources.retrieve(
+        'card_1BYxtEEzushJqDoiJUQkSyER',
+    )
+
+    assert card_object.id == card['id']
+
+    c = Customer.from_stripe_object(customer_object)

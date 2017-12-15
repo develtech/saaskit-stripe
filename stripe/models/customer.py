@@ -99,6 +99,10 @@ class Customer(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
+    sources = models.ManyToManyField(
+        'Source',
+        null=True,
+    )
 
     @classmethod
     def from_stripe_object(cls, stripe_object, descend=True):
@@ -113,7 +117,13 @@ class Customer(models.Model):
         """
         _dict = stripe_object.to_dict()
         _dict.pop('object')
-        _dict.pop('subscriptions')
+
+        if 'subscriptions' in _dict:
+            _dict.pop('subscriptions')
+        if 'sources' in _dict:
+            _dict.pop('sources')
+        if 'default_source' in _dict:
+            _dict.pop('default_source')
 
         c = Customer(**_dict)
         c.save()
@@ -124,5 +134,13 @@ class Customer(models.Model):
                 c.subscription_set.add(
                     Subscription.from_stripe_object(subscription, customer=c),
                 )
+
+            Source = cls.sources.rel.related_model
+            for source in stripe_object.sources.auto_paging_iter():
+                c.sources.add(
+                    Source.from_stripe_object(source),
+                )
+
+            print(stripe_object.default_source)
 
         return c
