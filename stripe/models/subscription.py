@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
-from ..utils import handle_unix_timefields
+from ..utils import UnixDateTimeField
 
 SUBSCRIPTION_STATUS_CHOICES = (
     ('trialing', _('Trialing')),
@@ -25,7 +25,7 @@ class Subscription(models.Model):
     .. _you've created: https://stripe.com/docs/api#create_plan
     """
     id = models.CharField(max_length=255, primary_key=True)
-    created = models.DateTimeField()
+    created = UnixDateTimeField()
     cancel_at_period_end = models.BooleanField(
         help_text=_(
             'If the subscription has been canceled with the ``at_period_end``'
@@ -47,7 +47,7 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
     )
     quantity = models.PositiveIntegerField()
-    start = models.DateTimeField(help_text=_('Date the subscription started',),)
+    start = UnixDateTimeField(help_text=_('Date the subscription started',),)
     status = models.CharField(
         max_length=255,
         choices=SUBSCRIPTION_STATUS_CHOICES,
@@ -76,7 +76,7 @@ class Subscription(models.Model):
             'application owner’s Stripe account each billing period.',
         ),
     )
-    canceled_at = models.DateTimeField(
+    canceled_at = UnixDateTimeField(
         help_text=_(
             'If the subscription has been canceled, the date of that '
             'cancellation. If the subscription was canceled with '
@@ -86,14 +86,14 @@ class Subscription(models.Model):
             'to a canceled state.',
         ),
     )
-    current_period_start = models.DateTimeField(
+    current_period_start = UnixDateTimeField(
         help_text=_(
             'End of the current period that the subscription has been '
             'invoiced for. At the end of this period, a new invoice will be '
             'created.',
         ),
     )
-    current_period_end = models.DateTimeField(
+    current_period_end = UnixDateTimeField(
         help_text=_(
             'End of the current period that the subscription has been '
             'invoiced for. At the end of this period, a new invoice will be '
@@ -110,7 +110,7 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
-    ended_at = models.DateTimeField(
+    ended_at = UnixDateTimeField(
         help_text=_(
             'If the subscription has ended (either because it was canceled or '
             'because the customer was switched to a subscription to a new '
@@ -125,12 +125,12 @@ class Subscription(models.Model):
             'subscription in a structured format.',
         ),
     )
-    trial_end = models.DateTimeField(
+    trial_end = UnixDateTimeField(
         help_text=_(
             'If the subscription has a trial, the end of that trial.',
         ),
     )
-    trial_start = models.DateTimeField(
+    trial_start = UnixDateTimeField(
         help_text=_(
             'If the subscription has a trial, the beginning of that trial.',
         ),
@@ -148,8 +148,6 @@ class Subscription(models.Model):
         _dict.pop('object')
         _dict.pop('items')  # string, value is list
         _dict.pop('customer')
-
-        _dict = handle_unix_timefields(cls, _dict)
 
         _dict['customer'] = customer
         _dict['plan'] = Plan.from_stripe_object(_dict.pop('plan'))
