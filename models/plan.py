@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
-from ..utils import handle_unix_timefields
+from ..utils import UnixDateTimeField
 from .charge import CURRENCY_CHOICES
 
 PLAN_INTERVAL_CHOICES = (
@@ -31,7 +31,7 @@ class Plan(models.Model):
             'The amount in cents to be charged on the interval specified',
         ),
     )
-    created = models.DateTimeField()
+    created = UnixDateTimeField()
     currency = models.CharField(
         max_length=255,
         choices=CURRENCY_CHOICES,
@@ -87,8 +87,6 @@ class Plan(models.Model):
     def from_stripe_object(cls, stripe_object):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
-
-        _dict = handle_unix_timefields(cls, _dict)
 
         s = Plan(**_dict)
         s.save()
