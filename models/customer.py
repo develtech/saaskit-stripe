@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-import datetime
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-import pytz
 from django_extensions.db.fields import json
+
+from ..utils import handle_unix_timefields
 
 
 class Customer(models.Model):
@@ -101,23 +100,21 @@ class Customer(models.Model):
         null=True,
     )
 
-    @staticmethod
-    def from_stripe_object(stripe_object):
-        Subscription = Customer.subscription_set.rel.related_model
+    @classmethod
+    def from_stripe_object(cls, stripe_object):
+        Subscription = cls.subscription_set.rel.related_model
 
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('subscriptions')
 
-        for field in Customer._meta.get_fields():
-            if isinstance(field, models.DateTimeField):
-                _dict[field.name] = datetime.datetime.fromtimestamp(
-                    int(_dict[field.name])).replace(tzinfo=pytz.utc)
+        _dict = handle_unix_timefields(cls, _dict)
 
         c = Customer(**_dict)
         c.save()
         for subscription in stripe_object.subscriptions.auto_paging_iter():
             c.subscription_set.add(
-                Subscription.from_stripe_object(subscription, customer=c))
+                Subscription.from_stripe_object(subscription, customer=c),
+            )
 
         return c

@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-import datetime
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-import pytz
 from django_extensions.db.fields import json
 
+from ..utils import handle_unix_timefields
 from .charge import CURRENCY_CHOICES
 
 PLAN_INTERVAL_CHOICES = (
@@ -85,15 +83,12 @@ class Plan(models.Model):
         null=True,
     )
 
-    @staticmethod
-    def from_stripe_object(stripe_object):
+    @classmethod
+    def from_stripe_object(cls, stripe_object):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
 
-        for field in Plan._meta.get_fields():
-            if isinstance(field, models.DateTimeField):
-                _dict[field.name] = datetime.datetime.fromtimestamp(
-                    int(_dict[field.name])).replace(tzinfo=pytz.utc)
+        _dict = handle_unix_timefields(cls, _dict)
 
         s = Plan(**_dict)
         s.save()
