@@ -33,31 +33,34 @@ def test_bank_and_card_sources(stripe):
         'status': 'new'
     }
 
+    card = {
+        'address_city': 'new york',
+        'address_country': 'usa',
+        'address_line1': 'McAllister St',
+        'address_line1_check': 'pass',
+        'address_line2': None,
+        'address_state': 'ny',
+        'address_zip': '10013',
+        'address_zip_check': 'pass',
+        'brand': 'Visa',
+        'country': 'US',
+        'customer': 'cus_Bwrbeyo88aaUYP',
+        'cvc_check': 'pass',
+        'dynamic_last4': None,
+        'exp_month': 4,
+        'exp_year': 2032,
+        'fingerprint': 'ZX4L088dUFClwtPD',
+        'funding': 'credit',
+        'id': 'card_1BYxtEEzushJqDoiJUQkSyER',
+        'last4': '4242',
+        'metadata': {},
+        'name': 'John Doe',
+        'object': 'card',
+        'tokenization_method': None
+    }
+
     sources = {
-        'data': [{
-            'address_city': 'new york',
-            'address_country': 'usa',
-            'address_line1': 'McAllister St',
-            'address_line1_check': 'pass',
-            'address_line2': None,
-            'address_state': 'ny',
-            'address_zip': '10013',
-            'address_zip_check': 'pass',
-            'brand': 'Visa',
-            'country': 'US',
-            'customer': 'cus_Bwrbeyo88aaUYP',
-            'cvc_check': 'pass',
-            'dynamic_last4': None,
-            'exp_month': 4,
-            'exp_year': 2032,
-            'fingerprint': 'ZX4L088dUFClwtPD',
-            'funding': 'credit',
-            'id': 'card_1BYxtEEzushJqDoiJUQkSyER',
-            'last4': '4242',
-            'metadata': {},
-            'name': 'John Doe',
-            'object': 'card',
-            'tokenization_method': None}, bank_account],
+        'data': [card, bank_account],
         'has_more': False,
         'object': 'list',
         'url': '/v1/customers/cus_Bwrbeyo88aaUYP/sources'
@@ -104,3 +107,25 @@ def test_bank_and_card_sources(stripe):
     assert len(responses.calls) == 1
     assert responses.calls[0].request.url == customer_url
     assert responses.calls[0].response.text == customer_json
+
+    source_url = '%s/sources' % customer_url
+    source_json = json.dumps(sources)
+    responses.add(
+        responses.GET,
+        source_url,
+        body=source_json,
+        status=200,
+        content_type='application/json',
+    )
+
+    card_url = '%s/%s' % (source_url, card['id'])
+    card_json = json.dumps(card)
+    responses.add(
+        responses.GET,
+        card_url,
+        body=card_json,
+        status=200,
+        content_type='application/json',
+    )
+
+    card = customer.sources.retrieve('card_1BYxtEEzushJqDoiJUQkSyER')
