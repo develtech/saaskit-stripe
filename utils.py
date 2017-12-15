@@ -6,18 +6,16 @@ from django.db import models
 import pytz
 
 
-def handle_unix_timefields(Model, _dict):
-    """Parse unix epoch time values into datetime.datetime
+class UnixDateTimeField(models.DateTimeField):
 
-    :param Model: model whose fields to iterate over
-    :type Model: :class:`django.db.models.Model`
-    :param _dict: dict of values
-    :type: :class:`dict`
-    :rtype: :class:`datetime.datetime`
-    """
-    for field in Model._meta.get_fields():
-        if isinstance(field, models.DateTimeField):
-            _dict[field.name] = datetime.datetime.fromtimestamp(
-                int(_dict[field.name]),
-            ).replace(tzinfo=pytz.utc)
-    return _dict
+    """Stripe returns date fields in UNIX time epoc as an int"""
+
+    def pre_save(self, model_instance, add):
+        if not self.auto_now:
+            value = getattr(model_instance, self.attname)
+            if isinstance(value, int):
+                new_value = datetime.datetime.fromtimestamp(value).replace(
+                    tzinfo=pytz.utc,
+                )
+                setattr(model_instance, self.attname, new_value)
+        return super().pre_save(model_instance, add)

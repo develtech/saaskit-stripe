@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
-from ..utils import handle_unix_timefields
+from ..utils import UnixDateTimeField
 
 
 class Customer(models.Model):
@@ -19,7 +19,7 @@ class Customer(models.Model):
 
     id = models.CharField(max_length=255, primary_key=True)
     livemode = models.BooleanField()
-    created = models.DateTimeField()
+    created = UnixDateTimeField()
     account_balance = models.IntegerField(
         help_text=_(
             'Current balance, if any, being stored on the customer’s account. '
@@ -107,8 +107,6 @@ class Customer(models.Model):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('subscriptions')
-
-        _dict = handle_unix_timefields(cls, _dict)
 
         c = Customer(**_dict)
         c.save()
