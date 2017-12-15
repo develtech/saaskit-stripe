@@ -37,7 +37,9 @@ def mock_stripe_server_running():
 
 
 skip_if_stripe_mock_server_offline = pytest.mark.skipif(
-    not mock_stripe_server_running(), reason='stripe mock server not running')
+    not mock_stripe_server_running(),
+    reason='stripe mock server not running',
+)
 
 
 def get_test_stripe_client():

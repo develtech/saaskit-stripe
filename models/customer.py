@@ -101,18 +101,28 @@ class Customer(models.Model):
     )
 
     @classmethod
-    def from_stripe_object(cls, stripe_object):
-        Subscription = cls.subscription_set.rel.related_model
+    def from_stripe_object(cls, stripe_object, descend=True):
+        """Turn Customer StripeObject from stripe-python into saved model.
 
+        :param stripe_object:
+        :type stripe_object: :class:`stripe.stripe_object.StripeObject`
+        :param descend: Go deeper into subscriptions, default: True
+        :type descend: bool
+        :rtype: :class:`based.app.stripe.models.customer.Customer`
+        :returns: saved model
+        """
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('subscriptions')
 
         c = Customer(**_dict)
         c.save()
-        for subscription in stripe_object.subscriptions.auto_paging_iter():
-            c.subscription_set.add(
-                Subscription.from_stripe_object(subscription, customer=c),
-            )
+
+        if descend:
+            Subscription = cls.subscription_set.rel.related_model
+            for subscription in stripe_object.subscriptions.auto_paging_iter():
+                c.subscription_set.add(
+                    Subscription.from_stripe_object(subscription, customer=c),
+                )
 
         return c
