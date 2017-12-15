@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-import datetime
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-import pytz
 from django_extensions.db.fields import json
+
+from ..utils import handle_unix_timefields
 
 SUBSCRIPTION_STATUS_CHOICES = (
     ('trialing', _('Trialing')),
@@ -142,21 +141,18 @@ class Subscription(models.Model):
             'apply the tax rate, increasing the amount billed to the customer.',
         ), null=True)
 
-    @staticmethod
-    def from_stripe_object(stripe_object, customer):
+    @classmethod
+    def from_stripe_object(cls, stripe_object, customer):
         Plan = Subscription.plan.field.related_model
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('items')  # string, value is list
         _dict.pop('customer')
 
+        _dict = handle_unix_timefields(cls, _dict)
+
         _dict['customer'] = customer
         _dict['plan'] = Plan.from_stripe_object(_dict.pop('plan'))
-
-        for field in Subscription._meta.get_fields():
-            if isinstance(field, models.DateTimeField):
-                _dict[field.name] = datetime.datetime.fromtimestamp(
-                    int(_dict[field.name])).replace(tzinfo=pytz.utc)
 
         s = Subscription(**_dict)
         s.save()
