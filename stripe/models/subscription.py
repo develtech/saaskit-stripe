@@ -2,9 +2,11 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+import stripe
 from django_extensions.db.fields import json
 
 from ..utils import UnixDateTimeField
+from .customer import Customer
 
 SUBSCRIPTION_STATUS_CHOICES = (
     ('trialing', _('Trialing')),
@@ -142,14 +144,20 @@ class Subscription(models.Model):
         ), null=True)
 
     @classmethod
-    def from_stripe_object(cls, stripe_object, customer):
+    def from_stripe_object(cls, stripe_object, customer=None):
         Plan = Subscription.plan.field.related_model
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('items')  # string, value is list
-        _dict.pop('customer')
+        customer_id = _dict.pop('customer')
 
-        _dict['customer'] = customer
+        if customer:
+            _dict['customer'] = customer
+        else:
+            customer_object = stripe.Customer.retrieve(customer_id)
+            _dict['customer'] = Customer.from_stripe_object(
+                customer_object, descend=False
+            )
         _dict['plan'] = Plan.from_stripe_object(_dict.pop('plan'))
 
         s = Subscription(**_dict)
