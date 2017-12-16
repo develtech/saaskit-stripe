@@ -138,10 +138,14 @@ class Subscription(models.Model):
         ),
     )
     tax_percent = models.DecimalField(
-        max_digits=3, decimal_places=2, help_text=_(
+        max_digits=3,
+        decimal_places=2,
+        help_text=_(
             'If provided, each invoice created by this subscription will '
             'apply the tax rate, increasing the amount billed to the customer.',
-        ), null=True)
+        ),
+        null=True,
+    )
 
     @classmethod
     def from_stripe_object(cls, stripe_object, customer=None):
@@ -156,7 +160,8 @@ class Subscription(models.Model):
         else:
             customer_object = stripe.Customer.retrieve(customer_id)
             _dict['customer'] = Customer.from_stripe_object(
-                customer_object, descend=False
+                customer_object,
+                descend=False,
             )
         _dict['plan'] = Plan.from_stripe_object(_dict.pop('plan'))
 
