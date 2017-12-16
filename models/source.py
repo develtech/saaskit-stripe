@@ -48,6 +48,11 @@ class Source(models.Model):
             'Currency in which the subscription will be charged',
         ),
     )
+    customer = models.ForeignKey(
+        'Customer',
+        on_delete=models.CASCADE,
+        null=True,
+    )
     flow = models.CharField(
         choices=FLOW_CHOICES,
         max_length=24,
@@ -73,9 +78,14 @@ class Source(models.Model):
     bitcoin = json.JSONField()
 
     @classmethod
-    def from_stripe_object(cls, stripe_object):
+    def from_stripe_object(cls, stripe_object, customer=None):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
+
+        if customer:
+            if 'customer' in _dict:
+                _dict.pop('customer')
+            _dict['customer'] = customer
 
         s = Source(**_dict)
         s.save()
