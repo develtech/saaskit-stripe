@@ -36,6 +36,11 @@ CARD_CVC_CHECK_CHOICES = (
     ('unchecked', _('Unchecked')),
 )
 
+TOKENIZATION_METHODS = (
+    ('apple_pay', _('Apple Pay')),
+    ('android_pay', _('Android Pay')),
+)
+
 
 class Card(PaymentMethod):
 
@@ -75,7 +80,7 @@ class Card(PaymentMethod):
         ),
         choices=CARD_ADDRESS_CHECK_CHOICES,
     )
-    address_line2 = models.CharField(max_length=255)
+    address_line2 = models.CharField(max_length=255, null=True)
     address_state = models.CharField(max_length=255)
     address_zip = models.CharField(max_length=255)
     address_zip_check = models.CharField(
@@ -110,6 +115,7 @@ class Card(PaymentMethod):
             '(For Apple Pay integrations only.) The last four digits of the '
             'device account number.',
         ),
+        null=True,
     )
     metadata = json.JSONField(
         help_text=_(
@@ -136,3 +142,25 @@ class Card(PaymentMethod):
             'with you are using the same card number, for example.',
         ),
     )
+
+    tokenization_method = models.CharField(
+        max_length=255,
+        choices=TOKENIZATION_METHODS,
+        help_text=_(
+            'If the card number is tokenized, this is the method that was '
+            'used. Can be ``apple_pay`` or ``android_pay``.'
+        ),
+        null=True,
+    )
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object, customer):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+        _dict.pop('customer')
+
+        _dict['customer'] = customer
+        c = cls(**_dict)
+        c.save()
+
+        return c
