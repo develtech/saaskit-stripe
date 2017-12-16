@@ -43,6 +43,7 @@ class Customer(models.Model):
         help_text=_(
             'ID of the default payment method attached to this customer.',
         ),
+        related_name='customers',
         on_delete=models.CASCADE,
         null=True,
     )
