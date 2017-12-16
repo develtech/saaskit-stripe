@@ -133,11 +133,19 @@ class Customer(models.Model):
                 )
 
             Source = cls.sources.rel.related_model
+            BankAccount = cls.bankaccount_set.rel.related_model
+            Card = cls.card_set.rel.related_model
             for source in stripe_object.sources.auto_paging_iter():
-                c.sources.add(
-                    Source.from_stripe_object(source),
-                )
-
-            print(stripe_object.default_source)
-
+                if source.object == 'bank_account':
+                    c.bankaccount_set.add(
+                        BankAccount.from_stripe_object(source, customer=c)
+                    )
+                elif source.object == 'card':
+                    c.card_set.add(
+                        Card.from_stripe_object(source, customer=c)
+                    )
+                else:
+                    c.sources.add(
+                        Source.from_stripe_object(source),
+                    )
         return c

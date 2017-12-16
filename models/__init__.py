@@ -10,6 +10,7 @@ from .application_fee import ApplicationFee
 from .application_fee_refund import ApplicationFeeRefund
 from .balance import Balance
 from .balance_transaction import BalanceTransaction
+from .bank_account import BankAccount
 from .bitcoin_receiver import BitCoinReceiver
 from .card import Card
 from .charge import CURRENCY_CHOICES, Charge
