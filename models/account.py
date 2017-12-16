@@ -4,9 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
-from .charge import CURRENCY_CHOICES
 from ..utils import UnixDateTimeField
-
+from .charge import CURRENCY_CHOICES
 
 ACCOUNT_TYPES = (
     ('custom', _('Custom')),

@@ -26,7 +26,10 @@ BANK_ACCOUNT_STATUS = (
 class BankAccount(PaymentMethod):
     account = models.ForeignKey('account', on_delete=models.CASCADE)
     account_holder_name = models.CharField(max_length=255)
-    account_holder_type = models.CharField(max_length=255, choices=BANK_ACCOUNT_TYPES)
+    account_holder_type = models.CharField(
+        max_length=255,
+        choices=BANK_ACCOUNT_TYPES,
+    )
     bank_name = models.CharField(max_length=255)
     country = models.CharField(  # todo: add CHOICES
         max_length=255,
