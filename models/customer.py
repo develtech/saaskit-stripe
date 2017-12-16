@@ -38,11 +38,13 @@ class Customer(models.Model):
             'billing purposes (subscriptions, invoices, invoice items).',
         ),
     )
-    default_source = models.CharField(
-        max_length=255,
+    default_source = models.ForeignKey(
+        'PaymentMethod',
         help_text=_(
-            'ID of the default source attached to this customer.',
+            'ID of the default payment method attached to this customer.',
         ),
+        on_delete=models.CASCADE,
+        null=True,
     )
     delinquent = models.CharField(
         max_length=255,
@@ -93,12 +95,6 @@ class Customer(models.Model):
     #     )
     # )
 
-    default_source = models.ForeignKey(
-        'Source',
-        help_text=_('ID of the source to make the customer’s new default.'),
-        on_delete=models.CASCADE,
-        null=True,
-    )
     sources = models.ManyToManyField(
         'Source',
         null=True,

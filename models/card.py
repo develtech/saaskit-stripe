@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
+from .payment_method import PaymentMethod
+
 CARD_BRAND_CHOICES = (
     ('Visa', _('Visa')),
     ('American Express', _('American Express')),
@@ -35,7 +37,7 @@ CARD_CVC_CHECK_CHOICES = (
 )
 
 
-class Card(models.Model):
+class Card(PaymentMethod):
 
     """Stripe Card object.
 
@@ -43,13 +45,6 @@ class Card(models.Model):
     later. You can also store multiple debit cards on a recipient in order to
     transfer to those cards later.
     """
-
-    id = models.AutoField(
-        primary_key=True,
-        help_text=_(
-            'ID of card (used in conjunction with a customer or recipient ID)',
-        ),
-    )
     brand = models.CharField(
         choices=CARD_BRAND_CHOICES,
         max_length=255,
@@ -106,6 +101,7 @@ class Card(models.Model):
             'be in the card object if the card belongs to a recipient instead.',
         ),
         on_delete=models.CASCADE,
+        null=True,
     )
     cvc_check = models.CharField(max_length=255, choices=CARD_CVC_CHECK_CHOICES)
     dynamic_last4 = models.CharField(
