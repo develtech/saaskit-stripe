@@ -22,7 +22,7 @@ BANK_ACCOUNT_STATUS = (
 
 
 class BankAccount(PaymentMethod):
-    account = models.ForeignKey('account')
+    account = models.ForeignKey('account', on_delete=models.CASCADE)
     account_holder_name = models.CharField(max_length=255)
     account_type = models.CharField(max_length=255, choices=BANK_ACCOUNT_TYPES)
     bank_name = models.CharField(max_length=255)
@@ -34,3 +34,15 @@ class BankAccount(PaymentMethod):
     metadata = json.JSONField()
     routing_number = models.CharField(max_length=255)
     status = models.CharField(max_length=255, choices=BANK_ACCOUNT_STATUS)
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object, customer):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+        if 'customer' in _dict:
+            _dict.pop('customer')
+            _dict['customer'] = customer
+        c = cls(**_dict)
+        c.save()
+
+        return c
