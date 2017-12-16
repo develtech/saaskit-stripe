@@ -2,8 +2,10 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+import stripe
 from django_extensions.db.fields import json
 
+from .account import Account
 from .charge import CURRENCY_CHOICES
 from .payment_method import PaymentMethod
 
@@ -24,8 +26,11 @@ BANK_ACCOUNT_STATUS = (
 class BankAccount(PaymentMethod):
     account = models.ForeignKey('account', on_delete=models.CASCADE)
     account_holder_name = models.CharField(max_length=255)
-    account_type = models.CharField(max_length=255, choices=BANK_ACCOUNT_TYPES)
+    account_holder_type = models.CharField(max_length=255, choices=BANK_ACCOUNT_TYPES)
     bank_name = models.CharField(max_length=255)
+    country = models.CharField(  # todo: add CHOICES
+        max_length=255,
+    )
     currency = models.CharField(max_length=255, choices=CURRENCY_CHOICES)
     customer = models.ForeignKey('Customer', on_delete=models.CASCADE)
     default_for_currency = models.BooleanField()
@@ -39,9 +44,13 @@ class BankAccount(PaymentMethod):
     def from_stripe_object(cls, stripe_object, customer):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
+        _dict.pop('account')
         if 'customer' in _dict:
             _dict.pop('customer')
-            _dict['customer'] = customer
+        _dict['customer'] = customer
+
+        account = stripe.Account.retrieve(stripe_object.account)
+        _dict['account'] = Account.from_stripe_object(account)
         c = cls(**_dict)
         c.save()
 

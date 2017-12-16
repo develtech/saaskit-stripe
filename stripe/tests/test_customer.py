@@ -38,5 +38,6 @@ def test_customer_model(stripe, monkeypatch):
 def test_customer_model_mock(mock_stripe):
     assert len(mock_stripe.Customer.list().data)
     for customer_object in mock_stripe.Customer.list().auto_paging_iter():
+        assert hasattr(customer_object, 'livemode')
         c = Customer.from_stripe_object(customer_object)
         assert isinstance(c, Customer)

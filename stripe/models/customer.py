@@ -137,6 +137,7 @@ class Customer(models.Model):
             Card = cls.card_set.rel.related_model
             for source in stripe_object.sources.auto_paging_iter():
                 if source.object == 'bank_account':
+                    pass
                     c.bankaccount_set.add(
                         BankAccount.from_stripe_object(source, customer=c)
                     )
@@ -144,8 +145,10 @@ class Customer(models.Model):
                     c.card_set.add(
                         Card.from_stripe_object(source, customer=c)
                     )
-                else:
+                elif source.object == 'bitcoin':
                     c.sources.add(
-                        Source.from_stripe_object(source),
+                        Source.from_stripe_object(source, customer=c),
                     )
+                elif source.object == 'account':  # TODO
+                    pass
         return c

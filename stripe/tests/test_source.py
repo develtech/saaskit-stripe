@@ -20,6 +20,107 @@ def test_source_model_mock(mock_stripe):
 @responses.activate
 @pytest.mark.django_db(transaction=True)
 def test_bank_and_card_sources(stripe):
+    account = {
+        'id': 'acct_1032D82eZvKYlo2C',
+        'object': 'account',
+        'business_logo': None,
+        'business_name': 'Stripe.com',
+        'business_url': None,
+        'charges_enabled': False,
+        'country': 'US',
+        'created': 1385798567,
+        'debit_negative_balances': True,
+        'decline_charge_on': {
+            'avs_failure': True,
+            'cvc_failure': False
+        },
+        'default_currency': 'usd',
+        'details_submitted': False,
+        'display_name': 'Stripe.com',
+        'email': 'site@stripe.com',
+        'external_accounts': {
+            'object': 'list',
+            'data': [],
+            'has_more': False,
+            'total_count': 0,
+            'url': '/v1/accounts/acct_1032D82eZvKYlo2C/external_accounts'
+        },
+        'legal_entity': {
+            'additional_owners': [],
+            'address': {
+                'city': None,
+                'country': 'US',
+                'line1': None,
+                'line2': None,
+                'postal_code': None,
+                'state': None
+            },
+            'business_name': None,
+            'business_tax_id_provided': False,
+            'dob': {
+                'day': None,
+                'month': None,
+                'year': None
+            },
+            'first_name': None,
+            'last_name': None,
+            'personal_address': {
+                'city': None,
+                'country': 'US',
+                'line1': None,
+                'line2': None,
+                'postal_code': None,
+                'state': None
+            },
+            'personal_id_number_provided': False,
+            'ssn_last_4_provided': False,
+            'type': None,
+            'verification': {
+                'details': None,
+                'details_code': 'failed_other',
+                'document': None,
+                'status': 'unverified'
+            }
+        },
+        'metadata': {},
+        'payout_schedule': {
+            'delay_days': 7,
+            'interval': 'daily'
+        },
+        'payout_statement_descriptor': None,
+        'payouts_enabled': False,
+        'product_description': None,
+        'statement_descriptor': '',
+        'support_email': None,
+        'support_phone': None,
+        'timezone': 'US/Pacific',
+        'tos_acceptance': {
+            'date': None,
+            'ip': None,
+            'user_agent': None
+        },
+        'type': 'standard',
+        'verification': {
+            'disabled_reason': 'fields_needed',
+            'due_by': None,
+            'fields_needed': [
+                'business_url', 'external_account', 'product_description',
+                'support_phone', 'tos_acceptance.date', 'tos_acceptance.ip'
+            ]
+        }
+    }
+
+    account_id = account['id']
+    account_url = stripe.api_base + '/v1/accounts/%s' % account_id
+    account_json = json.dumps(account)
+    responses.add(
+        responses.GET,
+        account_url,
+        body=account_json,
+        status=200,
+        content_type='application/json',
+    )
+
     bank_account = {
         'account': 'acct_1032D82eZvKYlo2C',
         'account_holder_name': 'Jane Austen',
@@ -27,6 +128,7 @@ def test_bank_and_card_sources(stripe):
         'bank_name': 'STRIPE TEST BANK',
         'country': 'US',
         'currency': 'usd',
+        'default_for_currency': False,
         'fingerprint': '1JWtPxqbdX5Gamtc',
         'id': 'ba_1B3xSU2eZvKYlo2CDAgYCVfe',
         'last4': '6789',

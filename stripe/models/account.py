@@ -5,6 +5,13 @@ from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import json
 
 from .charge import CURRENCY_CHOICES
+from ..utils import UnixDateTimeField
+
+
+ACCOUNT_TYPES = (
+    ('custom', _('Custom')),
+    ('standard', _('Standard')),
+)
 
 
 class Account(models.Model):
@@ -18,9 +25,12 @@ class Account(models.Model):
     Some properties, marked as 'managed accounts only', are only available to
     platforms who want to create and manage Stripe accounts.
     """
-
+    id = models.CharField(max_length=255, primary_key=True)
     charges_enabled = models.BooleanField(
-        help_text=_('Whether or not the account can create live charges'))
+        help_text=_(
+            'Whether or not the account can create live charges',
+        ),
+    )
     country = models.CharField(  # todo: add CHOICES
         max_length=255,
         help_text=_('The country of the account')
@@ -46,6 +56,7 @@ class Account(models.Model):
             'account. This is only false when Stripe is waiting for '
             'additional information from the account holder.',
         ),
+        default=True,
     )
     display_name = models.CharField(
         max_length=255,
@@ -74,9 +85,12 @@ class Account(models.Model):
             'The publicly visible name of the business',
         ),
     )
+    business_logo = models.CharField(max_length=255, null=True)
     business_url = models.URLField(
         help_text=_('The publicly visible website of the business'),
+        null=True,
     )
+    created = UnixDateTimeField()
     metadata = json.JSONField(
         help_text=_(
             'A set of key/value pairs that you can attach to a charge object. '
@@ -84,18 +98,19 @@ class Account(models.Model):
             'charge in a structured format.',
         ),
     )
+    support_email = models.EmailField(null=True)
+
     support_phone = models.CharField(
         max_length=255,
         help_text=_(
             'The publicly visible support phone number for the business',
         ),
+        null=True,
     )
-    managed = models.BooleanField(
-        help_text=_(
-            'Whether or not the account is managed by your platform. Returns '
-            'null if the account was not created by a platform.',
-        ),
-    )
+    payout_schedule = json.JSONField(null=True)
+    payout_statement_descriptor = models.CharField(max_length=255, null=True)
+    payouts_enabled = models.BooleanField()
+
     bank_accounts = json.JSONField(
         help_text=_(
             '(Managed Accounts Only) '
@@ -130,6 +145,7 @@ class Account(models.Model):
             'This is used by Stripe in the event the account gets flagged for '
             'potential fraud.',
         ),
+        null=True,
     )
     tos_acceptance = json.JSONField(
         help_text=_(
@@ -145,10 +161,21 @@ class Account(models.Model):
             'account holder’s bank account',
         ),
     )
-    verfication = json.JSONField(
+    type = models.CharField(max_length=255, choices=ACCOUNT_TYPES)
+    verification = json.JSONField(
         help_text=_(
             '(Managed Accounts Only) '
             'That state of the account’s information requests, including what '
             'information is needed and by when it must be provided.',
         ),
     )
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+        _dict.pop('external_accounts')  # todo: handle this
+        a = cls(**_dict)
+        a.save()
+
+        return a
