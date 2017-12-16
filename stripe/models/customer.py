@@ -139,12 +139,9 @@ class Customer(models.Model):
                 if source.object == 'bank_account':
                     pass
                     c.bankaccount_set.add(
-                        BankAccount.from_stripe_object(source, customer=c)
-                    )
+                        BankAccount.from_stripe_object(source, customer=c))
                 elif source.object == 'card':
-                    c.card_set.add(
-                        Card.from_stripe_object(source, customer=c)
-                    )
+                    c.card_set.add(Card.from_stripe_object(source, customer=c))
                 elif source.object == 'bitcoin':
                     c.sources.add(
                         Source.from_stripe_object(source, customer=c),

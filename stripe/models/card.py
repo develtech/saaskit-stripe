@@ -148,7 +148,7 @@ class Card(PaymentMethod):
         choices=TOKENIZATION_METHODS,
         help_text=_(
             'If the card number is tokenized, this is the method that was '
-            'used. Can be ``apple_pay`` or ``android_pay``.'
+            'used. Can be ``apple_pay`` or ``android_pay``.',
         ),
         null=True,
     )
