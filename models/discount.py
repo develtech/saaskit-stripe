@@ -24,11 +24,7 @@ class Discount(models.Model):
         on_delete=models.CASCADE,
     )
     customer = models.ForeignKey('Customer', on_delete=models.CASCADE)
-    start = UnixDateTimeField(
-        help_text=_(
-            'Date that the coupon was applied',
-        ),
-    )
+    start = UnixDateTimeField(help_text=_('Date that the coupon was applied',),)
     end = UnixDateTimeField(
         help_text=_(
             'If the coupon has a duration of ``once`` or ``repeating``, the '
