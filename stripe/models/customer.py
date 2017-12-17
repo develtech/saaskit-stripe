@@ -75,12 +75,6 @@ class Customer(models.Model):
         ),
     )
 
-    sources = json.JSONField(
-        help_text=_(
-            'The customer’s payment sources, if any',
-        ),
-    )
-
     shipping = json.JSONField(
         help_text=_(
             'Mailing and shipping address for the customer. Appears on '
@@ -96,10 +90,11 @@ class Customer(models.Model):
     #     )
     # )
 
-    sources = models.ManyToManyField(
-        'Source',
-        null=True,
-    )
+    # reverse
+    # sources = models.ManyToManyField(
+    #     'Source',
+    #     null=True,
+    # )
 
     @classmethod
     def from_stripe_object(cls, stripe_object, descend=True):
