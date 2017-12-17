@@ -2,11 +2,9 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-import stripe
 from django_extensions.db.fields import json
 
-from ..utils import UnixDateTimeField
-from .customer import Customer
+from ..utils import UnixDateTimeField, get_customer_info
 
 CURRENCY_CHOICES = (
     ('USD', 'USD'),
@@ -334,20 +332,10 @@ class Charge(models.Model):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('refunds')
-        customer_id = None
-        if 'customer' in _dict:
-            customer_id = _dict.pop('customer')
 
         Refund = cls.refund_set.rel.related_model
 
-        if customer:
-            _dict['customer'] = customer
-        elif customer_id:
-            customer_object = stripe.Customer.retrieve(customer_id)
-            _dict['customer'] = Customer.from_stripe_object(
-                customer_object,
-                descend=False,
-            )
+        _dict = get_customer_info(_dict, customer)
 
         c = cls(**_dict)
         c.save()
