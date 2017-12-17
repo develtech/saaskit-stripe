@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
+from ..utils import UnixDateTimeField, get_customer_info
 from .charge import CURRENCY_CHOICES
 
 
@@ -31,6 +32,7 @@ class Invoice(models.Model):
     taken into account when calculating the amount due for the next invoice.
     """
 
+    id = models.CharField(max_length=255, primary_key=True)
     livemode = models.BooleanField()
     amount_due = models.IntegerField(
         help_text=_(
@@ -75,7 +77,7 @@ class Invoice(models.Model):
         'Customer',
         on_delete=models.CASCADE,
     )
-    date = models.DateTimeField()
+    date = UnixDateTimeField()
     forgiven = models.BooleanField(
         help_text=_(
             'Whether or not the invoice has been forgiven. Forgiving an '
@@ -98,13 +100,13 @@ class Invoice(models.Model):
             'with credit from the customer’s account balance.',
         ),
     )
-    period_end = models.DateTimeField(
+    period_end = UnixDateTimeField(
         help_text=_(
             'End of the usage period during which invoice items were added to '
             'this invoice',
         ),
     )
-    period_start = models.DateTimeField(
+    period_start = UnixDateTimeField(
         help_text=_(
             'Start of the usage period during which invoice items were added '
             'to this invoice',
@@ -130,6 +132,7 @@ class Invoice(models.Model):
             'transferred to the application owner’s Stripe account when the '
             'invoice is paid.',
         ),
+        null=True,
     )
 
     # Reverse
@@ -144,14 +147,16 @@ class Invoice(models.Model):
     discount = models.ForeignKey(
         'Discount',
         on_delete=models.CASCADE,
+        null=True,
     )
     ending_balance = models.IntegerField(
         help_text=_(
             'Ending customer balance after attempting to pay invoice. If the '
             'invoice has not been attempted yet, this will be null.',
         ),
+        null=True,
     )
-    next_payment_attempt = models.DateTimeField(
+    next_payment_attempt = UnixDateTimeField(
         help_text=_(
             'The time at which payment will next be attempted.',
         ),
@@ -176,8 +181,9 @@ class Invoice(models.Model):
             'The subscription that this invoice was prepared for, if any.',
         ),
         on_delete=models.CASCADE,
+        null=True,
     )
-    webhooks_delivered_at = models.DateTimeField(
+    webhooks_delivered_at = UnixDateTimeField(
         help_text=_(
             'The time at which webhooks for this invoice were successfully '
             'delivered (if the invoice had no webhooks to deliver, this will '
@@ -196,6 +202,7 @@ class Invoice(models.Model):
             'Only set for upcoming invoices that preview prorations. The time '
             'used to calculate prorations.',
         ),
+        null=True,
     )
     tax = models.IntegerField(
         help_text=_(
@@ -203,6 +210,7 @@ class Invoice(models.Model):
             '``tax_percent`` and the subtotal. If no ``tax_percent`` is '
             'defined, this value will be null.',
         ),
+        null=True,
     )
     tax_percent = models.DecimalField(
         max_digits=3,
@@ -214,4 +222,16 @@ class Invoice(models.Model):
             '``tax_percent`` field, but can be changed before the invoice is '
             'paid. This field defaults to null.',
         ),
+        null=True,
     )
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object, customer=None):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+
+        _dict = get_customer_info(_dict, customer)
+
+        s = cls(**_dict)
+        s.save()
+        return s
