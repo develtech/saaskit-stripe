@@ -24,7 +24,7 @@ class SubscriptionItem(models.Model):
     )
     metadata = json.JSONField()
     proration_date = UnixDateTimeField(null=True)
-    prorate = models.BooleanField(null=True)
+    prorate = models.NullBooleanField(null=True)
     quantity = models.IntegerField(null=True)
 
     @classmethod
