@@ -127,7 +127,7 @@ class Customer(models.Model):
                     Subscription.from_stripe_object(subscription, customer=c),
                 )
 
-            Source = cls.sources.rel.related_model
+            Source = cls.source_set.rel.related_model
             BankAccount = cls.bankaccount_set.rel.related_model
             Card = cls.card_set.rel.related_model
             for source in stripe_object.sources.auto_paging_iter():
@@ -138,7 +138,7 @@ class Customer(models.Model):
                 elif source.object == 'card':
                     c.card_set.add(Card.from_stripe_object(source, customer=c))
                 elif source.object == 'bitcoin':
-                    c.sources.add(
+                    c.source_set.add(
                         Source.from_stripe_object(source, customer=c),
                     )
                 elif source.object == 'account':  # TODO
