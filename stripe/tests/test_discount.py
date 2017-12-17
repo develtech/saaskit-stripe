@@ -322,8 +322,7 @@ def test_subscription_discount_model_mock(mock_stripe):
     )
 
     subscription_url = stripe.api_base + '/v1/subscriptions/{}'.format(
-        subscription['id']
-    )
+        subscription['id'])
     subscription_json = json.dumps(subscription)
     responses.add(
         responses.GET,
