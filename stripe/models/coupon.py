@@ -48,6 +48,7 @@ class Coupon(models.Model):
             'If ``amount_off`` has been set, the currency of the amount to '
             'take off.',
         ),
+        null=True,
     )
     duration_in_months = models.PositiveIntegerField(
         help_text=_(
@@ -55,6 +56,7 @@ class Coupon(models.Model):
             'coupon applies. Null if coupon ``duration`` is ``forever``'
             'or ``once``.',
         ),
+        null=True,
     )
     max_redemptions = models.PositiveIntegerField(
         help_text=_(
@@ -77,11 +79,13 @@ class Coupon(models.Model):
             'coupon with percent_off of 50 will make a $100 invoice $50 '
             'instead.',
         ),
+        null=True,
     )
     redeem_by = UnixDateTimeField(
         help_text=_(
             'Date after which the coupon can no longer be redeemed',
         ),
+        null=True,
     )
     times_redeemed = models.PositiveIntegerField(
         help_text=_(
@@ -96,7 +100,7 @@ class Coupon(models.Model):
     )
 
     @classmethod
-    def from_stripe_object(cls, stripe_object):
+    def from_stripe_object(cls, stripe_object, customer=None):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
 

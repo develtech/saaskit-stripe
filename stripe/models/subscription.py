@@ -155,6 +155,6 @@ class Subscription(models.Model):
 
         _dict = get_customer_info(_dict, customer)
 
-        s = Subscription(**_dict)
+        s = cls(**_dict)
         s.save()
         return s
