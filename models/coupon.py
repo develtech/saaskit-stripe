@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
+from ..utils import UnixDateTimeField
 from .charge import CURRENCY_CHOICES
 
 COUPON_DURATION_CHOICES = (
@@ -22,8 +23,9 @@ class Coupon(models.Model):
     do not apply to one-off charges.
     """
 
+    id = models.CharField(max_length=255, primary_key=True)
     livemode = models.BooleanField()
-    created = models.DateTimeField()
+    created = UnixDateTimeField()
     duration = models.CharField(
         max_length=255,
         choices=COUPON_DURATION_CHOICES,
@@ -37,6 +39,7 @@ class Coupon(models.Model):
             'Amount (in the ``currency`` specified) that will be taken off '
             'the subtotal of any invoices for this customer.',
         ),
+        null=True,
     )
     currency = models.CharField(
         max_length=255,
@@ -58,6 +61,7 @@ class Coupon(models.Model):
             'Maximum number of times this coupon can be redeemed, in total, '
             'before it is no longer valid.',
         ),
+        null=True,
     )
     metadata = json.JSONField(
         help_text=_(
@@ -74,7 +78,7 @@ class Coupon(models.Model):
             'instead.',
         ),
     )
-    redeem_by = models.DateTimeField(
+    redeem_by = UnixDateTimeField(
         help_text=_(
             'Date after which the coupon can no longer be redeemed',
         ),
@@ -90,3 +94,12 @@ class Coupon(models.Model):
             'still be applied to a customer',
         ),
     )
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+
+        s = cls(**_dict)
+        s.save()
+        return s
