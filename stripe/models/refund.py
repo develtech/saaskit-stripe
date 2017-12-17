@@ -4,10 +4,19 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
+from ..utils import UnixDateTimeField
+
 REFUND_CHOICES = (
     ('duplicate', _('Duplicate')),
     ('fraudulent', _('Fraudulent')),
     ('requested_by_customer', _('Requested by customer')),
+)
+
+REFUND_STATUS_CHOICES = (
+    ('succeeded', _('Succeeded')),
+    ('failed', _('Failed')),
+    ('pending', _('Pending')),
+    ('cancelled', _('Cancelled')),
 )
 
 
@@ -20,10 +29,11 @@ class Refund(models.Model):
     card that was originally charged. The fees you were originally charged are
     also refunded.
     """
-
+    id = models.CharField(max_length=255, primary_key=True)
     amount = models.IntegerField(help_text=_('Amount reversed, in cents.'))
-    created = models.DateTimeField()
-    currency = models.IntegerField(
+    created = UnixDateTimeField()
+    currency = models.CharField(
+        max_length=3,
         help_text=_(
             'Three-letter ISO code representing the currency of the reversal.',
         ),
@@ -35,11 +45,12 @@ class Refund(models.Model):
             'on your account balance.',
         ),
     )
-    charge = models.CharField(
-        max_length=255,
+    charge = models.ForeignKey(
+        'Charge',
         help_text=_(
             'ID of the charge that was ',
         ),
+        on_delete=models.CASCADE,
     )
     metadata = json.JSONField(
         help_text=_(
@@ -63,4 +74,20 @@ class Refund(models.Model):
             'sent for this refund.',
         ),
     )
+    status = models.CharField(
+        max_length=255,
+        choices=REFUND_STATUS_CHOICES,
+    )
     description = models.CharField(max_length=255)
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object, charge):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+        _dict.pop('charge')
+
+        _dict['charge'] = charge
+
+        s = cls(**_dict)
+        s.save()
+        return s

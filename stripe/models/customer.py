@@ -117,7 +117,7 @@ class Customer(models.Model):
         if 'default_source' in _dict:
             _dict.pop('default_source')
 
-        c = Customer(**_dict)
+        c = cls(**_dict)
         c.save()
 
         if descend:
