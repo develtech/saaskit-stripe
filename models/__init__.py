@@ -27,6 +27,7 @@ from .plan import Plan
 from .refund import Refund
 from .source import Source
 from .subscription import Subscription
+from .subscription_item import SubscriptionItem
 from .token import Token
 from .transfer import Transfer
 from .transfer_reversal import TransferReversal
