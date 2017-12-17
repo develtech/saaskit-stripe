@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
+from ..utils import UnixDateTimeField, get_customer_info
 from .charge import CURRENCY_CHOICES
 
 
@@ -18,6 +19,7 @@ class InvoiceItem(models.Model):
     billing totals.
     """
 
+    id = models.CharField(max_length=255, primary_key=True)
     livemode = models.BooleanField()
     amount = models.IntegerField()
     currency = models.CharField(max_length=255, choices=CURRENCY_CHOICES)
@@ -25,7 +27,7 @@ class InvoiceItem(models.Model):
         'Customer',
         on_delete=models.CASCADE,
     )
-    date = models.DateTimeField()
+    date = UnixDateTimeField()
     discountable = models.BooleanField(
         help_text=_(
             'If true, discounts will apply to this invoice item. Always false '
@@ -55,12 +57,14 @@ class InvoiceItem(models.Model):
             'that the proration was computed for.',
         ),
         on_delete=models.CASCADE,
+        null=True,
     )
     quantity = models.IntegerField(
         help_text=_(
             'If the invoice item is a proration, the quantity of the '
             'subscription that the proration was computed for.',
         ),
+        null=True,
     )
     subscription = models.ForeignKey(
         'Subscription',
@@ -69,4 +73,16 @@ class InvoiceItem(models.Model):
             'any.',
         ),
         on_delete=models.CASCADE,
+        null=True,
     )
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object, customer=None):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+
+        _dict = get_customer_info(_dict, customer)
+
+        s = cls(**_dict)
+        s.save()
+        return s
