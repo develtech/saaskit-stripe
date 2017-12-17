@@ -2,7 +2,11 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+import stripe
 from django_extensions.db.fields import json
+
+from ..utils import UnixDateTimeField
+from .customer import Customer
 
 CURRENCY_CHOICES = (
     ('USD', 'USD'),
@@ -166,6 +170,7 @@ class Charge(models.Model):
     are identified by a unique random ID.
     """
 
+    id = models.CharField(max_length=255, primary_key=True)
     livemode = models.BooleanField(default=True)
     amount = models.IntegerField(help_text=_('Amount charged in cents'),)
     captured = models.BooleanField(
@@ -175,9 +180,9 @@ class Charge(models.Model):
             'been captured.',
         ),
     )
-    created = models.DateTimeField()
+    created = UnixDateTimeField()
     currency = models.CharField(
-        max_length=255,
+        max_length=3,
         help_text=_(
             'Three-letter ISO currency code representing the currency in '
             'which the charge was made.',
@@ -232,6 +237,7 @@ class Charge(models.Model):
             'ID of the customer this charge is for if one exists.',
         ),
         on_delete=models.CASCADE,
+        null=True,
     )
     description = models.CharField(max_length=255)
     dispute = models.ForeignKey(
@@ -264,6 +270,7 @@ class Charge(models.Model):
             'ID of the invoice this charge is for if one exists.',
         ),
         on_delete=models.CASCADE,
+        null=True,
     )
     metadata = json.JSONField(
         help_text=_(
@@ -321,3 +328,31 @@ class Charge(models.Model):
         ),
         max_length=255,
     )
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object, customer=None):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+        _dict.pop('refunds')
+        customer_id = None
+        if 'customer' in _dict:
+            customer_id = _dict.pop('customer')
+
+        Refund = cls.refund_set.rel.related_model
+
+        if customer:
+            _dict['customer'] = customer
+        elif customer_id:
+            customer_object = stripe.Customer.retrieve(customer_id)
+            _dict['customer'] = Customer.from_stripe_object(
+                customer_object,
+                descend=False,
+            )
+
+        c = cls(**_dict)
+        c.save()
+
+        for refund in stripe_object.refunds.auto_paging_iter():
+            c.refund_set.add(Refund.from_stripe_object(refund, charge=c))
+
+        return c

@@ -88,6 +88,6 @@ class Plan(models.Model):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
 
-        s = Plan(**_dict)
+        s = cls(**_dict)
         s.save()
         return s
