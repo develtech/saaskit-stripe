@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
+from ..utils import get_customer_info
 from .payment_method import PaymentMethod
 
 CARD_BRAND_CHOICES = (
@@ -157,10 +158,8 @@ class Card(PaymentMethod):
     def from_stripe_object(cls, stripe_object, customer):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
-        _dict.pop('customer')
 
-        _dict['customer'] = customer
-        c = cls(**_dict)
-        c.save()
+        _dict = get_customer_info(_dict, customer)
+        c, _ = cls.objects.update_or_create(id=_dict['id'], defaults=_dict)
 
         return c
