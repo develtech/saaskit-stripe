@@ -333,14 +333,13 @@ class Charge(models.Model):
         _dict.pop('object')
         _dict.pop('refunds')
 
-        Refund = cls.refund_set.rel.related_model
-
         _dict = get_customer_info(_dict, customer)
 
         c = cls(**_dict)
         c.save()
 
         if descend:
+            Refund = cls.refund_set.rel.related_model
             for refund in stripe_object.refunds.auto_paging_iter():
                 c.refund_set.add(Refund.from_stripe_object(refund, charge=c))
 
