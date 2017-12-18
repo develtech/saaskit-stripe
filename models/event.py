@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
+from ..utils import UnixDateTimeField
 
 EVENT_TYPES = (
     ('account.updated', _('Account Updated')),
@@ -113,9 +114,9 @@ class Event(models.Model):
     NOTE: Right now, we only guarantee access to events through the Retrieve
     Event API for 30 days.
     """
-
+    id = models.CharField(max_length=255, primary_key=True)
     livemode = models.BooleanField()
-    created = models.DateTimeField()
+    created = UnixDateTimeField()
     data = json.JSONField(
         help_text=_(
             'Hash containing data associated with the event.',
@@ -152,3 +153,12 @@ class Event(models.Model):
             'April 23, 2013.',
         ),
     )
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+
+        s = cls(**_dict)
+        s.save()
+        return s
