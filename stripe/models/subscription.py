@@ -147,7 +147,7 @@ class Subscription(models.Model):
 
     @classmethod
     def from_stripe_object(cls, stripe_object, customer=None):
-        Plan = Subscription.plan.field.related_model
+        Plan = cls.plan.field.related_model
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('items')  # string, value is list
