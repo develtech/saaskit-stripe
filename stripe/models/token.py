@@ -2,7 +2,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from django_extensions.db.fields import json
+from ..utils import UnixDateTimeField
 
 TOKEN_TYPE_CHOICES = (
     ('card', _('Card')),
@@ -26,9 +26,9 @@ class Token(models.Model):
     once—to store these details for use later, you should create Customer or
     Recipient objects.
     """
-
+    id = models.CharField(max_length=255, primary_key=True)
     livemode = models.BooleanField()
-    created = models.DateTimeField()
+    created = UnixDateTimeField()
     type = models.CharField(
         max_length=255,
         choices=TOKEN_TYPE_CHOICES,
@@ -42,15 +42,44 @@ class Token(models.Model):
             'used only once)',
         ),
     )
-    bank_account = json.JSONField(
+    bank_account = models.ForeignKey(
+        'BankAccount',
         help_text=_(
             'Hash describing the bank account',
         ),
+        on_delete=models.CASCADE,
+        null=True,
     )
-    card = json.JSONField(help_text=_('Hash describing the bank account',),)
+    card = models.ForeignKey(
+        'Card',
+        help_text=_('Hash describing the bank account',),
+        on_delete=models.CASCADE,
+        null=True,
+    )
     client_ip = models.CharField(
         max_length=255,
         help_text=_(
             'IP address of the client that generated the token',
         ),
     )
+
+    @classmethod
+    def from_stripe_object(cls, stripe_object):
+        _dict = stripe_object.to_dict()
+        _dict.pop('object')
+
+        if 'card' in _dict:
+            Card = cls.card.field.related_model
+            _dict['card'] = Card.from_stripe_object(
+                stripe_object.card,
+                customer=None,
+            )
+        elif 'bank_account' in _dict:
+            BankAccount = cls.bank_account.field.related_model
+            _dict['bank_account'] = BankAccount.from_stripe_object(
+                stripe_object.bank_account,
+            )
+
+        s = cls(**_dict)
+        s.save()
+        return s
