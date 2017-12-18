@@ -93,7 +93,8 @@ class Refund(models.Model):
             Charge = cls._meta.get_field('charge').model
             Charge = cls.charge.field.related_model
             _dict['charge'] = Charge.from_stripe_object(
-                stripe.Charge.retrieve(stripe_object.charge), descend=False,
+                stripe.Charge.retrieve(stripe_object.charge),
+                descend=False,
             )
 
         s = cls(**_dict)
