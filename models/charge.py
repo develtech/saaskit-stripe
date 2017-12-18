@@ -328,7 +328,7 @@ class Charge(models.Model):
     )
 
     @classmethod
-    def from_stripe_object(cls, stripe_object, customer=None):
+    def from_stripe_object(cls, stripe_object, customer=None, descend=True):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('refunds')
@@ -340,7 +340,8 @@ class Charge(models.Model):
         c = cls(**_dict)
         c.save()
 
-        for refund in stripe_object.refunds.auto_paging_iter():
-            c.refund_set.add(Refund.from_stripe_object(refund, charge=c))
+        if descend:
+            for refund in stripe_object.refunds.auto_paging_iter():
+                c.refund_set.add(Refund.from_stripe_object(refund, charge=c))
 
         return c
