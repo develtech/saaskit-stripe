@@ -2,6 +2,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+import stripe
 from django_extensions.db.fields import json
 
 from ..utils import UnixDateTimeField
@@ -81,12 +82,19 @@ class Refund(models.Model):
     description = models.CharField(max_length=255)
 
     @classmethod
-    def from_stripe_object(cls, stripe_object, charge):
+    def from_stripe_object(cls, stripe_object, charge=None):
         _dict = stripe_object.to_dict()
         _dict.pop('object')
         _dict.pop('charge')
 
-        _dict['charge'] = charge
+        if charge:
+            _dict['charge'] = charge
+        else:
+            Charge = cls._meta.get_field('charge').model
+            Charge = cls.charge.field.related_model
+            _dict['charge'] = Charge.from_stripe_object(
+                stripe.Charge.retrieve(stripe_object.charge), descend=False,
+            )
 
         s = cls(**_dict)
         s.save()
