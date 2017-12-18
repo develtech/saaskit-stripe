@@ -90,7 +90,6 @@ class Refund(models.Model):
         if charge:
             _dict['charge'] = charge
         else:
-            Charge = cls._meta.get_field('charge').model
             Charge = cls.charge.field.related_model
             _dict['charge'] = Charge.from_stripe_object(
                 stripe.Charge.retrieve(stripe_object.charge),
