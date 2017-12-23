@@ -52,7 +52,9 @@ class Token(models.Model):
     )
     card = models.ForeignKey(
         'Card',
-        help_text=_('Hash describing the bank account',),
+        help_text=_(
+            'Hash describing the bank account',
+        ),
         on_delete=models.CASCADE,
         null=True,
     )
