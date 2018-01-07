@@ -104,7 +104,7 @@ class Customer(models.Model):
         :type stripe_object: :class:`stripe.stripe_object.StripeObject`
         :param descend: Go deeper into subscriptions, default: True
         :type descend: bool
-        :rtype: :class:`based.app.stripe.models.customer.Customer`
+        :rtype: :class:`saaskit.app.stripe.models.customer.Customer`
         :returns: saved model
         """
         _dict = stripe_object.to_dict()
