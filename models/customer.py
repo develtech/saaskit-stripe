@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_extensions.db.fields import json
 
+from ..settings import saaskit_stripe_setting
 from ..utils import UnixDateTimeField
 
 
@@ -80,6 +81,12 @@ class Customer(models.Model):
             'Mailing and shipping address for the customer. Appears on '
             'invoices emailed to this customer.',
         ),
+    )
+
+    customer_relation = models.OneToOneField(
+        saaskit_stripe_setting('CUSTOMER_RELATION_TO'),
+        on_delete=models.SET_NULL,
+        null=saaskit_stripe_setting('CUSTOMER_RELATION_NULLABLE')
     )
 
     # reverse relation
