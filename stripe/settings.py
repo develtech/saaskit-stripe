@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.utils.module_loading import import_string
 
 #: saaskit default settings
 SAASKIT_STRIPE_DEFAULTS = {
@@ -58,3 +59,27 @@ def saaskit_stripe_setting(key):
         subsettings[key]
     except KeyError:
         return SAASKIT_STRIPE_DEFAULTS[key]
+
+
+def resolve_saaskit_callback(callback_name):
+    """Return a callback from from SAASKIT_SETTINGS['callbacks'], if exists.
+
+    For internal use.
+
+    :param callback_name: a callable or import string
+    :type callback_name: callable or string
+    :returns: a custom callback if found in django settings
+    :rtype: callable, None
+    """
+
+    try:
+        CALLBACKS = saaskit_stripe_setting('callbacks')
+
+        cb = CALLBACKS['callback_name']
+
+        if callable(cb):
+            return cb
+        else:
+            return import_string(cb)
+    except KeyError:
+        return None
