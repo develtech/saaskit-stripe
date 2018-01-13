@@ -29,10 +29,13 @@ SAASKIT_STRIPE_DEFAULTS = {
     # need to set this to True unless you're prepared to *immediately* include
     # the customer_relation before saving.
     'CUSTOMER_RELATION_NULLABLE': True,
+    # callbacks for overriding discrepancies between local db and remote
+    # payment processor
+    'CALLBACKS': {},
 }
 
 
-def saaskit_stripe_setting(key):
+def get_saaskit_stripe_setting(key):
     """Return stripe setting/switchable settings.
 
     If no SAASKIT_STRIPE in settings, will default to SAASKIT_STRIPE_DEFAULTS.
@@ -61,21 +64,21 @@ def saaskit_stripe_setting(key):
         return SAASKIT_STRIPE_DEFAULTS[key]
 
 
-def resolve_saaskit_callback(callback_name):
-    """Return a callback from from SAASKIT_SETTINGS['callbacks'], if exists.
+def get_saaskit_callback(callback_name):
+    """Return a callback from from SAASKIT_SETTINGS['CALLBACKS'], if exists.
 
     For internal use.
 
-    :param callback_name: a callable or import string
-    :type callback_name: callable or string
+    :param callback_name: key name to look up
+    :type callback_name: string
     :returns: a custom callback if found in django settings
     :rtype: callable, None
     """
 
     try:
-        CALLBACKS = saaskit_stripe_setting('callbacks')
+        CALLBACKS = get_saaskit_stripe_setting('CALLBACKS')
 
-        cb = CALLBACKS['callback_name']
+        cb = CALLBACKS[callback_name]
 
         if callable(cb):
             return cb
@@ -83,3 +86,19 @@ def resolve_saaskit_callback(callback_name):
             return import_string(cb)
     except KeyError:
         return None
+
+
+def set_saaskit_callback(callback_name, cb):
+    """Set a callback from from SAASKIT_SETTINGS['CALLBACKS'], if exists.
+
+    For internal use and tests.
+
+    :param callback_name: key to set in CALLBACKS
+    :param cb: a callable or import string
+    :type cb: callable or string
+    :returns: a custom callback if found in django settings
+    :rtype: callable, None
+    """
+
+    CALLBACKS = get_saaskit_stripe_setting('CALLBACKS')
+    CALLBACKS[callback_name] = cb
