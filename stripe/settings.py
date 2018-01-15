@@ -33,9 +33,9 @@ SAASKIT_STRIPE_DEFAULTS = {
     # payment processor
     'CALLBACKS': {
         'on_remote_customer_not_found': \
-        'saaskit.app.subscribe.bill.on_remote_single_customer_found',
+        'saaskit.app.stripe.models.customer.on_remote_single_customer_found',
         'on_remote_single_customer_found': \
-        'saaskit.app.subscribe.bill.on_remote_multiple_customers_found',
+        'saaskit.app.stripe.models.customer.on_remote_multiple_customers_found',
     },
 }
 

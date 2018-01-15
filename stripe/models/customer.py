@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+from django.apps import apps
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+import stripe
 from django_extensions.db.fields import json
 
-from ..settings import get_saaskit_stripe_setting
+from ..settings import get_saaskit_callback, get_saaskit_stripe_setting
 from ..utils import UnixDateTimeField
 
 
@@ -151,3 +153,71 @@ class Customer(models.Model):
                 elif source.object == 'account':  # TODO
                     pass
         return c
+
+
+def on_remote_single_customer_found(customer_list):
+    return next(customer_list.auto_paging_iter())
+
+
+def on_remote_multiple_customers_found(customer_list):
+    return next(customer_list.auto_paging_iter())
+
+
+def find_or_create_stripe_customer(customer_rel_model):
+    """Find / create stripe customer by ``CUSTOMER_RELATIONAL_MODEL`` instance.
+
+    This exists to make customer lookups more resilient and have errors
+    be more detectable.
+
+    To assist developers in handling the most common exceptions, functions
+    like this can be overridden via callbacks set in the settings. You can
+    switch out anything from this whole function, to the specific exceptions
+    detected in this default function.
+
+    The CUSTOMER_RELATIONAL_MODEL allows a stripe customer to be associated
+    with any model (e.g. User, the default).
+
+    With this helper function, you can resolve instances such as:
+
+    - related local customer not existing on stripe
+    - whether or not to lookup an empty/wrong customer id via another field,
+      such as email.
+      - and, how to handle if multiple customers are found
+
+    :param customer_relational_model: instance of django model being associated
+        with stripe customer. This is configured via
+        ``CUSTOMER_RELATIONAL_MODEL`` in ``SAASKIT_SETTINGS``.
+    :type customer_relational_model: :class:`django:django.db.models.Model`
+    :returns: stripe Customer object
+    :rtype: :class:`stripe.stripe_object.StripeObject`
+    """
+    ModelClass = apps.get_model(
+        get_saaskit_stripe_setting('CUSTOMER_RELATION_TO'),
+    )
+    assert isinstance(customer_rel_model, ModelClass)
+
+    if hasattr(customer_rel_model, 'customer'):  # returning customer
+        try:
+            customer = stripe.Customer.retrieve(
+                customer_rel_model.customer.id,
+            )
+        except stripe.error.InvalidRequestError as e:
+            return get_saaskit_callback('on_remote_customer_not_found')(
+                customer_rel_model,
+                exception=e,
+            )
+
+    email = customer_rel_model.email
+    customers = stripe.Customer.list(email=email)
+
+    if len(customers) > 1:
+        return get_saaskit_callback('on_remote_multiple_customers_found')(
+            customer_list=customers,
+        )
+    elif len(customers) > 0:
+        return get_saaskit_callback('on_remote_single_customer_found')(
+            customer_list=customers,
+        )
+
+    customer = stripe.Customer.create(email=email)
+    return customer
