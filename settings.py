@@ -31,7 +31,12 @@ SAASKIT_STRIPE_DEFAULTS = {
     'CUSTOMER_RELATION_NULLABLE': True,
     # callbacks for overriding discrepancies between local db and remote
     # payment processor
-    'CALLBACKS': {},
+    'CALLBACKS': {
+        'on_remote_customer_not_found': \
+        'saaskit.app.subscribe.bill.on_remote_single_customer_found',
+        'on_remote_single_customer_found': \
+        'saaskit.app.subscribe.bill.on_remote_multiple_customers_found',
+    },
 }
 
 
