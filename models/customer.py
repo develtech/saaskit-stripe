@@ -155,11 +155,11 @@ class Customer(models.Model):
         return c
 
 
-def on_remote_single_customer_found(customer_list):
+def on_remote_lookup_no_customers_found(customer_list):
     return next(customer_list.auto_paging_iter())
 
 
-def on_remote_multiple_customers_found(customer_list):
+def on_remote_lookup_multiple_customers_found(customer_list):
     return next(customer_list.auto_paging_iter())
 
 
@@ -202,7 +202,7 @@ def find_or_create_stripe_customer(customer_rel_model):
                 customer_rel_model.customer.id,
             )
         except stripe.error.InvalidRequestError as e:
-            return get_saaskit_callback('on_remote_customer_not_found')(
+            return get_saaskit_callback('on_local_customer_id_not_found_remotely')(
                 customer_rel_model,
                 exception=e,
             )
@@ -211,11 +211,11 @@ def find_or_create_stripe_customer(customer_rel_model):
     customers = stripe.Customer.list(email=email)
 
     if len(customers) > 1:
-        return get_saaskit_callback('on_remote_multiple_customers_found')(
+        return get_saaskit_callback('on_remote_lookup_multiple_customers_found')(
             customer_list=customers,
         )
     elif len(customers) > 0:
-        return get_saaskit_callback('on_remote_single_customer_found')(
+        return get_saaskit_callback('on_remote_lookup_no_customers_found')(
             customer_list=customers,
         )
 
