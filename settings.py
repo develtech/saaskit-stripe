@@ -32,10 +32,10 @@ SAASKIT_STRIPE_DEFAULTS = {
     # callbacks for overriding discrepancies between local db and remote
     # payment processor
     'CALLBACKS': {
-        'on_remote_customer_not_found': \
-        'saaskit.app.stripe.models.customer.on_remote_single_customer_found',
-        'on_remote_single_customer_found': \
-        'saaskit.app.stripe.models.customer.on_remote_multiple_customers_found',
+        'on_remote_lookup_multiple_customers_found': \
+        'saaskit.app.stripe.models.customer.on_remote_lookup_multiple_customers_found',
+        'on_remote_lookup_no_customers_found': \
+        'saaskit.app.stripe.models.customer.on_remote_lookup_no_customers_found',
     },
 }
 
