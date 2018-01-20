@@ -155,8 +155,8 @@ class Customer(models.Model):
         return c
 
 
-def on_remote_lookup_no_customers_found(customer_list):
-    return next(customer_list.auto_paging_iter())
+def on_remote_lookup_no_customers_found(email):
+    return stripe.Customer.create(email=email)
 
 
 def on_remote_lookup_multiple_customers_found(customer_list):
@@ -214,9 +214,9 @@ def find_or_create_stripe_customer(customer_rel_model):
         return get_saaskit_callback('on_remote_lookup_multiple_customers_found')(
             customer_list=customers,
         )
-    elif len(customers) > 0:
+    elif len(customers) == 0:
         return get_saaskit_callback('on_remote_lookup_no_customers_found')(
-            customer_list=customers,
+            email=email,
         )
 
     customer = stripe.Customer.create(email=email)
