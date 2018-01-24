@@ -88,8 +88,7 @@ class Customer(models.Model):
     customer_relation = models.OneToOneField(
         get_saaskit_stripe_setting('CUSTOMER_RELATION_TO'),
         on_delete=models.SET_NULL,
-        null=get_saaskit_stripe_setting('CUSTOMER_RELATION_NULLABLE')
-    )
+        null=get_saaskit_stripe_setting('CUSTOMER_RELATION_NULLABLE'))
 
     # reverse relation
     # subscriptions = models.ForeignKey(
@@ -198,26 +197,24 @@ def find_or_create_stripe_customer(customer_rel_model):
 
     if hasattr(customer_rel_model, 'customer'):  # returning customer
         try:
-            customer = stripe.Customer.retrieve(
-                customer_rel_model.customer.id,
-            )
+            customer = stripe.Customer.retrieve(customer_rel_model.customer.id,)
         except stripe.error.InvalidRequestError as e:
-            return get_saaskit_callback('on_local_customer_id_not_found_remotely')(
-                customer_rel_model,
-                exception=e,
-            )
+            return get_saaskit_callback(
+                'on_local_customer_id_not_found_remotely')(
+                    customer_rel_model,
+                    exception=e,
+                )
 
     email = customer_rel_model.email
     customers = stripe.Customer.list(email=email)
 
     if len(customers) > 1:
-        return get_saaskit_callback('on_remote_lookup_multiple_customers_found')(
-            customer_list=customers,
-        )
+        return get_saaskit_callback(
+            'on_remote_lookup_multiple_customers_found')(
+                customer_list=customers,)
     elif len(customers) == 0:
         return get_saaskit_callback('on_remote_lookup_no_customers_found')(
-            email=email,
-        )
+            email=email,)
 
     customer = stripe.Customer.create(email=email)
     return customer
